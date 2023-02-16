@@ -1,0 +1,460 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use \App\Models\Topic;
+use \App\Models\Level;
+use \App\Models\Teacher;
+use \App\Models\Transfer;
+use \App\Models\TeacherLevel;
+use \App\Models\TeacherCourse;
+use \App\Models\TeacherPackage;
+use \App\Models\TeacherTopic;
+use \App\Models\TeacherTrain;
+use \App\Models\TeacherStudyType;
+use \App\Models\TeacherExperience;
+use \App\Models\TeacherCertificate;
+use \App\Models\TeacherAvailablity;
+use \App\Models\Review;
+use \App\Models\Order;
+
+use \App\Models\User;
+use \App\Models\Language;
+use \App\Models\Course;
+use \App\Models\LanguageLevel;
+use \App\Models\Currency;
+use \App\Models\Country;
+use Auth;
+
+
+
+use Carbon\Carbon;
+
+use \App\Http\Services\ParsingService;
+
+class HomeController extends Controller
+{
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('teacher');
+    }
+
+    public function index()
+    {
+        $teachers = User::where('type', 'teacher')->with('teacher')->take(10)->get();
+        $data = [
+            'topics' => ParsingService::parseTopics(Topic::where('parent_id', '!=' ,null)->get()),
+            'main_topics' => ParsingService::parseTopics(Topic::where('parent_id', '=' ,null)->get()),
+            'levels' => ParsingService::parseLevels(Level::get()),
+            'teachers' => $teachers
+        ];
+
+        return view('home', $data);
+    }
+
+    public function update_locale($locale = 'en') {
+        app()->setLocale($locale);
+        session()->put('locale', $locale);
+        return redirect()->back();
+    }
+
+    public function update_currency($currency_id = '1') {
+        $currencies = session()->get('currencies');
+        
+        foreach($currencies as $currency) {
+            if($currency['id'] == $currency_id) {
+                session()->put('current_currency', $currency);
+            }
+        }
+        return redirect()->back();
+    }
+
+    public function search(Request $request) {
+
+        $current_page = $request->page ?? 1;
+
+        $take = 2;
+        $skip = ($current_page - 1) * $take;
+
+        $sort = $request->sort ?? 'asc';
+        
+
+        $teachers = User::where('type', 'teacher')->where('is_verified', '1')->where('is_approved', 1);
+
+        if($request->topic_id) {
+            $topics_id = $request->topic_id;
+
+            $teachers->whereHas('teacher.topics', function($q) use($topics_id){
+                $q->where('topic_id', $topics_id);
+            });
+        }
+
+        if($request->level) {
+            $level_id = $request->level;
+
+            $teachers->whereHas('teacher.levels', function($q) use($level_id){
+                $q->where('level_id', $level_id);
+            });
+        }
+
+        if($request->gender && $request->gender != "-1") {
+            $teachers->where('gender', $request->gender);
+        }
+
+        if($request->country_id && $request->country_id != "-1") {
+            $teachers->where('country_id', $request->country_id);
+        }
+
+        if($request->course_id) {
+            $course_id = $request->course_id;
+
+            $teachers->whereHas('teacher.courses', function($q) use($course_id){
+                $q->where('course_id', $course_id);
+            });
+        }
+
+        if($request->language_id) {
+            $language_id = $request->language_id;
+
+            $teachers->whereHas('teacher', function($q) use($language_id){
+                $q->where('teacher_language','LIKE','%"language":"'.$language_id.'"%');
+            });
+        }
+
+        if($request->have_assay_experiences == 'on') {
+            $teachers->whereHas('teacher', function($q){
+                $q->where('have_assay_experiences', 1);   
+            });
+        }
+
+        
+        $teacher_count = $teachers->count();
+        $pages_count = ceil($teacher_count / 2);
+
+        $teachers = $teachers->with(['teacher', 'country'])->skip($skip)->take($take)->get();
+
+        return view('search', [
+            'teachers' => $teachers,
+            'teacher_count' => $teacher_count,
+            'current_page' => $current_page,
+            'pages_count' => $pages_count,
+            'countries' => ParsingService::parseCountries(Country::get()->toArray()),
+            'courses' => ParsingService::parseCourses(Course::get()->toArray()),
+            'main_topics' => ParsingService::parseTopics(Topic::where('parent_id', '!=' ,null)->get()->toArray()),
+            'levels' => ParsingService::parseLevels(Level::get()->toArray()),
+            'languages' => ParsingService::parseLanguages(Language::get()->toArray()),
+            'languages_levels' => ParsingService::parseLanguagesLevels(LanguageLevel::get()->toArray()),
+        ]);
+    }
+
+    public function teacher_details($slug, Request $request) {
+        $teacher = User::where('slug', $slug);
+        $teacher_info = $teacher->with([
+            'country',
+            'teacher', 
+            'teacher.levels', 
+            'teacher.courses', 
+            'teacher.certificates', 
+            'teacher.experiences', 
+            'teacher.topics', 
+            'teacher.trains'
+        ])->first();
+        $languages = ParsingService::parseLanguages(Language::get()->toArray());
+        $topics = ParsingService::parseTopics(Topic::where('parent_id', '!=', null)->get()->toArray());
+        $reviews = [
+            'count' => Review::where('teacher_id', $teacher_info->id)->count(),
+            'avg' => Review::where('teacher_id', $teacher_info->id)->avg('points'),
+            'reviews' => Review::where('teacher_id', $teacher_info->id)->with('user')->get(),
+        ];
+
+        if($teacher->exists()) {
+            return view('teacher_details', [
+                'languages' => $languages,
+                'topics' => $topics,
+                'teacher' => $teacher_info,
+                'reviews' => $reviews
+            ]);
+        } else {
+            return view('404');
+        }
+        
+    }
+
+    public function profile() {
+        $teacher_info = Teacher::where('user_id', \Auth::id())->with(['levels', 'courses', 'certificates', 'experiences', 'topics', 'trains', 'availability'])->first();
+
+        $topics = Topic::where('parent_id', '!=', null)->get();
+        $all_topics = [];
+        foreach($topics as $topic) {
+            $all_topics[$topic->parent][] = $topic;
+        }
+
+        return view('profile', [
+            'countries' => ParsingService::parseCountries(Country::get()->toArray()),
+            'currencies' => ParsingService::parseCurrencies(Currency::get()->toArray()),
+            'languages' => ParsingService::parseLanguages(Language::get()->toArray()),
+            'languages_levels' => ParsingService::parseLanguagesLevels(LanguageLevel::get()->toArray()),
+            'levels' => ParsingService::parseLevels(Level::get()->toArray()),
+            'courses' => ParsingService::parseCourses(Course::get()->toArray()),
+            'topics' => $all_topics,
+            'teacher_info' => $teacher_info
+        ]);
+    }
+
+    public function profile_func(Request $request) {
+
+        $user_data = [];
+        $teacher_data = [];
+    
+        if($request->name)
+            $user_data['name'] = $request->name;
+
+        if($request->phone)
+            $user_data['phone'] = $request->phone;
+
+        if($request->gender)
+            $user_data['gender'] = $request->gender;
+
+        if($request->image)
+            $user_data['image'] = $request->image;
+
+        if($request->currency_id)
+            $user_data['currency_id'] = $request->currency_id;
+
+        if($request->country_id)
+            $user_data['country_id'] = $request->country_id;
+
+        if($request->birthday)
+            $user_data['birthday'] = $request->birthday;
+
+        User::whereId(\Auth::id())->update($user_data);
+
+
+        if($request->languages) {
+            $languages_json = [];
+            foreach($request->languages as $i => $language) {
+                $langauges_levels = $request->langauges_levels; 
+                if($language != null && $langauges_levels[$i] != null) {
+                    $languages_json[] = ['language' => $language, 'level' => $langauges_levels[$i]];
+                }
+            }
+            $teacher_data['teacher_language'] = json_encode($languages_json);
+        }
+
+        if($request->timezone) {
+            $teacher_data['timezone'] = json_encode($request->timezone);
+        }
+
+        if($request->allow_express == 0) {
+            $teacher_data['allow_express'] = 0;
+        } else {
+            $teacher_data['allow_express'] = 1;
+        }
+
+        if($request->days_availablity) {
+            $avaiabilities = explode(',', $request->days_availablity);
+            TeacherAvailablity::where('teacher_id', \Auth::id())->delete();
+            foreach($avaiabilities as $avaiability) {
+                $avail = explode(' ', $avaiability);
+                TeacherAvailablity::insert([
+                    'teacher_id' => \Auth::id(),
+                    'date' => $avail[0],
+                    'time' => $avail[1]
+                ]);
+            }
+        }
+
+        if($request->video) {
+            $teacher_data['video'] = $request->video;
+        }
+
+        if($request->heading_en) {
+            $teacher_data['heading_en'] = $request->heading_en;
+        }
+
+        if($request->fees) {
+            $teacher_data['fees'] = $request->fees;
+        }
+
+
+        if($request->description_en) {
+            $teacher_data['description_en'] = $request->description_en;
+        }
+
+        if($request->heading_ar) {
+            $teacher_data['heading_ar'] = $request->heading_ar;
+        }
+
+        if($request->description_ar) {
+            $teacher_data['description_ar'] = $request->description_ar;
+        }
+
+        Teacher::updateOrCreate(
+            ['user_id' =>  \Auth::id()],
+            $teacher_data
+        );
+
+        if($request->levels) {
+            TeacherLevel::where('teacher_id', \Auth::id())->delete();
+            foreach($request->levels as $level_id) {
+                TeacherLevel::insert(['teacher_id' => \Auth::id(), 'level_id' => $level_id]);
+            }
+        }
+
+        if($request->courses) {
+            TeacherCourse::where('teacher_id', \Auth::id())->delete();
+            foreach($request->courses as $course_id) {
+                TeacherCourse::insert(['teacher_id' => \Auth::id(), 'course_id' => $course_id]);
+            }
+        }
+
+        if($request->topics) {
+            TeacherTopic::where('teacher_id', \Auth::id())->delete();
+            foreach($request->topics as $topic) {
+                TeacherTopic::insert(['teacher_id' => \Auth::id(), 'topic_id' => $topic]);
+            }
+        }
+
+        if($request->teach_types) {
+            TeacherStudyType::where('teacher_id', \Auth::id())->delete();
+            foreach($request->teach_types as $type) {
+                TeacherStudyType::insert(['teacher_id' => \Auth::id(), 'type' => $type['type'], 'fees' => $type['fee'], 'currency_id' => $type['currency_id']]);
+            }
+        }
+
+        if($request->work_experience) {
+            TeacherExperience::where('teacher_id', \Auth::id())->delete();
+            foreach($request->work_experience as $work_experience) {
+                if($work_experience['title'] && $work_experience['company']) {
+                    TeacherExperience::insert(
+                        [
+                            'teacher_id' => \Auth::id(), 
+                            'title' => $work_experience['title'],
+                            'from_date' => Carbon::parse($work_experience['from'])->format('Y-m-d'),
+                            'to_date' => Carbon::parse($work_experience['to'])->format('Y-m-d'),
+                            'company' => $work_experience['company'] 
+                        ]
+                    );
+                }
+            }
+        }
+
+        if($request->proffesional_certificates) {
+            TeacherTrain::where('teacher_id', \Auth::id())->delete();
+            foreach($request->proffesional_certificates as $proffesional_certificate) {
+                if($proffesional_certificate['subject'] && $proffesional_certificate['institution']) {
+                    TeacherTrain::insert(
+                        [
+                            'teacher_id' => \Auth::id(), 
+                            'subject' => $proffesional_certificate['subject'],
+                            'instituation' => $proffesional_certificate['institution'],
+                            'from_date' => Carbon::parse($proffesional_certificate['from'])->format('Y-m-d'),
+                            'to_date' => Carbon::parse($proffesional_certificate['to'])->format('Y-m-d')
+                        ]
+                    );
+                }
+            }
+        }
+
+        if($request->higher_educations) {
+            TeacherCertificate::where('teacher_id', \Auth::id())->delete();
+            foreach($request->higher_educations as $higher_education) {
+                if($higher_education['university'] && $higher_education['degree']) {
+                    TeacherCertificate::insert(
+                        [
+                            'teacher_id' => \Auth::id(), 
+                            'university' => $higher_education['university'],
+                            'degree' => $higher_education['degree'],
+                            'from_date' => Carbon::parse($higher_education['from'])->format('Y-m-d'),
+                            'to_date' => Carbon::parse($higher_education['to'])->format('Y-m-d'),
+                            'image' => $higher_education['image']
+                        ]
+                    );
+                }
+            }
+        }
+
+
+    }
+
+    public function wallet(Request $request) {
+        if($request->success == '1' && $request->code) {
+            Transfer::where('user_id', \Auth::id())->where('verification_code', $request->code)->update(['approved' => 1]);
+        }
+
+        $transfers = Transfer::where('user_id', \Auth::id())->where('approved', 1)->get();
+        $paid = Transfer::where('user_id', \Auth::id())->where('approved', 1)->where('type', 'order')->sum('amount');
+
+        $balance = Transfer::get_user_balance();
+
+        return view('wallet', ['transfers' => $transfers, 'paid' => $paid, 'balance' => $balance]);
+    }
+
+
+    public function change_password() {
+        return view('change_password');
+    }
+
+    public function packages() {
+        $packages = TeacherPackage::where('teacher_id', \Auth::id())->get();
+        return view('packages', compact('packages'));
+    }
+
+    public function add_package($package_id = null) {
+        if($package_id != null) {
+            $package = TeacherPackage::find($package_id);
+            return view('add_package', compact('package'));
+        } else {
+            return view('add_package', []);
+        }
+    }
+
+    public function update_package(Request $request) {
+        $request->validate([
+            'image' => 'image|mimes:png,jpg,jpeg|max:2048',
+            'title_en' => 'required',
+            'title_ar' => 'required',
+            'description_en' => 'required',
+            'description_ar' => 'required',
+            'fees' => 'required',
+            'currency_id' => 'required'
+        ]);
+
+        $file = $request->image;
+        if($file) {
+            $imageName = time().'.jpg';
+            // Public Folder
+            $file->move(public_path('images'), $imageName);
+        }
+
+        $data = [
+            'title_en' => $request->title_en,
+            'title_ar' => $request->title_ar,
+            'description_en' => $request->description_en,
+            'description_ar' => $request->description_ar,
+            'fees' => $request->fees,
+            'currency_id' => $request->currency_id,
+            'teacher_id' => \Auth::id()
+        ];
+
+        if(@$imageName) {
+            $data['image'] = $imageName;
+        }
+
+        if($request->package_id) {
+            TeacherPackage::where('id', $request->package_id)->update($data);  
+        } else {
+            TeacherPackage::insert($data);  
+        }   
+
+        return redirect( route('packages', ['success' => 1] ) );
+    }
+
+}
+

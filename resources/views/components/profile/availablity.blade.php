@@ -1,0 +1,29 @@
+@php
+    $timezones = [["id" => "GMT-12:00","name" => "Etc/GMT-12"],["id" => "GMT-11:00","name" => "Etc/GMT-11"],["id" => "GMT-11:00","name" => "Pacific/Midway"],["id" => "GMT-10:00","name" => "America/Adak"],["id" => "GMT-09:00","name" => "America/Anchorage"],["id" => "GMT-09:00","name" => "Pacific/Gambier"],["id" => "GMT-08:00","name" => "America/Dawson_Creek"],["id" => "GMT-08:00","name" => "America/Ensenada"],["id" => "GMT-08:00","name" => "America/Los_Angeles"],["id" => "GMT-07:00","name" => "America/Chihuahua"],["id" => "GMT-07:00","name" => "America/Denver"],["id" => "GMT-06:00","name" => "America/Belize"],["id" => "GMT-06:00","name" => "America/Cancun"],["id" => "GMT-06:00","name" => "America/Chicago"],["id" => "GMT-06:00","name" => "Chile/EasterIsland"],["id" => "GMT-05:00","name" => "America/Bogota"],["id" => "GMT-05:00","name" => "America/Havana"],["id" => "GMT-05:00","name" => "America/New_York"],["id" => "GMT-04:30","name" => "America/Caracas"],["id" => "GMT-04:00","name" => "America/Campo_Grande"],["id" => "GMT-04:00","name" => "America/Glace_Bay"],["id" => "GMT-04:00","name" => "America/Goose_Bay"],["id" => "GMT-04:00","name" => "America/Santiago"],["id" => "GMT-04:00","name" => "America/La_Paz"],["id" => "GMT-03:00","name" => "America/Argentina/Buenos_Aires"],["id" => "GMT-03:00","name" => "America/Montevideo"],["id" => "GMT-03:00","name" => "America/Araguaina"],["id" => "GMT-03:00","name" => "America/Godthab"],["id" => "GMT-03:00","name" => "America/Miquelon"],["id" => "GMT-03:00","name" => "America/Sao_Paulo"],["id" => "GMT-03:30","name" => "America/St_Johns"],["id" => "GMT-02:00","name" => "America/Noronha"],["id" => "GMT-01:00","name" => "Atlantic/Cape_Verde"],["id" => "GMT","name" => "Europe/Belfast"],["id" => "GMT","name" => "Africa/Abidjan"],["id" => "GMT","name" => "Europe/Dublin"],["id" => "GMT","name" => "Europe/Lisbon"],["id" => "GMT","name" => "Europe/London"],["id" => "UTC","name" => "UTC"],["id" => "GMT+01:00","name" => "Africa/Algiers"],["id" => "GMT+01:00","name" => "Africa/Windhoek"],["id" => "GMT+01:00","name" => "Atlantic/Azores"],["id" => "GMT+01:00","name" => "Atlantic/Stanley"],["id" => "GMT+01:00","name" => "Europe/Amsterdam"],["id" => "GMT+01:00","name" => "Europe/Belgrade"],["id" => "GMT+01:00","name" => "Europe/Brussels"],["id" => "GMT+02:00","name" => "Africa/Cairo"],["id" => "GMT+02:00","name" => "Africa/Blantyre"],["id" => "GMT+02:00","name" => "Asia/Beirut"],["id" => "GMT+02:00","name" => "Asia/Damascus"],["id" => "GMT+02:00","name" => "Asia/Gaza"],["id" => "GMT+02:00","name" => "Asia/Jerusalem"],["id" => "GMT+03:00","name" => "Africa/Addis_Ababa"],["id" => "GMT+03:00","name" => "Asia/Riyadh89"],["id" => "GMT+03:00","name" => "Europe/Minsk"],["id" => "GMT+03:30","name" => "Asia/Tehran"],["id" => "GMT+04:00","name" => "Asia/Dubai"],["id" => "GMT+04:00","name" => "Asia/Yerevan"],["id" => "GMT+04:00","name" => "Europe/Moscow"],["id" => "GMT+04:30","name" => "Asia/Kabul"],["id" => "GMT+05:00","name" => "Asia/Tashkent"],["id" => "GMT+05:30","name" => "Asia/Kolkata"],["id" => "GMT+05:45","name" => "Asia/Katmandu"],["id" => "GMT+06:00","name" => "Asia/Dhaka"],["id" => "GMT+06:00","name" => "Asia/Yekaterinburg"],["id" => "GMT+06:30","name" => "Asia/Rangoon"],["id" => "GMT+07:00","name" => "Asia/Bangkok"],["id" => "GMT+07:00","name" => "Asia/Novosibirsk"],["id" => "GMT+08:00","name" => "Etc/GMT+8"],["id" => "GMT+08:00","name" => "Asia/Hong_Kong"],["id" => "GMT+08:00","name" => "Asia/Krasnoyarsk"],["id" => "GMT+08:00","name" => "Australia/Perth"],["id" => "GMT+08:45","name" => "Australia/Eucla"],["id" => "GMT+09:00","name" => "Asia/Irkutsk"],["id" => "GMT+09:00","name" => "Asia/Seoul"],["id" => "GMT+09:00","name" => "Asia/Tokyo"],["id" => "GMT+09:30","name" => "Australia/Adelaide"],["id" => "GMT+09:30","name" => "Australia/Darwin"],["id" => "GMT+09:30","name" => "Pacific/Marquesas"],["id" => "GMT+10:00","name" => "Etc/GMT+10"],["id" => "GMT+10:00","name" => "Australia/Brisbane"],["id" => "GMT+10:00","name" => "Australia/Hobart"],["id" => "GMT+10:00","name" => "Asia/Yakutsk"],["id" => "GMT+10:30","name" => "Australia/Lord_Howe"],["id" => "GMT+11:00","name" => "Asia/Vladivostok"],["id" => "GMT+11:30","name" => "Pacific/Norfolk"],["id" => "GMT+12:00","name" => "Etc/GMT+12"],["id" => "GMT+12:00","name" => "Asia/Anadyr"],["id" => "GMT+12:00","name" => "Asia/Magadan"],["id" => "GMT+12:00","name" => "Pacific/Auckland"],["id" => "GMT+12:45","name" => "Pacific/Chatham"],["id" => "GMT+13:00","name" => "Pacific/Tongatapu"],["id" => "GMT+14:00","name" => "Pacific/Kiritimati"]];
+@endphp
+
+<div class="tu-boxarea">
+    <div class="tu-boxsm">
+        <div class="tu-boxsmtitle"> 
+            <h4>Availability</h4>
+        </div>
+    </div>
+    <div class="tu-box">
+        <form class="tu-themeform tu-dhbform">
+            <fieldset>
+                <div class="tu-themeform__wrap">
+                    <div class="form-group-wrap">
+                        <label>Set your time zone</label>
+                    
+                        @include('components.standard.checkbox', ['name' => 'allow_express', 'id' => 'allow_express', 'label' => 'Allow Express', 'value' => 'Allow Express', 'selected' => @$teacher_info->allow_express])
+
+                        @include('components.standard.select', ['id' => 'timezone', 'name' => 'timezone', 'placeholder' => 'Choose Your TimeZone', 'options' => $timezones, 'value' => @$teacher_info->timezone])
+                        
+                        @include('components.calendar', ['teacher_info' => $teacher_info])
+                    </div>
+                    
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
