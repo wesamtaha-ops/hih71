@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<configuration date="2023/02/17" author="e.World Technology Ltd.">
+  <project id="{D43A73A4-5F37-4161-A00D-2E65107145C9}" file="C:\Users\97155\OneDrive\Documents\PHPMaker\projects\hih71.pmp" name="hih71" product="PHPMaker" version="14.0" datetime="2023/02/17 02:50:01" languagefolder="phplang" userlevel="-2,&quot;Anonymous&quot;,0;">
+    <table id="conversations" name="conversations" caption="conversations" userlevel="-2,&quot;Anonymous&quot;,0;" priv="1" />
+    <table id="countries" name="countries" caption="Countries" userlevel="-2,&quot;Anonymous&quot;,0;" priv="1" />
+    <table id="courses" name="courses" caption="Curriculums" userlevel="-2,&quot;Anonymous&quot;,0;" priv="1" />
+    <table id="currencies" name="currencies" caption="Currencies" userlevel="-2,&quot;Anonymous&quot;,0;" priv="1" />
+    <table id="failed_jobs" name="failed_jobs" caption="failed jobs" userlevel="-2,&quot;Anonymous&quot;,0;" priv="1" />
+    <table id="languages" name="languages" caption="Languages" userlevel="-2,&quot;Anonymous&quot;,0;" priv="1" />
+    <table id="languages_levels" name="languages_levels" caption="languages levels" userlevel="-2,&quot;Anonymous&quot;,0;" priv="1" />
+    <table id="levels" name="levels" caption="Education Levels" userlevel="-2,&quot;Anonymous&quot;,0;" priv="1" />
+    <table id="messages" name="messages" caption="messages" userlevel="-2,&quot;Anonymous&quot;,0;" priv="1" />
+    <table id="migrations" name="migrations" caption="migrations" userlevel="-2,&quot;Anonymous&quot;,0;" priv="1" />
+    <table id="orders" name="orders" caption="Orders" userlevel="-2,&quot;Anonymous&quot;,0;" priv="1" />
+    <table id="students" name="students" caption="Students" userlevel="-2,&quot;Anonymous&quot;,0;" priv="1" />
+    <table id="teacher_availablities" name="teacher_availablities" caption="Teacher availablities" userlevel="-2,&quot;Anonymous&quot;,0;" priv="1" />
+    <table id="teachers" name="teachers" caption="Teachers" userlevel="-2,&quot;Anonymous&quot;,0;" priv="1" />
+    <table id="teachers_certificates" name="teachers_certificates" caption="Certificates" userlevel="-2,&quot;Anonymous&quot;,0;" priv="1" />
+    <table id="teachers_courses" name="teachers_courses" caption="Courses" userlevel="-2,&quot;Anonymous&quot;,0;" priv="1" />
+    <table id="teachers_experiences" name="teachers_experiences" caption="Experiences" userlevel="-2,&quot;Anonymous&quot;,0;" priv="1" />
+    <table id="teachers_levels" name="teachers_levels" caption="teachers levels" userlevel="-2,&quot;Anonymous&quot;,0;" priv="1" />
+    <table id="teachers_packages" name="teachers_packages" caption="Packages" userlevel="-2,&quot;Anonymous&quot;,0;" priv="1" />
+    <table id="teachers_topics" name="teachers_topics" caption="Topics" userlevel="-2,&quot;Anonymous&quot;,0;" priv="1" />
+    <table id="teachers_trains" name="teachers_trains" caption="Trainings" userlevel="-2,&quot;Anonymous&quot;,0;" priv="1" />
+    <table id="topics" name="topics" caption="Education Topics" userlevel="-2,&quot;Anonymous&quot;,0;" priv="1" />
+    <table id="transfers" name="transfers" caption="Transfers" userlevel="-2,&quot;Anonymous&quot;,0;" priv="1" />
+    <table id="users" name="users" caption="Registred Users" userlevel="-2,&quot;Anonymous&quot;,0;" priv="1" />
+  </project>
+</configuration>
