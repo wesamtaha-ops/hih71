@@ -102,9 +102,11 @@
                             <li>
                                 <a href="{{route('lessons')}}"><i class="icon icon-phone"></i>Lessons</a>
                             </li>
+                            @if(isTeacher())
                             <li>
                                 <a href="{{route('packages')}}"><i class="icon icon-user"></i>Packages</a>
                             </li>
+                            @endif
                             <li>
                                 <a href="{{route('password.update')}}"><i class="icon icon-book"></i>Change Password</a>
                             </li>

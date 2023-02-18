@@ -72,7 +72,7 @@ class ParsingService {
     }
 
 
-    static function parseCourses($arr) {
+    static function parseCurriculum($arr) {
         $res = [];
 
         foreach($arr as $item) {

@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Course;
+use App\Models\Curriculum;
 use Illuminate\Support\Facades\Storage;
 
 
-class CourseController extends Controller
+class CurriculumController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,9 +17,9 @@ class CourseController extends Controller
     public function index()
     {
         $data = [
-            'courses' => Course::get()
+            'curriculums' => Curriculum::get()
         ];
-        return view('admin.course.index', $data);
+        return view('admin.curriculum.index', $data);
     }
 
     /**
@@ -32,7 +32,7 @@ class CourseController extends Controller
     {
         $data = $request->all();
 
-        return Course::insert($data);
+        return Curriculum::insert($data);
     }
 
     /**
@@ -46,7 +46,7 @@ class CourseController extends Controller
     {
         $data = $request->except('_method');
 
-        return Course::where('id', $id)->update($data);
+        return Curriculum::where('id', $id)->update($data);
     }
 
     /**
@@ -57,6 +57,6 @@ class CourseController extends Controller
      */
     public function destroy($id)
     {
-        return Course::whereId($id)->delete();
+        return Curriculum::whereId($id)->delete();
     }
 }

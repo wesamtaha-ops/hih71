@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use \App\Models\TeacherLevel;
-use \App\Models\TeacherCourse;
+use \App\Models\TeacherCurriculum;
 use \App\Models\TeacherCertificate;
 use \App\Models\TeacherExperience;
 use \App\Models\TeacherStudyType;
@@ -24,8 +24,8 @@ class Teacher extends Model
         return $this->hasMany(TeacherLevel::class, 'teacher_id', 'user_id');
     }
 
-    public function courses() {
-        return $this->hasMany(TeacherCourse::class, 'teacher_id', 'user_id');
+    public function curriculums() {
+        return $this->hasMany(TeacherCurriculum::class, 'teacher_id', 'user_id');
     }
 
     public function certificates() {
@@ -46,5 +46,9 @@ class Teacher extends Model
 
     public function availability() {
         return $this->hasMany(TeacherAvailablity::class, 'teacher_id', 'user_id');
+    }
+
+    public function packages() {
+        return $this->hasMany(TeacherPackage::class, 'teacher_id', 'user_id');
     }
 }

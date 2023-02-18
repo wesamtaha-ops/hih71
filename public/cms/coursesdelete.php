@@ -260,7 +260,7 @@ class ccourses_delete extends ccourses {
 
 		// Table name (for backward compatibility)
 		if (!defined("EW_TABLE_NAME"))
-			define("EW_TABLE_NAME", 'courses', TRUE);
+			define("EW_TABLE_NAME", 'curriculums' TRUE);
 
 		// Start timer
 		if (!isset($GLOBALS["gTimer"]))

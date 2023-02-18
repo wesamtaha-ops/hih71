@@ -10,7 +10,7 @@ use \App\Models\Level;
 use \App\Models\Teacher;
 use \App\Models\Transfer;
 use \App\Models\TeacherLevel;
-use \App\Models\TeacherCourse;
+use \App\Models\TeacherCurriculum;
 use \App\Models\TeacherTopic;
 use \App\Models\TeacherTrain;
 use \App\Models\TeacherStudyType;
@@ -18,10 +18,11 @@ use \App\Models\TeacherExperience;
 use \App\Models\TeacherCertificate;
 use \App\Models\Review;
 use \App\Models\Order;
+use \App\Models\TeacherPackage;
 
 use \App\Models\User;
 use \App\Models\Language;
-use \App\Models\Course;
+use \App\Models\Curriculum;
 use \App\Models\LanguageLevel;
 use \App\Models\Currency;
 use \App\Models\Country;
@@ -115,49 +116,20 @@ class OrderController extends Controller
         return redirect(route('wallet', ['success' => '1', 'message' => 'Order has been submitted successfully!']));
     }
 
-    public function book_package(Request $request, $teacher_id) {
-        $teacher = User::whereId($teacher_id);
-        $teacher_info = $teacher->with(['country','teacher'])->first();
-        $topics_arr = TeacherTopic::where('teacher_id', $teacher_id)->pluck('topic_id');
-        $topics = ParsingService::parseTopics(Topic::where('parent_id', '!=', null)->whereIn('id', $topics_arr)->get()->toArray());
-
-        $packages = [];
-        if($teacher_info->teacher->packages) {
-            foreach(json_decode($teacher_info->teacher->packages) as $i => $package) {
-                $package->fee_currency = convert_to_currency($package->currency_id, $package->fee);
-                $packages[] = $package;
-            }
-        }
-        
-        return view('book_package', [
-            'teacher' => $teacher_info,
-            'topics' => $topics
-        ]);
-    }
 
     public function book_package_func(Request $request) {
-        $hours = $request->hours;
-
         $fees = 0;
         $currency_id = 0;
 
-        $teacher_id = $request->teacher_id;
-        $packages = json_decode(Teacher::find($teacher_id)->packages);
-        foreach($packages as $package) {
-            if($hours <= $package->to && $hours >= $package->from) {
-                $fees = $package->fee;
-                $currency_id = $package->currency_id;
-            }
-        }
+        $package_id = $request->package_id;
+
+        $package = TeacherPackage::find($package_id);
 
         $data = [
             'student_id' => \Auth::id(),
-            'teacher_id' => $teacher_id,
-            'hours' => $hours,
-            'type' => 'package',
-            'fees' => $fees * $hours,
-            'currency_id' => $currency_id,
-            'notes' => $request->notes
+            'teacher_id' => $package->teacher_id,
+            'currency_id' => $package->currency_id,
+            'fees' => $package->fees
         ];  
 
 
@@ -167,11 +139,11 @@ class OrderController extends Controller
         // add transfer
         Transfer::insert([
             'user_id' => \Auth::id(),
-            'amount' => $fees * $hours,
+            'amount' => $package->fees,
             'type' => 'order',
             'order_id' => $order_id,
             'approved' => '1',
-            'currency_id' => $currency_id
+            'currency_id' => $package->currency_id
         ]);
 
         return redirect(route('wallet', ['success' => '1', 'message' => 'Order has been submitted successfully!']));

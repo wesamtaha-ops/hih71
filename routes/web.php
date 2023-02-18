@@ -89,13 +89,30 @@ Route::post('payment/checkout', [App\Http\Controllers\StripeController::class, '
 
 Route::get('book/{teacher_id}/single', [App\Http\Controllers\OrderController::class, 'book_single'])->name('book.single');
 Route::post('book/{teacher_id}/single', [App\Http\Controllers\OrderController::class, 'book_single_func'])->name('book.single_func');
-Route::get('book/{teacher_id}/package', [App\Http\Controllers\OrderController::class, 'book_package'])->name('book.package');
-Route::post('book/{teacher_id}/package', [App\Http\Controllers\OrderController::class, 'book_package_func'])->name('book.package_func');
+
 
 Route::get('/lessons', [App\Http\Controllers\OrderController::class, 'lessons'])->name('lessons');
-Route::get('/packages', [App\Http\Controllers\HomeController::class, 'packages'])->name('packages');
 
-Route::get('/package/add/{package?}', [App\Http\Controllers\HomeController::class, 'add_package'])->name('packages.add');
-Route::post('/package', [App\Http\Controllers\HomeController::class, 'update_package'])->name('package.update');
 
-Route::get('/send_mail', [App\Http\Controllers\HomeController::class, 'send_mail'])->name('sendmail');
+// teacher stuff
+
+    // show packages
+    Route::get('/packages', [App\Http\Controllers\HomeController::class, 'packages'])->name('packages');
+
+
+    // add-update package
+    Route::get('/package/add/{package?}', [App\Http\Controllers\HomeController::class, 'add_package'])->name('packages.add');
+
+    // add-update package functionality
+    Route::post('/package', [App\Http\Controllers\HomeController::class, 'update_package'])->name('package.update');
+
+
+// student stuff
+
+    // show package
+    Route::get('/package/{package_id}', [App\Http\Controllers\HomeController::class, 'show_package'])->name('package.show');
+
+    // book package
+    Route::post('package/{package_id}', [App\Http\Controllers\OrderController::class, 'book_package_func'])->name('book.package_func');
+
+    

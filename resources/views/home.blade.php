@@ -20,7 +20,7 @@
                 <form action="{{route('search')}}" method="get" style="padding: 0px;">
                     <div class="home-banner-form-container">
                             @include('components.standard.select', ['id' => 'topic', 'half' => 1, 'name' => 'topic_id', 'placeholder' => __('app.select_topic'), 'options' => $topics])
-                            @include('components.standard.select', ['id' => 'level', 'half' => 1, 'name' => 'level_id', 'placeholder' => __('app.select_level'), 'options' => $levels])
+                            @include('components.standard.select', ['id' => 'course', 'half' => 1, 'name' => 'curriculum_id', 'placeholder' => __('app.select_curriculums'), 'options' => $curriculums])
                     </div>
 
                     <button class="btn btn-outline-light btn-lg btn-find-tutor" style="background: #F97315; border-radius: 0px; border: 0px;">{{__('app.find_my_tutor')}}</button>
@@ -88,13 +88,12 @@
                                         </figure>
                                         <div class="tu-authorname">
                                             <h5>{{$teacher->name}}  <i class="icon icon-check-circle tu-greenclr" data-tippy-trigger="mouseenter" data-tippy-html="#tu-verifed" data-tippy-interactive="true" data-tippy-placement="top"></i></h5>
-                                            <span>{{$teacher->city}}, {{$teacher->country->name_en}}</span>
                                         </div>
                                         <ul class="tu-authorlist">
                                             <li>
                                             </li>
                                             <li>
-                                                <span>{{$teacher->teacher->heading_en}}</span>
+                                                <span>{{@$teacher->teacher->heading_en}}</span>
                                             </li>
                                         </ul>
                                     </div>

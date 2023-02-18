@@ -78,11 +78,11 @@
                                                         ])
 
                                                         @include('components.standard.select', [
-                                                            'id' => 'course_id', 
-                                                            'name' => 'course_id', 
+                                                            'id' => 'curriculum_id', 
+                                                            'name' => 'curriculum_id', 
                                                             'placeholder' => 'Select Curriculums', 
-                                                            'options' => $courses,
-                                                            'value' => request()->course_id
+                                                            'options' => $curriculums,
+                                                            'value' => request()->curriculum_id
                                                         ])
 
                                                         @include('components.standard.select', [
@@ -92,16 +92,6 @@
                                                             'options' => $languages,
                                                             'value' => request()->language_id
                                                         ])
-
-
-                                                        @include('components.standard.checkbox', 
-                                                        [
-                                                            'name' => 'have_assay_experiences', 
-                                                            'id' => 'have_assay_experiences', 
-                                                            'label' => 'Have experience in assays', 
-                                                            'selected' => request()->have_assay_experiences
-                                                        ])
-                                                        
                                                 </div>
                                             </div>
                                         </div>
@@ -152,33 +142,7 @@
                                                                 </em>
                                                             </label>
                                                         </div>
-                                                    </li>                                              
-                                                    <li>
-                                                        <div class="tu-check tu-checksm">
-                                                            <input type="checkbox" id="rate2a" name="rate2a">
-                                                            <label for="rate2a">
-                                                                <span class="tu-stars tu-twostar">
-                                                                    <span></span>
-                                                                </span>
-                                                                <em class="tu-totalreview">
-                                                                    <span>2.0/<em>5.0</em></span>
-                                                                </em>
-                                                            </label>
-                                                        </div>
-                                                    </li>                                              
-                                                    <li>
-                                                        <div class="tu-check tu-checksm">
-                                                            <input type="checkbox" id="rate1a" name="rate1a">
-                                                            <label for="rate1a">
-                                                                <span class="tu-stars tu-onestar">
-                                                                    <span></span>
-                                                                </span>
-                                                                <em class="tu-totalreview">
-                                                                    <span>1.0/<em>5.0</em></span>
-                                                                </em>
-                                                            </label>
-                                                        </div>
-                                                    </li>                                              
+                                                    </li>                                         
                                                 </ul>
                                             </div>
                                         </div>

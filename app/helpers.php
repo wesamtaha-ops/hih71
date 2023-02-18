@@ -39,16 +39,15 @@ if (! function_exists('convert_to_currency')) {
     }
 }
 
-if (! function_exists('get_min_fees')) {
-    function get_min_fees($teacher_id) {
-        $fees = TeacherStudyType::select('fees', 'currency_id')->where('teacher_id', $teacher_id)->get()->toArray();
-        foreach($fees as $i => $fee) {
-            $fees[$i]['fees'] = convert_to_currency($fee['currency_id'] , $fee['fees']);
-        }
-        if($fees) {
-            return $fees = min(Arr::pluck($fees, 'fees'));
-        } else {
-            return $fees = 0;
-        }
+if (! function_exists('isTeacher')) {
+    function isTeacher() {
+        return \Auth::user()->type == 'teacher' ? 1 : 0;
+    }
+}
+
+
+if (! function_exists('isStudent')) {
+    function isStudent() {
+        return \Auth::user()->type == 'student' ? 1 : 0;
     }
 }

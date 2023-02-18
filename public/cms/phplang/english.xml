@@ -1060,7 +1060,7 @@
       <field id="teacher_id">
         <phrase id="fldcaption" value="teacher id" />
       </field>
-      <field id="course_id">
+      <field id="curriculum_id">
         <phrase id="fldcaption" value="course id" />
       </field>
     </table>

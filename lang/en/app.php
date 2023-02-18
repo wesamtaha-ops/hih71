@@ -14,6 +14,7 @@ return [
 
     'select_topic' => 'Topic',
     'select_level' => 'Education Level',
+    'select_curriculums' => 'Curriculums',
 
     'logout' => 'Logout',
 

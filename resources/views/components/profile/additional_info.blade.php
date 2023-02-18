@@ -22,14 +22,14 @@
                         @endforeach
 
                         <label style="width: 100%">Which Curriculum you teach? you can select more than one.</label>
-                        @foreach($courses as $i => $course)
+                        @foreach($curriculums as $i => $curriculum)
                             @include('components.standard.checkbox', [
-                                'name' => 'course', 
-                                'id' => 'course' . $course['id'], 
+                                'name' => 'curriculum', 
+                                'id' => 'curriculum' . $curriculum['id'], 
                                 'three_half' => 1,
-                                'label' => $course['name'], 
-                                'value' => $course['id'], 
-                                'selected' => @$teacher_info->courses ? $teacher_info->courses->pluck('course_id') : ''
+                                'label' => $curriculum['name'], 
+                                'value' => $curriculum['id'], 
+                                'selected' => @$teacher_info->curriculums ? $teacher_info->curriculums->pluck('curriculum_id') : ''
                             ])
                         @endforeach
 

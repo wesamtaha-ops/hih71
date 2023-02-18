@@ -439,7 +439,7 @@ class cteachers_courses_list extends cteachers_courses {
 		// Setup export options
 		$this->SetupExportOptions();
 		$this->teacher_id->SetVisibility();
-		$this->course_id->SetVisibility();
+		$this->curriculum_id->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -879,7 +879,7 @@ class cteachers_courses_list extends cteachers_courses {
 		global $objForm;
 		if ($objForm->HasValue("x_teacher_id") && $objForm->HasValue("o_teacher_id") && $this->teacher_id->CurrentValue <> $this->teacher_id->OldValue)
 			return FALSE;
-		if ($objForm->HasValue("x_course_id") && $objForm->HasValue("o_course_id") && $this->course_id->CurrentValue <> $this->course_id->OldValue)
+		if ($objForm->HasValue("x_curriculum_id") && $objForm->HasValue("o_curriculum_id") && $this->curriculum_id->CurrentValue <> $this->curriculum_id->OldValue)
 			return FALSE;
 		return TRUE;
 	}
@@ -960,7 +960,7 @@ class cteachers_courses_list extends cteachers_courses {
 			$this->CurrentOrder = @$_GET["order"];
 			$this->CurrentOrderType = @$_GET["ordertype"];
 			$this->UpdateSort($this->teacher_id); // teacher_id
-			$this->UpdateSort($this->course_id); // course_id
+			$this->UpdateSort($this->curriculum_id); // curriculum_id
 			$this->setStartRecordNumber(1); // Reset start position
 		}
 	}
@@ -998,7 +998,7 @@ class cteachers_courses_list extends cteachers_courses {
 				$sOrderBy = "";
 				$this->setSessionOrderBy($sOrderBy);
 				$this->teacher_id->setSort("");
-				$this->course_id->setSort("");
+				$this->curriculum_id->setSort("");
 			}
 
 			// Reset start position
@@ -1383,8 +1383,8 @@ class cteachers_courses_list extends cteachers_courses {
 	function LoadDefaultValues() {
 		$this->teacher_id->CurrentValue = NULL;
 		$this->teacher_id->OldValue = $this->teacher_id->CurrentValue;
-		$this->course_id->CurrentValue = NULL;
-		$this->course_id->OldValue = $this->course_id->CurrentValue;
+		$this->curriculum_id->CurrentValue = NULL;
+		$this->curriculum_id->OldValue = $this->curriculum_id->CurrentValue;
 	}
 
 	// Load form values
@@ -1396,17 +1396,17 @@ class cteachers_courses_list extends cteachers_courses {
 			$this->teacher_id->setFormValue($objForm->GetValue("x_teacher_id"));
 		}
 		$this->teacher_id->setOldValue($objForm->GetValue("o_teacher_id"));
-		if (!$this->course_id->FldIsDetailKey) {
-			$this->course_id->setFormValue($objForm->GetValue("x_course_id"));
+		if (!$this->curriculum_id->FldIsDetailKey) {
+			$this->curriculum_id->setFormValue($objForm->GetValue("x_curriculum_id"));
 		}
-		$this->course_id->setOldValue($objForm->GetValue("o_course_id"));
+		$this->curriculum_id->setOldValue($objForm->GetValue("o_curriculum_id"));
 	}
 
 	// Restore form values
 	function RestoreFormValues() {
 		global $objForm;
 		$this->teacher_id->CurrentValue = $this->teacher_id->FormValue;
-		$this->course_id->CurrentValue = $this->course_id->FormValue;
+		$this->curriculum_id->CurrentValue = $this->curriculum_id->FormValue;
 	}
 
 	// Load recordset
@@ -1469,7 +1469,7 @@ class cteachers_courses_list extends cteachers_courses {
 		if (!$rs || $rs->EOF)
 			return;
 		$this->teacher_id->setDbValue($row['teacher_id']);
-		$this->course_id->setDbValue($row['course_id']);
+		$this->curriculum_id->setDbValue($row['curriculum_id']);
 	}
 
 	// Return a row with default values
@@ -1477,7 +1477,7 @@ class cteachers_courses_list extends cteachers_courses {
 		$this->LoadDefaultValues();
 		$row = array();
 		$row['teacher_id'] = $this->teacher_id->CurrentValue;
-		$row['course_id'] = $this->course_id->CurrentValue;
+		$row['curriculum_id'] = $this->curriculum_id->CurrentValue;
 		return $row;
 	}
 
@@ -1487,7 +1487,7 @@ class cteachers_courses_list extends cteachers_courses {
 			return;
 		$row = is_array($rs) ? $rs : $rs->fields;
 		$this->teacher_id->DbValue = $row['teacher_id'];
-		$this->course_id->DbValue = $row['course_id'];
+		$this->curriculum_id->DbValue = $row['curriculum_id'];
 	}
 
 	// Load old record
@@ -1512,7 +1512,7 @@ class cteachers_courses_list extends cteachers_courses {
 
 		// Common render codes for all row types
 		// teacher_id
-		// course_id
+		// curriculum_id
 
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
@@ -1520,19 +1520,19 @@ class cteachers_courses_list extends cteachers_courses {
 		$this->teacher_id->ViewValue = $this->teacher_id->CurrentValue;
 		$this->teacher_id->ViewCustomAttributes = "";
 
-		// course_id
-		$this->course_id->ViewValue = $this->course_id->CurrentValue;
-		$this->course_id->ViewCustomAttributes = "";
+		// curriculum_id
+		$this->curriculum_id->ViewValue = $this->curriculum_id->CurrentValue;
+		$this->curriculum_id->ViewCustomAttributes = "";
 
 			// teacher_id
 			$this->teacher_id->LinkCustomAttributes = "";
 			$this->teacher_id->HrefValue = "";
 			$this->teacher_id->TooltipValue = "";
 
-			// course_id
-			$this->course_id->LinkCustomAttributes = "";
-			$this->course_id->HrefValue = "";
-			$this->course_id->TooltipValue = "";
+			// curriculum_id
+			$this->curriculum_id->LinkCustomAttributes = "";
+			$this->curriculum_id->HrefValue = "";
+			$this->curriculum_id->TooltipValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_ADD) { // Add row
 
 			// teacher_id
@@ -1548,11 +1548,11 @@ class cteachers_courses_list extends cteachers_courses {
 			$this->teacher_id->PlaceHolder = ew_RemoveHtml($this->teacher_id->FldCaption());
 			}
 
-			// course_id
-			$this->course_id->EditAttrs["class"] = "form-control";
-			$this->course_id->EditCustomAttributes = "";
-			$this->course_id->EditValue = ew_HtmlEncode($this->course_id->CurrentValue);
-			$this->course_id->PlaceHolder = ew_RemoveHtml($this->course_id->FldCaption());
+			// curriculum_id
+			$this->curriculum_id->EditAttrs["class"] = "form-control";
+			$this->curriculum_id->EditCustomAttributes = "";
+			$this->curriculum_id->EditValue = ew_HtmlEncode($this->curriculum_id->CurrentValue);
+			$this->curriculum_id->PlaceHolder = ew_RemoveHtml($this->curriculum_id->FldCaption());
 
 			// Add refer script
 			// teacher_id
@@ -1560,9 +1560,9 @@ class cteachers_courses_list extends cteachers_courses {
 			$this->teacher_id->LinkCustomAttributes = "";
 			$this->teacher_id->HrefValue = "";
 
-			// course_id
-			$this->course_id->LinkCustomAttributes = "";
-			$this->course_id->HrefValue = "";
+			// curriculum_id
+			$this->curriculum_id->LinkCustomAttributes = "";
+			$this->curriculum_id->HrefValue = "";
 		}
 		if ($this->RowType == EW_ROWTYPE_ADD || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_SEARCH) // Add/Edit/Search row
 			$this->SetupFieldTitles();
@@ -1588,11 +1588,11 @@ class cteachers_courses_list extends cteachers_courses {
 		if (!ew_CheckInteger($this->teacher_id->FormValue)) {
 			ew_AddMessage($gsFormError, $this->teacher_id->FldErrMsg());
 		}
-		if (!$this->course_id->FldIsDetailKey && !is_null($this->course_id->FormValue) && $this->course_id->FormValue == "") {
-			ew_AddMessage($gsFormError, str_replace("%s", $this->course_id->FldCaption(), $this->course_id->ReqErrMsg));
+		if (!$this->curriculum_id->FldIsDetailKey && !is_null($this->curriculum_id->FormValue) && $this->curriculum_id->FormValue == "") {
+			ew_AddMessage($gsFormError, str_replace("%s", $this->curriculum_id->FldCaption(), $this->curriculum_id->ReqErrMsg));
 		}
-		if (!ew_CheckInteger($this->course_id->FormValue)) {
-			ew_AddMessage($gsFormError, $this->course_id->FldErrMsg());
+		if (!ew_CheckInteger($this->curriculum_id->FormValue)) {
+			ew_AddMessage($gsFormError, $this->curriculum_id->FldErrMsg());
 		}
 
 		// Return validate result
@@ -1695,8 +1695,8 @@ class cteachers_courses_list extends cteachers_courses {
 		// teacher_id
 		$this->teacher_id->SetDbValueDef($rsnew, $this->teacher_id->CurrentValue, 0, FALSE);
 
-		// course_id
-		$this->course_id->SetDbValueDef($rsnew, $this->course_id->CurrentValue, 0, FALSE);
+		// curriculum_id
+		$this->curriculum_id->SetDbValueDef($rsnew, $this->curriculum_id->CurrentValue, 0, FALSE);
 
 		// Call Row Inserting event
 		$rs = ($rsold == NULL) ? NULL : $rsold->fields;
@@ -2163,12 +2163,12 @@ fteachers_courseslist.Validate = function() {
 			elm = this.GetElements("x" + infix + "_teacher_id");
 			if (elm && !ew_CheckInteger(elm.value))
 				return this.OnError(elm, "<?php echo ew_JsEncode2($teachers_courses->teacher_id->FldErrMsg()) ?>");
-			elm = this.GetElements("x" + infix + "_course_id");
+			elm = this.GetElements("x" + infix + "_curriculum_id");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
-				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $teachers_courses->course_id->FldCaption(), $teachers_courses->course_id->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_course_id");
+				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $teachers_courses->curriculum_id->FldCaption(), $teachers_courses->curriculum_id->ReqErrMsg)) ?>");
+			elm = this.GetElements("x" + infix + "_curriculum_id");
 			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($teachers_courses->course_id->FldErrMsg()) ?>");
+				return this.OnError(elm, "<?php echo ew_JsEncode2($teachers_courses->curriculum_id->FldErrMsg()) ?>");
 
 			// Fire Form_CustomValidate event
 			if (!this.Form_CustomValidate(fobj))
@@ -2186,7 +2186,7 @@ fteachers_courseslist.Validate = function() {
 fteachers_courseslist.EmptyRow = function(infix) {
 	var fobj = this.Form;
 	if (ew_ValueChanged(fobj, infix, "teacher_id", false)) return false;
-	if (ew_ValueChanged(fobj, infix, "course_id", false)) return false;
+	if (ew_ValueChanged(fobj, infix, "curriculum_id", false)) return false;
 	return true;
 }
 
@@ -2363,12 +2363,12 @@ $teachers_courses_list->ListOptions->Render("header", "left");
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
-<?php if ($teachers_courses->course_id->Visible) { // course_id ?>
-	<?php if ($teachers_courses->SortUrl($teachers_courses->course_id) == "") { ?>
-		<th data-name="course_id" class="<?php echo $teachers_courses->course_id->HeaderCellClass() ?>"><div id="elh_teachers_courses_course_id" class="teachers_courses_course_id"><div class="ewTableHeaderCaption"><?php echo $teachers_courses->course_id->FldCaption() ?></div></div></th>
+<?php if ($teachers_courses->curriculum_id->Visible) { // curriculum_id ?>
+	<?php if ($teachers_courses->SortUrl($teachers_courses->curriculum_id) == "") { ?>
+		<th data-name="curriculum_id" class="<?php echo $teachers_courses->curriculum_id->HeaderCellClass() ?>"><div id="elh_teachers_courses_curriculum_id" class="teachers_courses_curriculum_id"><div class="ewTableHeaderCaption"><?php echo $teachers_courses->curriculum_id->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="course_id" class="<?php echo $teachers_courses->course_id->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $teachers_courses->SortUrl($teachers_courses->course_id) ?>',1);"><div id="elh_teachers_courses_course_id" class="teachers_courses_course_id">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $teachers_courses->course_id->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($teachers_courses->course_id->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($teachers_courses->course_id->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		<th data-name="curriculum_id" class="<?php echo $teachers_courses->curriculum_id->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $teachers_courses->SortUrl($teachers_courses->curriculum_id) ?>',1);"><div id="elh_teachers_courses_curriculum_id" class="teachers_courses_curriculum_id">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $teachers_courses->curriculum_id->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($teachers_courses->curriculum_id->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($teachers_courses->curriculum_id->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
@@ -2490,18 +2490,18 @@ $teachers_courses_list->ListOptions->Render("body", "left", $teachers_courses_li
 <?php } ?>
 </td>
 	<?php } ?>
-	<?php if ($teachers_courses->course_id->Visible) { // course_id ?>
-		<td data-name="course_id"<?php echo $teachers_courses->course_id->CellAttributes() ?>>
+	<?php if ($teachers_courses->curriculum_id->Visible) { // curriculum_id ?>
+		<td data-name="curriculum_id"<?php echo $teachers_courses->curriculum_id->CellAttributes() ?>>
 <?php if ($teachers_courses->RowType == EW_ROWTYPE_ADD) { // Add record ?>
-<span id="el<?php echo $teachers_courses_list->RowCnt ?>_teachers_courses_course_id" class="form-group teachers_courses_course_id">
-<input type="text" data-table="teachers_courses" data-field="x_course_id" name="x<?php echo $teachers_courses_list->RowIndex ?>_course_id" id="x<?php echo $teachers_courses_list->RowIndex ?>_course_id" size="30" placeholder="<?php echo ew_HtmlEncode($teachers_courses->course_id->getPlaceHolder()) ?>" value="<?php echo $teachers_courses->course_id->EditValue ?>"<?php echo $teachers_courses->course_id->EditAttributes() ?>>
+<span id="el<?php echo $teachers_courses_list->RowCnt ?>_teachers_courses_curriculum_id" class="form-group teachers_courses_curriculum_id">
+<input type="text" data-table="teachers_courses" data-field="x_curriculum_id" name="x<?php echo $teachers_courses_list->RowIndex ?>_curriculum_id" id="x<?php echo $teachers_courses_list->RowIndex ?>_curriculum_id" size="30" placeholder="<?php echo ew_HtmlEncode($teachers_courses->curriculum_id->getPlaceHolder()) ?>" value="<?php echo $teachers_courses->curriculum_id->EditValue ?>"<?php echo $teachers_courses->curriculum_id->EditAttributes() ?>>
 </span>
-<input type="hidden" data-table="teachers_courses" data-field="x_course_id" name="o<?php echo $teachers_courses_list->RowIndex ?>_course_id" id="o<?php echo $teachers_courses_list->RowIndex ?>_course_id" value="<?php echo ew_HtmlEncode($teachers_courses->course_id->OldValue) ?>">
+<input type="hidden" data-table="teachers_courses" data-field="x_curriculum_id" name="o<?php echo $teachers_courses_list->RowIndex ?>_curriculum_id" id="o<?php echo $teachers_courses_list->RowIndex ?>_curriculum_id" value="<?php echo ew_HtmlEncode($teachers_courses->curriculum_id->OldValue) ?>">
 <?php } ?>
 <?php if ($teachers_courses->RowType == EW_ROWTYPE_VIEW) { // View record ?>
-<span id="el<?php echo $teachers_courses_list->RowCnt ?>_teachers_courses_course_id" class="teachers_courses_course_id">
-<span<?php echo $teachers_courses->course_id->ViewAttributes() ?>>
-<?php echo $teachers_courses->course_id->ListViewValue() ?></span>
+<span id="el<?php echo $teachers_courses_list->RowCnt ?>_teachers_courses_curriculum_id" class="teachers_courses_curriculum_id">
+<span<?php echo $teachers_courses->curriculum_id->ViewAttributes() ?>>
+<?php echo $teachers_courses->curriculum_id->ListViewValue() ?></span>
 </span>
 <?php } ?>
 </td>
@@ -2564,12 +2564,12 @@ $teachers_courses_list->ListOptions->Render("body", "left", $teachers_courses_li
 <input type="hidden" data-table="teachers_courses" data-field="x_teacher_id" name="o<?php echo $teachers_courses_list->RowIndex ?>_teacher_id" id="o<?php echo $teachers_courses_list->RowIndex ?>_teacher_id" value="<?php echo ew_HtmlEncode($teachers_courses->teacher_id->OldValue) ?>">
 </td>
 	<?php } ?>
-	<?php if ($teachers_courses->course_id->Visible) { // course_id ?>
-		<td data-name="course_id">
-<span id="el$rowindex$_teachers_courses_course_id" class="form-group teachers_courses_course_id">
-<input type="text" data-table="teachers_courses" data-field="x_course_id" name="x<?php echo $teachers_courses_list->RowIndex ?>_course_id" id="x<?php echo $teachers_courses_list->RowIndex ?>_course_id" size="30" placeholder="<?php echo ew_HtmlEncode($teachers_courses->course_id->getPlaceHolder()) ?>" value="<?php echo $teachers_courses->course_id->EditValue ?>"<?php echo $teachers_courses->course_id->EditAttributes() ?>>
+	<?php if ($teachers_courses->curriculum_id->Visible) { // curriculum_id ?>
+		<td data-name="curriculum_id">
+<span id="el$rowindex$_teachers_courses_curriculum_id" class="form-group teachers_courses_curriculum_id">
+<input type="text" data-table="teachers_courses" data-field="x_curriculum_id" name="x<?php echo $teachers_courses_list->RowIndex ?>_curriculum_id" id="x<?php echo $teachers_courses_list->RowIndex ?>_curriculum_id" size="30" placeholder="<?php echo ew_HtmlEncode($teachers_courses->curriculum_id->getPlaceHolder()) ?>" value="<?php echo $teachers_courses->curriculum_id->EditValue ?>"<?php echo $teachers_courses->curriculum_id->EditAttributes() ?>>
 </span>
-<input type="hidden" data-table="teachers_courses" data-field="x_course_id" name="o<?php echo $teachers_courses_list->RowIndex ?>_course_id" id="o<?php echo $teachers_courses_list->RowIndex ?>_course_id" value="<?php echo ew_HtmlEncode($teachers_courses->course_id->OldValue) ?>">
+<input type="hidden" data-table="teachers_courses" data-field="x_curriculum_id" name="o<?php echo $teachers_courses_list->RowIndex ?>_curriculum_id" id="o<?php echo $teachers_courses_list->RowIndex ?>_curriculum_id" value="<?php echo ew_HtmlEncode($teachers_courses->curriculum_id->OldValue) ?>">
 </td>
 	<?php } ?>
 <?php

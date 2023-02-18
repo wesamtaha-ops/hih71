@@ -236,6 +236,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    
                                     <div class="tu-tabswrapper">
                                         <div class="tu-boxtitle">
                                             <h4>Add your review</h4>
@@ -283,198 +284,30 @@
                                             </fieldset>
                                         </form>
                                     </div>
+                                    
 								</div>
 							</div>
 						</div>
-                        
-                        <!-- <div class="tu-explore-title">
-                            <h3>Explore related tutors</h3>
-                        </div>
-                        <div class="tu-explore-content row gy-4">
-                            <div class="col-12 col-md-6 col-lg-4 col-xl-6 col-xxl-4">
-                                <div class="tu-featureitem">
-                                    <figure>
-                                        <a href="tutor-detail.html"><img src="images/index/qualified/img-04.jpg" alt="image-description"></a>
-                                        <span class="tu-featuretag">FEATURED</span>
-                                    </figure>
-                                    <div class="tu-authorinfo">
-                                        <div class="tu-authordetail">
-                                            <figure>
-                                                <img src="images/index/professionol/img-04.jpg" alt="image-description">
-                                            </figure>
-                                            <div class="tu-authorname">
-                                                <h5><a href="tutor-detail.html"> William Williams</a> <i class="icon icon-check-circle tu-greenclr" data-tippy-trigger="mouseenter" data-tippy-html="#tu-verifed" data-tippy-interactive="true" data-tippy-placement="top"></i></h5>
-                                                <span>Nashville, IL</span>
-                                            </div>
-                                            <ul class="tu-authorlist">
-                                                <li>
-                                                    <span>Starting from:<em>$1,198.12/hr</em></span>
-                                                </li>
-                                                <li>
-                                                    <span>Mobile:<em>xxx-xxxxx-54</em></span>
-                                                </li>
-                                                <li>
-                                                    <span>Whatsapp:<em>xxx-xxxxx-88</em></span>
-                                                </li>
-                                                <li>
-                                                    <span>Qualification:<em>B.Tech/B.E.</em></span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="tu-instructors_footer">
-                                            <div class="tu-rating">
-                                                <i class="fas fa-star"></i>
-                                                <h6>5.0</h6>
-                                                <span>(57,282)</span>
-                                            </div>
-                                            <div class="tu-instructors_footer-right">
-                                                <a href="javascript:void(0);"><i class="icon icon-heart"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-lg-4 col-xl-6 col-xxl-4">
-                                <div class="tu-featureitem">
-                                    <figure>
-                                        <a href="tutor-detail.html"><img src="images/index/qualified/img-02.jpg" alt="image-description"></a>
-                                        <span class="tu-featuretag">FEATURED</span>
-                                    </figure>
-                                    <div class="tu-authorinfo">
-                                        <div class="tu-authordetail">
-                                            <figure>
-                                                <img src="images/index/professionol/img-02.jpg" alt="image-description">
-                                            </figure>
-                                            <div class="tu-authorname">
-                                                <h5><a href="tutor-detail.html">Gwendolyn Parker</a> <i class="icon icon-check-circle tu-greenclr" data-tippy-trigger="mouseenter" data-tippy-html="#tu-verifed" data-tippy-interactive="true" data-tippy-placement="top"></i></h5>
-                                                <span>Las Vegas, TN</span>
-                                            </div>
-                                            <ul class="tu-authorlist">
-                                                <li>
-                                                    <span>Starting from:<em>$1,385.10/hr</em></span>
-                                                </li>
-                                                <li>
-                                                    <span>Mobile:<em>xxx-xxxxx-11</em></span>
-                                                </li>
-                                                <li>
-                                                    <span>Whatsapp:<em>xxx-xxxxx-80</em></span>
-                                                </li>
-                                                <li>
-                                                    <span>Qualification:<em>B.Tech/B.E.</em></span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="tu-instructors_footer">
-                                            <div class="tu-rating">
-                                                <i class="fas fa-star"></i>
-                                                <h6>5.0</h6>
-                                                <span>(38,494)</span>
-                                            </div>
-                                            <div class="tu-instructors_footer-right">
-                                                <a href="javascript:void(0);"><i class="icon icon-heart"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-lg-4 col-xl-6 col-xxl-4">
-                                <div class="tu-featureitem">
-                                    <figure>
-                                        <a href="tutor-detail.html"><img src="images/index/qualified/img-01.jpg" alt="image-description"></a>
-                                        <span class="tu-featuretag">FEATURED</span>
-                                    </figure>
-                                    <div class="tu-authorinfo">
-                                        <div class="tu-authordetail">
-                                            <figure>
-                                                <img src="images/index/professionol/img-01.jpg" alt="image-description">
-                                            </figure>
-                                            <div class="tu-authorname">
-                                                <h5><a href="tutor-detail.html"> Dwayne Garrett</a> <i class="icon icon-check-circle tu-greenclr" data-tippy-trigger="mouseenter" data-tippy-html="#tu-verifed" data-tippy-interactive="true" data-tippy-placement="top"></i></h5>
-                                                <span>Arlington, TN</span>
-                                            </div>
-                                            <ul class="tu-authorlist">
-                                                <li>
-                                                    <span>Starting from:<em>$893.30/hr</em></span>
-                                                </li>
-                                                <li>
-                                                    <span>Mobile:<em>xxx-xxxxx-33</em></span>
-                                                </li>
-                                                <li>
-                                                    <span>Whatsapp:<em>xxx-xxxxx-11</em></span>
-                                                </li>
-                                                <li>
-                                                    <span>Qualification:<em>B.Tech/B.E.</em></span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="tu-instructors_footer">
-                                            <div class="tu-rating">
-                                                <i class="fas fa-star"></i>
-                                                <h6>5.0</h6>
-                                                <span>(4,448)</span>
-                                            </div>
-                                            <div class="tu-instructors_footer-right">
-                                                <a href="javascript:void(0);"><i class="icon icon-heart"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
                     </div>
                     <div class="col-xl-4 col-xxl-3">
                         <aside class="tu-asidedetail">
                             <div class="tu-asideinfo text-center">
                                 <h6>My Packages</h6>
                             </div>
+
+                            
                             @if(@$teacher->teacher->packages)
                             <div class="tu-contactbox">
-                                <h6 style="margin-bottom: 20px;">Packages</h6>
-                                <table class="table">
-                                    <tr>
-                                        <td style="display: flex; justify-content: space-around; padding: 0px;">
-                                            <label style="text-decoration: line-through; margin: 0px;">102$</label>
-                                            <label style="color: red; margin: 0px;"> 10$ discount</label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="display: flex; justify-content: space-around; padding: 0px;">
-                                            <label style="margin: 0px">16 - 24 hours</label>
-                                            <label style="margin: 0px"> 91.4$/h</label>
-                                        </td>
-                                    </tr>
-                                </table>
-                                <table class="table">
-                                    <tr>
-                                        <td style="display: flex; justify-content: space-around; padding: 0px;">
-                                            <label style="text-decoration: line-through; margin: 0px;">102$</label>
-                                            <label style="color: red; margin: 0px;"> 10$ discount</label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="display: flex; justify-content: space-around; padding: 0px;">
-                                            <label style="margin: 0px">16 - 24 hours</label>
-                                            <label style="margin: 0px"> 91.4$/h</label>
-                                        </td>
-                                    </tr>
-                                </table>
-<!--                                 
-                                <ul class="tu-listinfo">
-                                        @foreach(json_decode($teacher->teacher->packages) as $package)
-                                        <li style="flex-direction: column; align-items: flex-start; width: 100%">
-                                            <h6> <label class="fa fa-clock"></label> {{$package->from}} - {{$package->to}}  {{__('hr')}}</h6>
-                                            <h6> <label class="fa-solid fa-money-check"></label> {{$package->fee}}</h6>
-                                        </li>
-                                        @endforeach
-                                </ul> -->
+                                @foreach($teacher->teacher->packages as $package)
+                                <div style="margin-bottom: 10px;">
+                                    <a href="{{ route('package.show', ['package_id' => $package->id]) }}">
+                                        <img src="{{asset('images/' . $package->image)}}" style="width: 100%; height: 150px; object-fit: cover;" />
+                                        <label style="text-align: center">{{$package->title_en}}</label>
+                                    </a>
+                                </div>
+                                @endforeach
                             </div>
                             @endif
-                            <div class="tu-unlockfeature text-center">
-                                <!-- <h6>
-                                    Click the button below to buy a package & unlock the contact details
-                                </h6>
-                                <a href="package.html" class="tu-primbtn tu-btngreen"><span>Unlock feature</span><i class="icon icon-lock"></i></a> -->
-                            </div>
                         </aside>
                     </div>
                 </div>
