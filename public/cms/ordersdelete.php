@@ -314,8 +314,7 @@ class corders_delete extends corders {
 		$this->currency_id->SetVisibility();
 		$this->status->SetVisibility();
 		$this->meeting_id->SetVisibility();
-		$this->created_at->SetVisibility();
-		$this->updated_at->SetVisibility();
+		$this->package_id->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -507,6 +506,7 @@ class corders_delete extends corders {
 		$this->meeting_id->setDbValue($row['meeting_id']);
 		$this->created_at->setDbValue($row['created_at']);
 		$this->updated_at->setDbValue($row['updated_at']);
+		$this->package_id->setDbValue($row['package_id']);
 	}
 
 	// Return a row with default values
@@ -524,6 +524,7 @@ class corders_delete extends corders {
 		$row['meeting_id'] = NULL;
 		$row['created_at'] = NULL;
 		$row['updated_at'] = NULL;
+		$row['package_id'] = NULL;
 		return $row;
 	}
 
@@ -544,6 +545,7 @@ class corders_delete extends corders {
 		$this->meeting_id->DbValue = $row['meeting_id'];
 		$this->created_at->DbValue = $row['created_at'];
 		$this->updated_at->DbValue = $row['updated_at'];
+		$this->package_id->DbValue = $row['package_id'];
 	}
 
 	// Render row values based on field settings
@@ -567,8 +569,13 @@ class corders_delete extends corders {
 		// status
 		// meeting_id
 		// created_at
-		// updated_at
 
+		$this->created_at->CellCssStyle = "white-space: nowrap;";
+
+		// updated_at
+		$this->updated_at->CellCssStyle = "white-space: nowrap;";
+
+		// package_id
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
 		// id
@@ -576,15 +583,73 @@ class corders_delete extends corders {
 		$this->id->ViewCustomAttributes = "";
 
 		// student_id
-		$this->student_id->ViewValue = $this->student_id->CurrentValue;
+		if (strval($this->student_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->student_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `users`";
+		$sWhereWrk = "";
+		$this->student_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->student_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->student_id->ViewValue = $this->student_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->student_id->ViewValue = $this->student_id->CurrentValue;
+			}
+		} else {
+			$this->student_id->ViewValue = NULL;
+		}
 		$this->student_id->ViewCustomAttributes = "";
 
 		// teacher_id
-		$this->teacher_id->ViewValue = $this->teacher_id->CurrentValue;
+		if (strval($this->teacher_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->teacher_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `users`";
+		$sWhereWrk = "";
+		$this->teacher_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->teacher_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->teacher_id->ViewValue = $this->teacher_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->teacher_id->ViewValue = $this->teacher_id->CurrentValue;
+			}
+		} else {
+			$this->teacher_id->ViewValue = NULL;
+		}
 		$this->teacher_id->ViewCustomAttributes = "";
 
 		// topic_id
-		$this->topic_id->ViewValue = $this->topic_id->CurrentValue;
+		if (strval($this->topic_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->topic_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `topics`";
+		$sWhereWrk = "";
+		$this->topic_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->topic_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[2] = $rswrk->fields('Disp2Fld');
+				$this->topic_id->ViewValue = $this->topic_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->topic_id->ViewValue = $this->topic_id->CurrentValue;
+			}
+		} else {
+			$this->topic_id->ViewValue = NULL;
+		}
 		$this->topic_id->ViewCustomAttributes = "";
 
 		// date
@@ -601,7 +666,27 @@ class corders_delete extends corders {
 		$this->fees->ViewCustomAttributes = "";
 
 		// currency_id
-		$this->currency_id->ViewValue = $this->currency_id->CurrentValue;
+		if (strval($this->currency_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->currency_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `currencies`";
+		$sWhereWrk = "";
+		$this->currency_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->currency_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[2] = $rswrk->fields('Disp2Fld');
+				$this->currency_id->ViewValue = $this->currency_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->currency_id->ViewValue = $this->currency_id->CurrentValue;
+			}
+		} else {
+			$this->currency_id->ViewValue = NULL;
+		}
 		$this->currency_id->ViewCustomAttributes = "";
 
 		// status
@@ -616,15 +701,9 @@ class corders_delete extends corders {
 		$this->meeting_id->ViewValue = $this->meeting_id->CurrentValue;
 		$this->meeting_id->ViewCustomAttributes = "";
 
-		// created_at
-		$this->created_at->ViewValue = $this->created_at->CurrentValue;
-		$this->created_at->ViewValue = ew_FormatDateTime($this->created_at->ViewValue, 0);
-		$this->created_at->ViewCustomAttributes = "";
-
-		// updated_at
-		$this->updated_at->ViewValue = $this->updated_at->CurrentValue;
-		$this->updated_at->ViewValue = ew_FormatDateTime($this->updated_at->ViewValue, 0);
-		$this->updated_at->ViewCustomAttributes = "";
+		// package_id
+		$this->package_id->ViewValue = $this->package_id->CurrentValue;
+		$this->package_id->ViewCustomAttributes = "";
 
 			// id
 			$this->id->LinkCustomAttributes = "";
@@ -676,15 +755,10 @@ class corders_delete extends corders {
 			$this->meeting_id->HrefValue = "";
 			$this->meeting_id->TooltipValue = "";
 
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
-			$this->created_at->TooltipValue = "";
-
-			// updated_at
-			$this->updated_at->LinkCustomAttributes = "";
-			$this->updated_at->HrefValue = "";
-			$this->updated_at->TooltipValue = "";
+			// package_id
+			$this->package_id->LinkCustomAttributes = "";
+			$this->package_id->HrefValue = "";
+			$this->package_id->TooltipValue = "";
 		}
 
 		// Call Row Rendered event
@@ -895,6 +969,14 @@ fordersdelete.Form_CustomValidate =
 fordersdelete.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
+fordersdelete.Lists["x_student_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"users"};
+fordersdelete.Lists["x_student_id"].Data = "<?php echo $orders_delete->student_id->LookupFilterQuery(FALSE, "delete") ?>";
+fordersdelete.Lists["x_teacher_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"users"};
+fordersdelete.Lists["x_teacher_id"].Data = "<?php echo $orders_delete->teacher_id->LookupFilterQuery(FALSE, "delete") ?>";
+fordersdelete.Lists["x_topic_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name_ar","x_name_en","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"topics"};
+fordersdelete.Lists["x_topic_id"].Data = "<?php echo $orders_delete->topic_id->LookupFilterQuery(FALSE, "delete") ?>";
+fordersdelete.Lists["x_currency_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name_ar","x_name_en","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"currencies"};
+fordersdelete.Lists["x_currency_id"].Data = "<?php echo $orders_delete->currency_id->LookupFilterQuery(FALSE, "delete") ?>";
 fordersdelete.Lists["x_status"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
 fordersdelete.Lists["x_status"].Options = <?php echo json_encode($orders_delete->status->Options()) ?>;
 
@@ -953,11 +1035,8 @@ $orders_delete->ShowMessage();
 <?php if ($orders->meeting_id->Visible) { // meeting_id ?>
 		<th class="<?php echo $orders->meeting_id->HeaderCellClass() ?>"><span id="elh_orders_meeting_id" class="orders_meeting_id"><?php echo $orders->meeting_id->FldCaption() ?></span></th>
 <?php } ?>
-<?php if ($orders->created_at->Visible) { // created_at ?>
-		<th class="<?php echo $orders->created_at->HeaderCellClass() ?>"><span id="elh_orders_created_at" class="orders_created_at"><?php echo $orders->created_at->FldCaption() ?></span></th>
-<?php } ?>
-<?php if ($orders->updated_at->Visible) { // updated_at ?>
-		<th class="<?php echo $orders->updated_at->HeaderCellClass() ?>"><span id="elh_orders_updated_at" class="orders_updated_at"><?php echo $orders->updated_at->FldCaption() ?></span></th>
+<?php if ($orders->package_id->Visible) { // package_id ?>
+		<th class="<?php echo $orders->package_id->HeaderCellClass() ?>"><span id="elh_orders_package_id" class="orders_package_id"><?php echo $orders->package_id->FldCaption() ?></span></th>
 <?php } ?>
 	</tr>
 	</thead>
@@ -1060,19 +1139,11 @@ while (!$orders_delete->Recordset->EOF) {
 </span>
 </td>
 <?php } ?>
-<?php if ($orders->created_at->Visible) { // created_at ?>
-		<td<?php echo $orders->created_at->CellAttributes() ?>>
-<span id="el<?php echo $orders_delete->RowCnt ?>_orders_created_at" class="orders_created_at">
-<span<?php echo $orders->created_at->ViewAttributes() ?>>
-<?php echo $orders->created_at->ListViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
-<?php if ($orders->updated_at->Visible) { // updated_at ?>
-		<td<?php echo $orders->updated_at->CellAttributes() ?>>
-<span id="el<?php echo $orders_delete->RowCnt ?>_orders_updated_at" class="orders_updated_at">
-<span<?php echo $orders->updated_at->ViewAttributes() ?>>
-<?php echo $orders->updated_at->ListViewValue() ?></span>
+<?php if ($orders->package_id->Visible) { // package_id ?>
+		<td<?php echo $orders->package_id->CellAttributes() ?>>
+<span id="el<?php echo $orders_delete->RowCnt ?>_orders_package_id" class="orders_package_id">
+<span<?php echo $orders->package_id->ViewAttributes() ?>>
+<?php echo $orders->package_id->ListViewValue() ?></span>
 </span>
 </td>
 <?php } ?>

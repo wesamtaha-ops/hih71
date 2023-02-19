@@ -44,9 +44,6 @@ ftransfersgrid.Validate = function() {
 			elm = this.GetElements("x" + infix + "_user_id");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $transfers->user_id->FldCaption(), $transfers->user_id->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_user_id");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($transfers->user_id->FldErrMsg()) ?>");
 			elm = this.GetElements("x" + infix + "_amount");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $transfers->amount->FldCaption(), $transfers->amount->ReqErrMsg)) ?>");
@@ -56,30 +53,12 @@ ftransfersgrid.Validate = function() {
 			elm = this.GetElements("x" + infix + "_currency_id");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $transfers->currency_id->FldCaption(), $transfers->currency_id->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_currency_id");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($transfers->currency_id->FldErrMsg()) ?>");
 			elm = this.GetElements("x" + infix + "_type");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $transfers->type->FldCaption(), $transfers->type->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_order_id");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($transfers->order_id->FldErrMsg()) ?>");
 			elm = this.GetElements("x" + infix + "_approved");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $transfers->approved->FldCaption(), $transfers->approved->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_approved");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($transfers->approved->FldErrMsg()) ?>");
-			elm = this.GetElements("x" + infix + "_created_at");
-			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
-				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $transfers->created_at->FldCaption(), $transfers->created_at->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_created_at");
-			if (elm && !ew_CheckDateDef(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($transfers->created_at->FldErrMsg()) ?>");
-			elm = this.GetElements("x" + infix + "_updated_at");
-			if (elm && !ew_CheckDateDef(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($transfers->updated_at->FldErrMsg()) ?>");
 
 			// Fire Form_CustomValidate event
 			if (!this.Form_CustomValidate(fobj))
@@ -99,8 +78,6 @@ ftransfersgrid.EmptyRow = function(infix) {
 	if (ew_ValueChanged(fobj, infix, "order_id", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "approved", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "verification_code", false)) return false;
-	if (ew_ValueChanged(fobj, infix, "created_at", false)) return false;
-	if (ew_ValueChanged(fobj, infix, "updated_at", false)) return false;
 	return true;
 }
 
@@ -116,8 +93,16 @@ ftransfersgrid.Form_CustomValidate =
 ftransfersgrid.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
+ftransfersgrid.Lists["x_user_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"users"};
+ftransfersgrid.Lists["x_user_id"].Data = "<?php echo $transfers_grid->user_id->LookupFilterQuery(FALSE, "grid") ?>";
+ftransfersgrid.Lists["x_currency_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name_ar","x_name_en","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"currencies"};
+ftransfersgrid.Lists["x_currency_id"].Data = "<?php echo $transfers_grid->currency_id->LookupFilterQuery(FALSE, "grid") ?>";
 ftransfersgrid.Lists["x_type"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
 ftransfersgrid.Lists["x_type"].Options = <?php echo json_encode($transfers_grid->type->Options()) ?>;
+ftransfersgrid.Lists["x_order_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_id","x_id","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"orders"};
+ftransfersgrid.Lists["x_order_id"].Data = "<?php echo $transfers_grid->order_id->LookupFilterQuery(FALSE, "grid") ?>";
+ftransfersgrid.Lists["x_approved"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
+ftransfersgrid.Lists["x_approved"].Options = <?php echo json_encode($transfers_grid->approved->Options()) ?>;
 
 // Form object for search
 </script>
@@ -269,24 +254,6 @@ $transfers_grid->ListOptions->Render("header", "left");
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
-<?php if ($transfers->created_at->Visible) { // created_at ?>
-	<?php if ($transfers->SortUrl($transfers->created_at) == "") { ?>
-		<th data-name="created_at" class="<?php echo $transfers->created_at->HeaderCellClass() ?>"><div id="elh_transfers_created_at" class="transfers_created_at"><div class="ewTableHeaderCaption"><?php echo $transfers->created_at->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="created_at" class="<?php echo $transfers->created_at->HeaderCellClass() ?>"><div><div id="elh_transfers_created_at" class="transfers_created_at">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $transfers->created_at->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($transfers->created_at->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($transfers->created_at->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
-<?php if ($transfers->updated_at->Visible) { // updated_at ?>
-	<?php if ($transfers->SortUrl($transfers->updated_at) == "") { ?>
-		<th data-name="updated_at" class="<?php echo $transfers->updated_at->HeaderCellClass() ?>"><div id="elh_transfers_updated_at" class="transfers_updated_at"><div class="ewTableHeaderCaption"><?php echo $transfers->updated_at->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="updated_at" class="<?php echo $transfers->updated_at->HeaderCellClass() ?>"><div><div id="elh_transfers_updated_at" class="transfers_updated_at">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $transfers->updated_at->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($transfers->updated_at->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($transfers->updated_at->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
 <?php
 
 // Render list options (header, right)
@@ -434,7 +401,9 @@ $transfers_grid->ListOptions->Render("body", "left", $transfers_grid->RowCnt);
 <input type="hidden" id="x<?php echo $transfers_grid->RowIndex ?>_user_id" name="x<?php echo $transfers_grid->RowIndex ?>_user_id" value="<?php echo ew_HtmlEncode($transfers->user_id->CurrentValue) ?>">
 <?php } else { ?>
 <span id="el<?php echo $transfers_grid->RowCnt ?>_transfers_user_id" class="form-group transfers_user_id">
-<input type="text" data-table="transfers" data-field="x_user_id" name="x<?php echo $transfers_grid->RowIndex ?>_user_id" id="x<?php echo $transfers_grid->RowIndex ?>_user_id" size="30" placeholder="<?php echo ew_HtmlEncode($transfers->user_id->getPlaceHolder()) ?>" value="<?php echo $transfers->user_id->EditValue ?>"<?php echo $transfers->user_id->EditAttributes() ?>>
+<select data-table="transfers" data-field="x_user_id" data-value-separator="<?php echo $transfers->user_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $transfers_grid->RowIndex ?>_user_id" name="x<?php echo $transfers_grid->RowIndex ?>_user_id"<?php echo $transfers->user_id->EditAttributes() ?>>
+<?php echo $transfers->user_id->SelectOptionListHtml("x<?php echo $transfers_grid->RowIndex ?>_user_id") ?>
+</select>
 </span>
 <?php } ?>
 <input type="hidden" data-table="transfers" data-field="x_user_id" name="o<?php echo $transfers_grid->RowIndex ?>_user_id" id="o<?php echo $transfers_grid->RowIndex ?>_user_id" value="<?php echo ew_HtmlEncode($transfers->user_id->OldValue) ?>">
@@ -448,7 +417,9 @@ $transfers_grid->ListOptions->Render("body", "left", $transfers_grid->RowCnt);
 <input type="hidden" id="x<?php echo $transfers_grid->RowIndex ?>_user_id" name="x<?php echo $transfers_grid->RowIndex ?>_user_id" value="<?php echo ew_HtmlEncode($transfers->user_id->CurrentValue) ?>">
 <?php } else { ?>
 <span id="el<?php echo $transfers_grid->RowCnt ?>_transfers_user_id" class="form-group transfers_user_id">
-<input type="text" data-table="transfers" data-field="x_user_id" name="x<?php echo $transfers_grid->RowIndex ?>_user_id" id="x<?php echo $transfers_grid->RowIndex ?>_user_id" size="30" placeholder="<?php echo ew_HtmlEncode($transfers->user_id->getPlaceHolder()) ?>" value="<?php echo $transfers->user_id->EditValue ?>"<?php echo $transfers->user_id->EditAttributes() ?>>
+<select data-table="transfers" data-field="x_user_id" data-value-separator="<?php echo $transfers->user_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $transfers_grid->RowIndex ?>_user_id" name="x<?php echo $transfers_grid->RowIndex ?>_user_id"<?php echo $transfers->user_id->EditAttributes() ?>>
+<?php echo $transfers->user_id->SelectOptionListHtml("x<?php echo $transfers_grid->RowIndex ?>_user_id") ?>
+</select>
 </span>
 <?php } ?>
 <?php } ?>
@@ -499,13 +470,17 @@ $transfers_grid->ListOptions->Render("body", "left", $transfers_grid->RowCnt);
 		<td data-name="currency_id"<?php echo $transfers->currency_id->CellAttributes() ?>>
 <?php if ($transfers->RowType == EW_ROWTYPE_ADD) { // Add record ?>
 <span id="el<?php echo $transfers_grid->RowCnt ?>_transfers_currency_id" class="form-group transfers_currency_id">
-<input type="text" data-table="transfers" data-field="x_currency_id" name="x<?php echo $transfers_grid->RowIndex ?>_currency_id" id="x<?php echo $transfers_grid->RowIndex ?>_currency_id" size="30" placeholder="<?php echo ew_HtmlEncode($transfers->currency_id->getPlaceHolder()) ?>" value="<?php echo $transfers->currency_id->EditValue ?>"<?php echo $transfers->currency_id->EditAttributes() ?>>
+<select data-table="transfers" data-field="x_currency_id" data-value-separator="<?php echo $transfers->currency_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $transfers_grid->RowIndex ?>_currency_id" name="x<?php echo $transfers_grid->RowIndex ?>_currency_id"<?php echo $transfers->currency_id->EditAttributes() ?>>
+<?php echo $transfers->currency_id->SelectOptionListHtml("x<?php echo $transfers_grid->RowIndex ?>_currency_id") ?>
+</select>
 </span>
 <input type="hidden" data-table="transfers" data-field="x_currency_id" name="o<?php echo $transfers_grid->RowIndex ?>_currency_id" id="o<?php echo $transfers_grid->RowIndex ?>_currency_id" value="<?php echo ew_HtmlEncode($transfers->currency_id->OldValue) ?>">
 <?php } ?>
 <?php if ($transfers->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
 <span id="el<?php echo $transfers_grid->RowCnt ?>_transfers_currency_id" class="form-group transfers_currency_id">
-<input type="text" data-table="transfers" data-field="x_currency_id" name="x<?php echo $transfers_grid->RowIndex ?>_currency_id" id="x<?php echo $transfers_grid->RowIndex ?>_currency_id" size="30" placeholder="<?php echo ew_HtmlEncode($transfers->currency_id->getPlaceHolder()) ?>" value="<?php echo $transfers->currency_id->EditValue ?>"<?php echo $transfers->currency_id->EditAttributes() ?>>
+<select data-table="transfers" data-field="x_currency_id" data-value-separator="<?php echo $transfers->currency_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $transfers_grid->RowIndex ?>_currency_id" name="x<?php echo $transfers_grid->RowIndex ?>_currency_id"<?php echo $transfers->currency_id->EditAttributes() ?>>
+<?php echo $transfers->currency_id->SelectOptionListHtml("x<?php echo $transfers_grid->RowIndex ?>_currency_id") ?>
+</select>
 </span>
 <?php } ?>
 <?php if ($transfers->RowType == EW_ROWTYPE_VIEW) { // View record ?>
@@ -561,13 +536,17 @@ $transfers_grid->ListOptions->Render("body", "left", $transfers_grid->RowCnt);
 		<td data-name="order_id"<?php echo $transfers->order_id->CellAttributes() ?>>
 <?php if ($transfers->RowType == EW_ROWTYPE_ADD) { // Add record ?>
 <span id="el<?php echo $transfers_grid->RowCnt ?>_transfers_order_id" class="form-group transfers_order_id">
-<input type="text" data-table="transfers" data-field="x_order_id" name="x<?php echo $transfers_grid->RowIndex ?>_order_id" id="x<?php echo $transfers_grid->RowIndex ?>_order_id" size="30" placeholder="<?php echo ew_HtmlEncode($transfers->order_id->getPlaceHolder()) ?>" value="<?php echo $transfers->order_id->EditValue ?>"<?php echo $transfers->order_id->EditAttributes() ?>>
+<select data-table="transfers" data-field="x_order_id" data-value-separator="<?php echo $transfers->order_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $transfers_grid->RowIndex ?>_order_id" name="x<?php echo $transfers_grid->RowIndex ?>_order_id"<?php echo $transfers->order_id->EditAttributes() ?>>
+<?php echo $transfers->order_id->SelectOptionListHtml("x<?php echo $transfers_grid->RowIndex ?>_order_id") ?>
+</select>
 </span>
 <input type="hidden" data-table="transfers" data-field="x_order_id" name="o<?php echo $transfers_grid->RowIndex ?>_order_id" id="o<?php echo $transfers_grid->RowIndex ?>_order_id" value="<?php echo ew_HtmlEncode($transfers->order_id->OldValue) ?>">
 <?php } ?>
 <?php if ($transfers->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
 <span id="el<?php echo $transfers_grid->RowCnt ?>_transfers_order_id" class="form-group transfers_order_id">
-<input type="text" data-table="transfers" data-field="x_order_id" name="x<?php echo $transfers_grid->RowIndex ?>_order_id" id="x<?php echo $transfers_grid->RowIndex ?>_order_id" size="30" placeholder="<?php echo ew_HtmlEncode($transfers->order_id->getPlaceHolder()) ?>" value="<?php echo $transfers->order_id->EditValue ?>"<?php echo $transfers->order_id->EditAttributes() ?>>
+<select data-table="transfers" data-field="x_order_id" data-value-separator="<?php echo $transfers->order_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $transfers_grid->RowIndex ?>_order_id" name="x<?php echo $transfers_grid->RowIndex ?>_order_id"<?php echo $transfers->order_id->EditAttributes() ?>>
+<?php echo $transfers->order_id->SelectOptionListHtml("x<?php echo $transfers_grid->RowIndex ?>_order_id") ?>
+</select>
 </span>
 <?php } ?>
 <?php if ($transfers->RowType == EW_ROWTYPE_VIEW) { // View record ?>
@@ -589,13 +568,19 @@ $transfers_grid->ListOptions->Render("body", "left", $transfers_grid->RowCnt);
 		<td data-name="approved"<?php echo $transfers->approved->CellAttributes() ?>>
 <?php if ($transfers->RowType == EW_ROWTYPE_ADD) { // Add record ?>
 <span id="el<?php echo $transfers_grid->RowCnt ?>_transfers_approved" class="form-group transfers_approved">
-<input type="text" data-table="transfers" data-field="x_approved" name="x<?php echo $transfers_grid->RowIndex ?>_approved" id="x<?php echo $transfers_grid->RowIndex ?>_approved" size="30" placeholder="<?php echo ew_HtmlEncode($transfers->approved->getPlaceHolder()) ?>" value="<?php echo $transfers->approved->EditValue ?>"<?php echo $transfers->approved->EditAttributes() ?>>
+<div id="tp_x<?php echo $transfers_grid->RowIndex ?>_approved" class="ewTemplate"><input type="radio" data-table="transfers" data-field="x_approved" data-value-separator="<?php echo $transfers->approved->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $transfers_grid->RowIndex ?>_approved" id="x<?php echo $transfers_grid->RowIndex ?>_approved" value="{value}"<?php echo $transfers->approved->EditAttributes() ?>></div>
+<div id="dsl_x<?php echo $transfers_grid->RowIndex ?>_approved" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
+<?php echo $transfers->approved->RadioButtonListHtml(FALSE, "x{$transfers_grid->RowIndex}_approved") ?>
+</div></div>
 </span>
 <input type="hidden" data-table="transfers" data-field="x_approved" name="o<?php echo $transfers_grid->RowIndex ?>_approved" id="o<?php echo $transfers_grid->RowIndex ?>_approved" value="<?php echo ew_HtmlEncode($transfers->approved->OldValue) ?>">
 <?php } ?>
 <?php if ($transfers->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
 <span id="el<?php echo $transfers_grid->RowCnt ?>_transfers_approved" class="form-group transfers_approved">
-<input type="text" data-table="transfers" data-field="x_approved" name="x<?php echo $transfers_grid->RowIndex ?>_approved" id="x<?php echo $transfers_grid->RowIndex ?>_approved" size="30" placeholder="<?php echo ew_HtmlEncode($transfers->approved->getPlaceHolder()) ?>" value="<?php echo $transfers->approved->EditValue ?>"<?php echo $transfers->approved->EditAttributes() ?>>
+<div id="tp_x<?php echo $transfers_grid->RowIndex ?>_approved" class="ewTemplate"><input type="radio" data-table="transfers" data-field="x_approved" data-value-separator="<?php echo $transfers->approved->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $transfers_grid->RowIndex ?>_approved" id="x<?php echo $transfers_grid->RowIndex ?>_approved" value="{value}"<?php echo $transfers->approved->EditAttributes() ?>></div>
+<div id="dsl_x<?php echo $transfers_grid->RowIndex ?>_approved" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
+<?php echo $transfers->approved->RadioButtonListHtml(FALSE, "x{$transfers_grid->RowIndex}_approved") ?>
+</div></div>
 </span>
 <?php } ?>
 <?php if ($transfers->RowType == EW_ROWTYPE_VIEW) { // View record ?>
@@ -637,62 +622,6 @@ $transfers_grid->ListOptions->Render("body", "left", $transfers_grid->RowCnt);
 <?php } else { ?>
 <input type="hidden" data-table="transfers" data-field="x_verification_code" name="ftransfersgrid$x<?php echo $transfers_grid->RowIndex ?>_verification_code" id="ftransfersgrid$x<?php echo $transfers_grid->RowIndex ?>_verification_code" value="<?php echo ew_HtmlEncode($transfers->verification_code->FormValue) ?>">
 <input type="hidden" data-table="transfers" data-field="x_verification_code" name="ftransfersgrid$o<?php echo $transfers_grid->RowIndex ?>_verification_code" id="ftransfersgrid$o<?php echo $transfers_grid->RowIndex ?>_verification_code" value="<?php echo ew_HtmlEncode($transfers->verification_code->OldValue) ?>">
-<?php } ?>
-<?php } ?>
-</td>
-	<?php } ?>
-	<?php if ($transfers->created_at->Visible) { // created_at ?>
-		<td data-name="created_at"<?php echo $transfers->created_at->CellAttributes() ?>>
-<?php if ($transfers->RowType == EW_ROWTYPE_ADD) { // Add record ?>
-<span id="el<?php echo $transfers_grid->RowCnt ?>_transfers_created_at" class="form-group transfers_created_at">
-<input type="text" data-table="transfers" data-field="x_created_at" name="x<?php echo $transfers_grid->RowIndex ?>_created_at" id="x<?php echo $transfers_grid->RowIndex ?>_created_at" placeholder="<?php echo ew_HtmlEncode($transfers->created_at->getPlaceHolder()) ?>" value="<?php echo $transfers->created_at->EditValue ?>"<?php echo $transfers->created_at->EditAttributes() ?>>
-</span>
-<input type="hidden" data-table="transfers" data-field="x_created_at" name="o<?php echo $transfers_grid->RowIndex ?>_created_at" id="o<?php echo $transfers_grid->RowIndex ?>_created_at" value="<?php echo ew_HtmlEncode($transfers->created_at->OldValue) ?>">
-<?php } ?>
-<?php if ($transfers->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
-<span id="el<?php echo $transfers_grid->RowCnt ?>_transfers_created_at" class="form-group transfers_created_at">
-<input type="text" data-table="transfers" data-field="x_created_at" name="x<?php echo $transfers_grid->RowIndex ?>_created_at" id="x<?php echo $transfers_grid->RowIndex ?>_created_at" placeholder="<?php echo ew_HtmlEncode($transfers->created_at->getPlaceHolder()) ?>" value="<?php echo $transfers->created_at->EditValue ?>"<?php echo $transfers->created_at->EditAttributes() ?>>
-</span>
-<?php } ?>
-<?php if ($transfers->RowType == EW_ROWTYPE_VIEW) { // View record ?>
-<span id="el<?php echo $transfers_grid->RowCnt ?>_transfers_created_at" class="transfers_created_at">
-<span<?php echo $transfers->created_at->ViewAttributes() ?>>
-<?php echo $transfers->created_at->ListViewValue() ?></span>
-</span>
-<?php if ($transfers->CurrentAction <> "F") { ?>
-<input type="hidden" data-table="transfers" data-field="x_created_at" name="x<?php echo $transfers_grid->RowIndex ?>_created_at" id="x<?php echo $transfers_grid->RowIndex ?>_created_at" value="<?php echo ew_HtmlEncode($transfers->created_at->FormValue) ?>">
-<input type="hidden" data-table="transfers" data-field="x_created_at" name="o<?php echo $transfers_grid->RowIndex ?>_created_at" id="o<?php echo $transfers_grid->RowIndex ?>_created_at" value="<?php echo ew_HtmlEncode($transfers->created_at->OldValue) ?>">
-<?php } else { ?>
-<input type="hidden" data-table="transfers" data-field="x_created_at" name="ftransfersgrid$x<?php echo $transfers_grid->RowIndex ?>_created_at" id="ftransfersgrid$x<?php echo $transfers_grid->RowIndex ?>_created_at" value="<?php echo ew_HtmlEncode($transfers->created_at->FormValue) ?>">
-<input type="hidden" data-table="transfers" data-field="x_created_at" name="ftransfersgrid$o<?php echo $transfers_grid->RowIndex ?>_created_at" id="ftransfersgrid$o<?php echo $transfers_grid->RowIndex ?>_created_at" value="<?php echo ew_HtmlEncode($transfers->created_at->OldValue) ?>">
-<?php } ?>
-<?php } ?>
-</td>
-	<?php } ?>
-	<?php if ($transfers->updated_at->Visible) { // updated_at ?>
-		<td data-name="updated_at"<?php echo $transfers->updated_at->CellAttributes() ?>>
-<?php if ($transfers->RowType == EW_ROWTYPE_ADD) { // Add record ?>
-<span id="el<?php echo $transfers_grid->RowCnt ?>_transfers_updated_at" class="form-group transfers_updated_at">
-<input type="text" data-table="transfers" data-field="x_updated_at" name="x<?php echo $transfers_grid->RowIndex ?>_updated_at" id="x<?php echo $transfers_grid->RowIndex ?>_updated_at" placeholder="<?php echo ew_HtmlEncode($transfers->updated_at->getPlaceHolder()) ?>" value="<?php echo $transfers->updated_at->EditValue ?>"<?php echo $transfers->updated_at->EditAttributes() ?>>
-</span>
-<input type="hidden" data-table="transfers" data-field="x_updated_at" name="o<?php echo $transfers_grid->RowIndex ?>_updated_at" id="o<?php echo $transfers_grid->RowIndex ?>_updated_at" value="<?php echo ew_HtmlEncode($transfers->updated_at->OldValue) ?>">
-<?php } ?>
-<?php if ($transfers->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
-<span id="el<?php echo $transfers_grid->RowCnt ?>_transfers_updated_at" class="form-group transfers_updated_at">
-<input type="text" data-table="transfers" data-field="x_updated_at" name="x<?php echo $transfers_grid->RowIndex ?>_updated_at" id="x<?php echo $transfers_grid->RowIndex ?>_updated_at" placeholder="<?php echo ew_HtmlEncode($transfers->updated_at->getPlaceHolder()) ?>" value="<?php echo $transfers->updated_at->EditValue ?>"<?php echo $transfers->updated_at->EditAttributes() ?>>
-</span>
-<?php } ?>
-<?php if ($transfers->RowType == EW_ROWTYPE_VIEW) { // View record ?>
-<span id="el<?php echo $transfers_grid->RowCnt ?>_transfers_updated_at" class="transfers_updated_at">
-<span<?php echo $transfers->updated_at->ViewAttributes() ?>>
-<?php echo $transfers->updated_at->ListViewValue() ?></span>
-</span>
-<?php if ($transfers->CurrentAction <> "F") { ?>
-<input type="hidden" data-table="transfers" data-field="x_updated_at" name="x<?php echo $transfers_grid->RowIndex ?>_updated_at" id="x<?php echo $transfers_grid->RowIndex ?>_updated_at" value="<?php echo ew_HtmlEncode($transfers->updated_at->FormValue) ?>">
-<input type="hidden" data-table="transfers" data-field="x_updated_at" name="o<?php echo $transfers_grid->RowIndex ?>_updated_at" id="o<?php echo $transfers_grid->RowIndex ?>_updated_at" value="<?php echo ew_HtmlEncode($transfers->updated_at->OldValue) ?>">
-<?php } else { ?>
-<input type="hidden" data-table="transfers" data-field="x_updated_at" name="ftransfersgrid$x<?php echo $transfers_grid->RowIndex ?>_updated_at" id="ftransfersgrid$x<?php echo $transfers_grid->RowIndex ?>_updated_at" value="<?php echo ew_HtmlEncode($transfers->updated_at->FormValue) ?>">
-<input type="hidden" data-table="transfers" data-field="x_updated_at" name="ftransfersgrid$o<?php echo $transfers_grid->RowIndex ?>_updated_at" id="ftransfersgrid$o<?php echo $transfers_grid->RowIndex ?>_updated_at" value="<?php echo ew_HtmlEncode($transfers->updated_at->OldValue) ?>">
 <?php } ?>
 <?php } ?>
 </td>
@@ -763,7 +692,9 @@ $transfers_grid->ListOptions->Render("body", "left", $transfers_grid->RowIndex);
 <input type="hidden" id="x<?php echo $transfers_grid->RowIndex ?>_user_id" name="x<?php echo $transfers_grid->RowIndex ?>_user_id" value="<?php echo ew_HtmlEncode($transfers->user_id->CurrentValue) ?>">
 <?php } else { ?>
 <span id="el$rowindex$_transfers_user_id" class="form-group transfers_user_id">
-<input type="text" data-table="transfers" data-field="x_user_id" name="x<?php echo $transfers_grid->RowIndex ?>_user_id" id="x<?php echo $transfers_grid->RowIndex ?>_user_id" size="30" placeholder="<?php echo ew_HtmlEncode($transfers->user_id->getPlaceHolder()) ?>" value="<?php echo $transfers->user_id->EditValue ?>"<?php echo $transfers->user_id->EditAttributes() ?>>
+<select data-table="transfers" data-field="x_user_id" data-value-separator="<?php echo $transfers->user_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $transfers_grid->RowIndex ?>_user_id" name="x<?php echo $transfers_grid->RowIndex ?>_user_id"<?php echo $transfers->user_id->EditAttributes() ?>>
+<?php echo $transfers->user_id->SelectOptionListHtml("x<?php echo $transfers_grid->RowIndex ?>_user_id") ?>
+</select>
 </span>
 <?php } ?>
 <?php } else { ?>
@@ -796,7 +727,9 @@ $transfers_grid->ListOptions->Render("body", "left", $transfers_grid->RowIndex);
 		<td data-name="currency_id">
 <?php if ($transfers->CurrentAction <> "F") { ?>
 <span id="el$rowindex$_transfers_currency_id" class="form-group transfers_currency_id">
-<input type="text" data-table="transfers" data-field="x_currency_id" name="x<?php echo $transfers_grid->RowIndex ?>_currency_id" id="x<?php echo $transfers_grid->RowIndex ?>_currency_id" size="30" placeholder="<?php echo ew_HtmlEncode($transfers->currency_id->getPlaceHolder()) ?>" value="<?php echo $transfers->currency_id->EditValue ?>"<?php echo $transfers->currency_id->EditAttributes() ?>>
+<select data-table="transfers" data-field="x_currency_id" data-value-separator="<?php echo $transfers->currency_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $transfers_grid->RowIndex ?>_currency_id" name="x<?php echo $transfers_grid->RowIndex ?>_currency_id"<?php echo $transfers->currency_id->EditAttributes() ?>>
+<?php echo $transfers->currency_id->SelectOptionListHtml("x<?php echo $transfers_grid->RowIndex ?>_currency_id") ?>
+</select>
 </span>
 <?php } else { ?>
 <span id="el$rowindex$_transfers_currency_id" class="form-group transfers_currency_id">
@@ -831,7 +764,9 @@ $transfers_grid->ListOptions->Render("body", "left", $transfers_grid->RowIndex);
 		<td data-name="order_id">
 <?php if ($transfers->CurrentAction <> "F") { ?>
 <span id="el$rowindex$_transfers_order_id" class="form-group transfers_order_id">
-<input type="text" data-table="transfers" data-field="x_order_id" name="x<?php echo $transfers_grid->RowIndex ?>_order_id" id="x<?php echo $transfers_grid->RowIndex ?>_order_id" size="30" placeholder="<?php echo ew_HtmlEncode($transfers->order_id->getPlaceHolder()) ?>" value="<?php echo $transfers->order_id->EditValue ?>"<?php echo $transfers->order_id->EditAttributes() ?>>
+<select data-table="transfers" data-field="x_order_id" data-value-separator="<?php echo $transfers->order_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $transfers_grid->RowIndex ?>_order_id" name="x<?php echo $transfers_grid->RowIndex ?>_order_id"<?php echo $transfers->order_id->EditAttributes() ?>>
+<?php echo $transfers->order_id->SelectOptionListHtml("x<?php echo $transfers_grid->RowIndex ?>_order_id") ?>
+</select>
 </span>
 <?php } else { ?>
 <span id="el$rowindex$_transfers_order_id" class="form-group transfers_order_id">
@@ -847,7 +782,10 @@ $transfers_grid->ListOptions->Render("body", "left", $transfers_grid->RowIndex);
 		<td data-name="approved">
 <?php if ($transfers->CurrentAction <> "F") { ?>
 <span id="el$rowindex$_transfers_approved" class="form-group transfers_approved">
-<input type="text" data-table="transfers" data-field="x_approved" name="x<?php echo $transfers_grid->RowIndex ?>_approved" id="x<?php echo $transfers_grid->RowIndex ?>_approved" size="30" placeholder="<?php echo ew_HtmlEncode($transfers->approved->getPlaceHolder()) ?>" value="<?php echo $transfers->approved->EditValue ?>"<?php echo $transfers->approved->EditAttributes() ?>>
+<div id="tp_x<?php echo $transfers_grid->RowIndex ?>_approved" class="ewTemplate"><input type="radio" data-table="transfers" data-field="x_approved" data-value-separator="<?php echo $transfers->approved->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $transfers_grid->RowIndex ?>_approved" id="x<?php echo $transfers_grid->RowIndex ?>_approved" value="{value}"<?php echo $transfers->approved->EditAttributes() ?>></div>
+<div id="dsl_x<?php echo $transfers_grid->RowIndex ?>_approved" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
+<?php echo $transfers->approved->RadioButtonListHtml(FALSE, "x{$transfers_grid->RowIndex}_approved") ?>
+</div></div>
 </span>
 <?php } else { ?>
 <span id="el$rowindex$_transfers_approved" class="form-group transfers_approved">
@@ -873,38 +811,6 @@ $transfers_grid->ListOptions->Render("body", "left", $transfers_grid->RowIndex);
 <input type="hidden" data-table="transfers" data-field="x_verification_code" name="x<?php echo $transfers_grid->RowIndex ?>_verification_code" id="x<?php echo $transfers_grid->RowIndex ?>_verification_code" value="<?php echo ew_HtmlEncode($transfers->verification_code->FormValue) ?>">
 <?php } ?>
 <input type="hidden" data-table="transfers" data-field="x_verification_code" name="o<?php echo $transfers_grid->RowIndex ?>_verification_code" id="o<?php echo $transfers_grid->RowIndex ?>_verification_code" value="<?php echo ew_HtmlEncode($transfers->verification_code->OldValue) ?>">
-</td>
-	<?php } ?>
-	<?php if ($transfers->created_at->Visible) { // created_at ?>
-		<td data-name="created_at">
-<?php if ($transfers->CurrentAction <> "F") { ?>
-<span id="el$rowindex$_transfers_created_at" class="form-group transfers_created_at">
-<input type="text" data-table="transfers" data-field="x_created_at" name="x<?php echo $transfers_grid->RowIndex ?>_created_at" id="x<?php echo $transfers_grid->RowIndex ?>_created_at" placeholder="<?php echo ew_HtmlEncode($transfers->created_at->getPlaceHolder()) ?>" value="<?php echo $transfers->created_at->EditValue ?>"<?php echo $transfers->created_at->EditAttributes() ?>>
-</span>
-<?php } else { ?>
-<span id="el$rowindex$_transfers_created_at" class="form-group transfers_created_at">
-<span<?php echo $transfers->created_at->ViewAttributes() ?>>
-<p class="form-control-static"><?php echo $transfers->created_at->ViewValue ?></p></span>
-</span>
-<input type="hidden" data-table="transfers" data-field="x_created_at" name="x<?php echo $transfers_grid->RowIndex ?>_created_at" id="x<?php echo $transfers_grid->RowIndex ?>_created_at" value="<?php echo ew_HtmlEncode($transfers->created_at->FormValue) ?>">
-<?php } ?>
-<input type="hidden" data-table="transfers" data-field="x_created_at" name="o<?php echo $transfers_grid->RowIndex ?>_created_at" id="o<?php echo $transfers_grid->RowIndex ?>_created_at" value="<?php echo ew_HtmlEncode($transfers->created_at->OldValue) ?>">
-</td>
-	<?php } ?>
-	<?php if ($transfers->updated_at->Visible) { // updated_at ?>
-		<td data-name="updated_at">
-<?php if ($transfers->CurrentAction <> "F") { ?>
-<span id="el$rowindex$_transfers_updated_at" class="form-group transfers_updated_at">
-<input type="text" data-table="transfers" data-field="x_updated_at" name="x<?php echo $transfers_grid->RowIndex ?>_updated_at" id="x<?php echo $transfers_grid->RowIndex ?>_updated_at" placeholder="<?php echo ew_HtmlEncode($transfers->updated_at->getPlaceHolder()) ?>" value="<?php echo $transfers->updated_at->EditValue ?>"<?php echo $transfers->updated_at->EditAttributes() ?>>
-</span>
-<?php } else { ?>
-<span id="el$rowindex$_transfers_updated_at" class="form-group transfers_updated_at">
-<span<?php echo $transfers->updated_at->ViewAttributes() ?>>
-<p class="form-control-static"><?php echo $transfers->updated_at->ViewValue ?></p></span>
-</span>
-<input type="hidden" data-table="transfers" data-field="x_updated_at" name="x<?php echo $transfers_grid->RowIndex ?>_updated_at" id="x<?php echo $transfers_grid->RowIndex ?>_updated_at" value="<?php echo ew_HtmlEncode($transfers->updated_at->FormValue) ?>">
-<?php } ?>
-<input type="hidden" data-table="transfers" data-field="x_updated_at" name="o<?php echo $transfers_grid->RowIndex ?>_updated_at" id="o<?php echo $transfers_grid->RowIndex ?>_updated_at" value="<?php echo ew_HtmlEncode($transfers->updated_at->OldValue) ?>">
 </td>
 	<?php } ?>
 <?php

@@ -376,8 +376,6 @@ class ctransfers_view extends ctransfers {
 		$this->order_id->SetVisibility();
 		$this->approved->SetVisibility();
 		$this->verification_code->SetVisibility();
-		$this->created_at->SetVisibility();
-		$this->updated_at->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -781,7 +779,26 @@ class ctransfers_view extends ctransfers {
 		$this->id->ViewCustomAttributes = "";
 
 		// user_id
-		$this->user_id->ViewValue = $this->user_id->CurrentValue;
+		if (strval($this->user_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->user_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `users`";
+		$sWhereWrk = "";
+		$this->user_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->user_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->user_id->ViewValue = $this->user_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->user_id->ViewValue = $this->user_id->CurrentValue;
+			}
+		} else {
+			$this->user_id->ViewValue = NULL;
+		}
 		$this->user_id->ViewCustomAttributes = "";
 
 		// amount
@@ -789,7 +806,27 @@ class ctransfers_view extends ctransfers {
 		$this->amount->ViewCustomAttributes = "";
 
 		// currency_id
-		$this->currency_id->ViewValue = $this->currency_id->CurrentValue;
+		if (strval($this->currency_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->currency_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `currencies`";
+		$sWhereWrk = "";
+		$this->currency_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->currency_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[2] = $rswrk->fields('Disp2Fld');
+				$this->currency_id->ViewValue = $this->currency_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->currency_id->ViewValue = $this->currency_id->CurrentValue;
+			}
+		} else {
+			$this->currency_id->ViewValue = NULL;
+		}
 		$this->currency_id->ViewCustomAttributes = "";
 
 		// type
@@ -801,26 +838,40 @@ class ctransfers_view extends ctransfers {
 		$this->type->ViewCustomAttributes = "";
 
 		// order_id
-		$this->order_id->ViewValue = $this->order_id->CurrentValue;
+		if (strval($this->order_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->order_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, `id` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `orders`";
+		$sWhereWrk = "";
+		$this->order_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->order_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[2] = $rswrk->fields('Disp2Fld');
+				$this->order_id->ViewValue = $this->order_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->order_id->ViewValue = $this->order_id->CurrentValue;
+			}
+		} else {
+			$this->order_id->ViewValue = NULL;
+		}
 		$this->order_id->ViewCustomAttributes = "";
 
 		// approved
-		$this->approved->ViewValue = $this->approved->CurrentValue;
+		if (strval($this->approved->CurrentValue) <> "") {
+			$this->approved->ViewValue = $this->approved->OptionCaption($this->approved->CurrentValue);
+		} else {
+			$this->approved->ViewValue = NULL;
+		}
 		$this->approved->ViewCustomAttributes = "";
 
 		// verification_code
 		$this->verification_code->ViewValue = $this->verification_code->CurrentValue;
 		$this->verification_code->ViewCustomAttributes = "";
-
-		// created_at
-		$this->created_at->ViewValue = $this->created_at->CurrentValue;
-		$this->created_at->ViewValue = ew_FormatDateTime($this->created_at->ViewValue, 0);
-		$this->created_at->ViewCustomAttributes = "";
-
-		// updated_at
-		$this->updated_at->ViewValue = $this->updated_at->CurrentValue;
-		$this->updated_at->ViewValue = ew_FormatDateTime($this->updated_at->ViewValue, 0);
-		$this->updated_at->ViewCustomAttributes = "";
 
 			// id
 			$this->id->LinkCustomAttributes = "";
@@ -861,16 +912,6 @@ class ctransfers_view extends ctransfers {
 			$this->verification_code->LinkCustomAttributes = "";
 			$this->verification_code->HrefValue = "";
 			$this->verification_code->TooltipValue = "";
-
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
-			$this->created_at->TooltipValue = "";
-
-			// updated_at
-			$this->updated_at->LinkCustomAttributes = "";
-			$this->updated_at->HrefValue = "";
-			$this->updated_at->TooltipValue = "";
 		}
 
 		// Call Row Rendered event
@@ -1091,8 +1132,16 @@ ftransfersview.Form_CustomValidate =
 ftransfersview.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
+ftransfersview.Lists["x_user_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"users"};
+ftransfersview.Lists["x_user_id"].Data = "<?php echo $transfers_view->user_id->LookupFilterQuery(FALSE, "view") ?>";
+ftransfersview.Lists["x_currency_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name_ar","x_name_en","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"currencies"};
+ftransfersview.Lists["x_currency_id"].Data = "<?php echo $transfers_view->currency_id->LookupFilterQuery(FALSE, "view") ?>";
 ftransfersview.Lists["x_type"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
 ftransfersview.Lists["x_type"].Options = <?php echo json_encode($transfers_view->type->Options()) ?>;
+ftransfersview.Lists["x_order_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_id","x_id","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"orders"};
+ftransfersview.Lists["x_order_id"].Data = "<?php echo $transfers_view->order_id->LookupFilterQuery(FALSE, "view") ?>";
+ftransfersview.Lists["x_approved"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
+ftransfersview.Lists["x_approved"].Options = <?php echo json_encode($transfers_view->approved->Options()) ?>;
 
 // Form object for search
 </script>
@@ -1248,28 +1297,6 @@ $transfers_view->ShowMessage();
 <span id="el_transfers_verification_code">
 <span<?php echo $transfers->verification_code->ViewAttributes() ?>>
 <?php echo $transfers->verification_code->ViewValue ?></span>
-</span>
-</td>
-	</tr>
-<?php } ?>
-<?php if ($transfers->created_at->Visible) { // created_at ?>
-	<tr id="r_created_at">
-		<td class="col-sm-2"><span id="elh_transfers_created_at"><?php echo $transfers->created_at->FldCaption() ?></span></td>
-		<td data-name="created_at"<?php echo $transfers->created_at->CellAttributes() ?>>
-<span id="el_transfers_created_at">
-<span<?php echo $transfers->created_at->ViewAttributes() ?>>
-<?php echo $transfers->created_at->ViewValue ?></span>
-</span>
-</td>
-	</tr>
-<?php } ?>
-<?php if ($transfers->updated_at->Visible) { // updated_at ?>
-	<tr id="r_updated_at">
-		<td class="col-sm-2"><span id="elh_transfers_updated_at"><?php echo $transfers->updated_at->FldCaption() ?></span></td>
-		<td data-name="updated_at"<?php echo $transfers->updated_at->CellAttributes() ?>>
-<span id="el_transfers_updated_at">
-<span<?php echo $transfers->updated_at->ViewAttributes() ?>>
-<?php echo $transfers->updated_at->ViewValue ?></span>
 </span>
 </td>
 	</tr>

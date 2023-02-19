@@ -446,8 +446,7 @@ class corders_list extends corders {
 		$this->currency_id->SetVisibility();
 		$this->status->SetVisibility();
 		$this->meeting_id->SetVisibility();
-		$this->created_at->SetVisibility();
-		$this->updated_at->SetVisibility();
+		$this->package_id->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -1070,9 +1069,7 @@ class corders_list extends corders {
 			return FALSE;
 		if ($objForm->HasValue("x_meeting_id") && $objForm->HasValue("o_meeting_id") && $this->meeting_id->CurrentValue <> $this->meeting_id->OldValue)
 			return FALSE;
-		if ($objForm->HasValue("x_created_at") && $objForm->HasValue("o_created_at") && $this->created_at->CurrentValue <> $this->created_at->OldValue)
-			return FALSE;
-		if ($objForm->HasValue("x_updated_at") && $objForm->HasValue("o_updated_at") && $this->updated_at->CurrentValue <> $this->updated_at->OldValue)
+		if ($objForm->HasValue("x_package_id") && $objForm->HasValue("o_package_id") && $this->package_id->CurrentValue <> $this->package_id->OldValue)
 			return FALSE;
 		return TRUE;
 	}
@@ -1162,8 +1159,7 @@ class corders_list extends corders {
 		$sFilterList = ew_Concat($sFilterList, $this->currency_id->AdvancedSearch->ToJson(), ","); // Field currency_id
 		$sFilterList = ew_Concat($sFilterList, $this->status->AdvancedSearch->ToJson(), ","); // Field status
 		$sFilterList = ew_Concat($sFilterList, $this->meeting_id->AdvancedSearch->ToJson(), ","); // Field meeting_id
-		$sFilterList = ew_Concat($sFilterList, $this->created_at->AdvancedSearch->ToJson(), ","); // Field created_at
-		$sFilterList = ew_Concat($sFilterList, $this->updated_at->AdvancedSearch->ToJson(), ","); // Field updated_at
+		$sFilterList = ew_Concat($sFilterList, $this->package_id->AdvancedSearch->ToJson(), ","); // Field package_id
 		if ($this->BasicSearch->Keyword <> "") {
 			$sWrk = "\"" . EW_TABLE_BASIC_SEARCH . "\":\"" . ew_JsEncode2($this->BasicSearch->Keyword) . "\",\"" . EW_TABLE_BASIC_SEARCH_TYPE . "\":\"" . ew_JsEncode2($this->BasicSearch->Type) . "\"";
 			$sFilterList = ew_Concat($sFilterList, $sWrk, ",");
@@ -1288,21 +1284,13 @@ class corders_list extends corders {
 		$this->meeting_id->AdvancedSearch->SearchOperator2 = @$filter["w_meeting_id"];
 		$this->meeting_id->AdvancedSearch->Save();
 
-		// Field created_at
-		$this->created_at->AdvancedSearch->SearchValue = @$filter["x_created_at"];
-		$this->created_at->AdvancedSearch->SearchOperator = @$filter["z_created_at"];
-		$this->created_at->AdvancedSearch->SearchCondition = @$filter["v_created_at"];
-		$this->created_at->AdvancedSearch->SearchValue2 = @$filter["y_created_at"];
-		$this->created_at->AdvancedSearch->SearchOperator2 = @$filter["w_created_at"];
-		$this->created_at->AdvancedSearch->Save();
-
-		// Field updated_at
-		$this->updated_at->AdvancedSearch->SearchValue = @$filter["x_updated_at"];
-		$this->updated_at->AdvancedSearch->SearchOperator = @$filter["z_updated_at"];
-		$this->updated_at->AdvancedSearch->SearchCondition = @$filter["v_updated_at"];
-		$this->updated_at->AdvancedSearch->SearchValue2 = @$filter["y_updated_at"];
-		$this->updated_at->AdvancedSearch->SearchOperator2 = @$filter["w_updated_at"];
-		$this->updated_at->AdvancedSearch->Save();
+		// Field package_id
+		$this->package_id->AdvancedSearch->SearchValue = @$filter["x_package_id"];
+		$this->package_id->AdvancedSearch->SearchOperator = @$filter["z_package_id"];
+		$this->package_id->AdvancedSearch->SearchCondition = @$filter["v_package_id"];
+		$this->package_id->AdvancedSearch->SearchValue2 = @$filter["y_package_id"];
+		$this->package_id->AdvancedSearch->SearchOperator2 = @$filter["w_package_id"];
+		$this->package_id->AdvancedSearch->Save();
 		$this->BasicSearch->setKeyword(@$filter[EW_TABLE_BASIC_SEARCH]);
 		$this->BasicSearch->setType(@$filter[EW_TABLE_BASIC_SEARCH_TYPE]);
 	}
@@ -1321,8 +1309,7 @@ class corders_list extends corders {
 		$this->BuildSearchSql($sWhere, $this->currency_id, $Default, FALSE); // currency_id
 		$this->BuildSearchSql($sWhere, $this->status, $Default, FALSE); // status
 		$this->BuildSearchSql($sWhere, $this->meeting_id, $Default, FALSE); // meeting_id
-		$this->BuildSearchSql($sWhere, $this->created_at, $Default, FALSE); // created_at
-		$this->BuildSearchSql($sWhere, $this->updated_at, $Default, FALSE); // updated_at
+		$this->BuildSearchSql($sWhere, $this->package_id, $Default, FALSE); // package_id
 
 		// Set up search parm
 		if (!$Default && $sWhere <> "" && in_array($this->Command, array("", "reset", "resetall"))) {
@@ -1339,8 +1326,7 @@ class corders_list extends corders {
 			$this->currency_id->AdvancedSearch->Save(); // currency_id
 			$this->status->AdvancedSearch->Save(); // status
 			$this->meeting_id->AdvancedSearch->Save(); // meeting_id
-			$this->created_at->AdvancedSearch->Save(); // created_at
-			$this->updated_at->AdvancedSearch->Save(); // updated_at
+			$this->package_id->AdvancedSearch->Save(); // package_id
 		}
 		return $sWhere;
 	}
@@ -1520,9 +1506,7 @@ class corders_list extends corders {
 			return TRUE;
 		if ($this->meeting_id->AdvancedSearch->IssetSession())
 			return TRUE;
-		if ($this->created_at->AdvancedSearch->IssetSession())
-			return TRUE;
-		if ($this->updated_at->AdvancedSearch->IssetSession())
+		if ($this->package_id->AdvancedSearch->IssetSession())
 			return TRUE;
 		return FALSE;
 	}
@@ -1563,8 +1547,7 @@ class corders_list extends corders {
 		$this->currency_id->AdvancedSearch->UnsetSession();
 		$this->status->AdvancedSearch->UnsetSession();
 		$this->meeting_id->AdvancedSearch->UnsetSession();
-		$this->created_at->AdvancedSearch->UnsetSession();
-		$this->updated_at->AdvancedSearch->UnsetSession();
+		$this->package_id->AdvancedSearch->UnsetSession();
 	}
 
 	// Restore all search parameters
@@ -1585,8 +1568,7 @@ class corders_list extends corders {
 		$this->currency_id->AdvancedSearch->Load();
 		$this->status->AdvancedSearch->Load();
 		$this->meeting_id->AdvancedSearch->Load();
-		$this->created_at->AdvancedSearch->Load();
-		$this->updated_at->AdvancedSearch->Load();
+		$this->package_id->AdvancedSearch->Load();
 	}
 
 	// Set up sort parameters
@@ -1606,8 +1588,7 @@ class corders_list extends corders {
 			$this->UpdateSort($this->currency_id); // currency_id
 			$this->UpdateSort($this->status); // status
 			$this->UpdateSort($this->meeting_id); // meeting_id
-			$this->UpdateSort($this->created_at); // created_at
-			$this->UpdateSort($this->updated_at); // updated_at
+			$this->UpdateSort($this->package_id); // package_id
 			$this->setStartRecordNumber(1); // Reset start position
 		}
 	}
@@ -1650,8 +1631,7 @@ class corders_list extends corders {
 				$this->currency_id->setSort("");
 				$this->status->setSort("");
 				$this->meeting_id->setSort("");
-				$this->created_at->setSort("");
-				$this->updated_at->setSort("");
+				$this->package_id->setSort("");
 			}
 
 			// Reset start position
@@ -2152,6 +2132,8 @@ class corders_list extends corders {
 		$this->created_at->OldValue = $this->created_at->CurrentValue;
 		$this->updated_at->CurrentValue = NULL;
 		$this->updated_at->OldValue = $this->updated_at->CurrentValue;
+		$this->package_id->CurrentValue = NULL;
+		$this->package_id->OldValue = $this->package_id->CurrentValue;
 	}
 
 	// Load basic search values
@@ -2217,15 +2199,10 @@ class corders_list extends corders {
 		if ($this->meeting_id->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
 		$this->meeting_id->AdvancedSearch->SearchOperator = @$_GET["z_meeting_id"];
 
-		// created_at
-		$this->created_at->AdvancedSearch->SearchValue = @$_GET["x_created_at"];
-		if ($this->created_at->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
-		$this->created_at->AdvancedSearch->SearchOperator = @$_GET["z_created_at"];
-
-		// updated_at
-		$this->updated_at->AdvancedSearch->SearchValue = @$_GET["x_updated_at"];
-		if ($this->updated_at->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
-		$this->updated_at->AdvancedSearch->SearchOperator = @$_GET["z_updated_at"];
+		// package_id
+		$this->package_id->AdvancedSearch->SearchValue = @$_GET["x_package_id"];
+		if ($this->package_id->AdvancedSearch->SearchValue <> "" && $this->Command == "") $this->Command = "search";
+		$this->package_id->AdvancedSearch->SearchOperator = @$_GET["z_package_id"];
 	}
 
 	// Load form values
@@ -2272,16 +2249,10 @@ class corders_list extends corders {
 			$this->meeting_id->setFormValue($objForm->GetValue("x_meeting_id"));
 		}
 		$this->meeting_id->setOldValue($objForm->GetValue("o_meeting_id"));
-		if (!$this->created_at->FldIsDetailKey) {
-			$this->created_at->setFormValue($objForm->GetValue("x_created_at"));
-			$this->created_at->CurrentValue = ew_UnFormatDateTime($this->created_at->CurrentValue, 0);
+		if (!$this->package_id->FldIsDetailKey) {
+			$this->package_id->setFormValue($objForm->GetValue("x_package_id"));
 		}
-		$this->created_at->setOldValue($objForm->GetValue("o_created_at"));
-		if (!$this->updated_at->FldIsDetailKey) {
-			$this->updated_at->setFormValue($objForm->GetValue("x_updated_at"));
-			$this->updated_at->CurrentValue = ew_UnFormatDateTime($this->updated_at->CurrentValue, 0);
-		}
-		$this->updated_at->setOldValue($objForm->GetValue("o_updated_at"));
+		$this->package_id->setOldValue($objForm->GetValue("o_package_id"));
 	}
 
 	// Restore form values
@@ -2299,10 +2270,7 @@ class corders_list extends corders {
 		$this->currency_id->CurrentValue = $this->currency_id->FormValue;
 		$this->status->CurrentValue = $this->status->FormValue;
 		$this->meeting_id->CurrentValue = $this->meeting_id->FormValue;
-		$this->created_at->CurrentValue = $this->created_at->FormValue;
-		$this->created_at->CurrentValue = ew_UnFormatDateTime($this->created_at->CurrentValue, 0);
-		$this->updated_at->CurrentValue = $this->updated_at->FormValue;
-		$this->updated_at->CurrentValue = ew_UnFormatDateTime($this->updated_at->CurrentValue, 0);
+		$this->package_id->CurrentValue = $this->package_id->FormValue;
 	}
 
 	// Load recordset
@@ -2376,6 +2344,7 @@ class corders_list extends corders {
 		$this->meeting_id->setDbValue($row['meeting_id']);
 		$this->created_at->setDbValue($row['created_at']);
 		$this->updated_at->setDbValue($row['updated_at']);
+		$this->package_id->setDbValue($row['package_id']);
 	}
 
 	// Return a row with default values
@@ -2394,6 +2363,7 @@ class corders_list extends corders {
 		$row['meeting_id'] = $this->meeting_id->CurrentValue;
 		$row['created_at'] = $this->created_at->CurrentValue;
 		$row['updated_at'] = $this->updated_at->CurrentValue;
+		$row['package_id'] = $this->package_id->CurrentValue;
 		return $row;
 	}
 
@@ -2414,6 +2384,7 @@ class corders_list extends corders {
 		$this->meeting_id->DbValue = $row['meeting_id'];
 		$this->created_at->DbValue = $row['created_at'];
 		$this->updated_at->DbValue = $row['updated_at'];
+		$this->package_id->DbValue = $row['package_id'];
 	}
 
 	// Load old record
@@ -2465,8 +2436,13 @@ class corders_list extends corders {
 		// status
 		// meeting_id
 		// created_at
-		// updated_at
 
+		$this->created_at->CellCssStyle = "white-space: nowrap;";
+
+		// updated_at
+		$this->updated_at->CellCssStyle = "white-space: nowrap;";
+
+		// package_id
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
 		// id
@@ -2474,15 +2450,73 @@ class corders_list extends corders {
 		$this->id->ViewCustomAttributes = "";
 
 		// student_id
-		$this->student_id->ViewValue = $this->student_id->CurrentValue;
+		if (strval($this->student_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->student_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `users`";
+		$sWhereWrk = "";
+		$this->student_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->student_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->student_id->ViewValue = $this->student_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->student_id->ViewValue = $this->student_id->CurrentValue;
+			}
+		} else {
+			$this->student_id->ViewValue = NULL;
+		}
 		$this->student_id->ViewCustomAttributes = "";
 
 		// teacher_id
-		$this->teacher_id->ViewValue = $this->teacher_id->CurrentValue;
+		if (strval($this->teacher_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->teacher_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `users`";
+		$sWhereWrk = "";
+		$this->teacher_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->teacher_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->teacher_id->ViewValue = $this->teacher_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->teacher_id->ViewValue = $this->teacher_id->CurrentValue;
+			}
+		} else {
+			$this->teacher_id->ViewValue = NULL;
+		}
 		$this->teacher_id->ViewCustomAttributes = "";
 
 		// topic_id
-		$this->topic_id->ViewValue = $this->topic_id->CurrentValue;
+		if (strval($this->topic_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->topic_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `topics`";
+		$sWhereWrk = "";
+		$this->topic_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->topic_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[2] = $rswrk->fields('Disp2Fld');
+				$this->topic_id->ViewValue = $this->topic_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->topic_id->ViewValue = $this->topic_id->CurrentValue;
+			}
+		} else {
+			$this->topic_id->ViewValue = NULL;
+		}
 		$this->topic_id->ViewCustomAttributes = "";
 
 		// date
@@ -2499,7 +2533,27 @@ class corders_list extends corders {
 		$this->fees->ViewCustomAttributes = "";
 
 		// currency_id
-		$this->currency_id->ViewValue = $this->currency_id->CurrentValue;
+		if (strval($this->currency_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->currency_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `currencies`";
+		$sWhereWrk = "";
+		$this->currency_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->currency_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[2] = $rswrk->fields('Disp2Fld');
+				$this->currency_id->ViewValue = $this->currency_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->currency_id->ViewValue = $this->currency_id->CurrentValue;
+			}
+		} else {
+			$this->currency_id->ViewValue = NULL;
+		}
 		$this->currency_id->ViewCustomAttributes = "";
 
 		// status
@@ -2514,15 +2568,9 @@ class corders_list extends corders {
 		$this->meeting_id->ViewValue = $this->meeting_id->CurrentValue;
 		$this->meeting_id->ViewCustomAttributes = "";
 
-		// created_at
-		$this->created_at->ViewValue = $this->created_at->CurrentValue;
-		$this->created_at->ViewValue = ew_FormatDateTime($this->created_at->ViewValue, 0);
-		$this->created_at->ViewCustomAttributes = "";
-
-		// updated_at
-		$this->updated_at->ViewValue = $this->updated_at->CurrentValue;
-		$this->updated_at->ViewValue = ew_FormatDateTime($this->updated_at->ViewValue, 0);
-		$this->updated_at->ViewCustomAttributes = "";
+		// package_id
+		$this->package_id->ViewValue = $this->package_id->CurrentValue;
+		$this->package_id->ViewCustomAttributes = "";
 
 			// id
 			$this->id->LinkCustomAttributes = "";
@@ -2574,15 +2622,10 @@ class corders_list extends corders {
 			$this->meeting_id->HrefValue = "";
 			$this->meeting_id->TooltipValue = "";
 
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
-			$this->created_at->TooltipValue = "";
-
-			// updated_at
-			$this->updated_at->LinkCustomAttributes = "";
-			$this->updated_at->HrefValue = "";
-			$this->updated_at->TooltipValue = "";
+			// package_id
+			$this->package_id->LinkCustomAttributes = "";
+			$this->package_id->HrefValue = "";
+			$this->package_id->TooltipValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_ADD) { // Add row
 
 			// id
@@ -2590,20 +2633,59 @@ class corders_list extends corders {
 
 			$this->student_id->EditAttrs["class"] = "form-control";
 			$this->student_id->EditCustomAttributes = "";
-			$this->student_id->EditValue = ew_HtmlEncode($this->student_id->CurrentValue);
-			$this->student_id->PlaceHolder = ew_RemoveHtml($this->student_id->FldCaption());
+			if (trim(strval($this->student_id->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->student_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			}
+			$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `users`";
+			$sWhereWrk = "";
+			$this->student_id->LookupFilters = array();
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->student_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->student_id->EditValue = $arwrk;
 
 			// teacher_id
 			$this->teacher_id->EditAttrs["class"] = "form-control";
 			$this->teacher_id->EditCustomAttributes = "";
-			$this->teacher_id->EditValue = ew_HtmlEncode($this->teacher_id->CurrentValue);
-			$this->teacher_id->PlaceHolder = ew_RemoveHtml($this->teacher_id->FldCaption());
+			if (trim(strval($this->teacher_id->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->teacher_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			}
+			$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `users`";
+			$sWhereWrk = "";
+			$this->teacher_id->LookupFilters = array();
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->teacher_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->teacher_id->EditValue = $arwrk;
 
 			// topic_id
 			$this->topic_id->EditAttrs["class"] = "form-control";
 			$this->topic_id->EditCustomAttributes = "";
-			$this->topic_id->EditValue = ew_HtmlEncode($this->topic_id->CurrentValue);
-			$this->topic_id->PlaceHolder = ew_RemoveHtml($this->topic_id->FldCaption());
+			if (trim(strval($this->topic_id->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->topic_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			}
+			$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `topics`";
+			$sWhereWrk = "";
+			$this->topic_id->LookupFilters = array();
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->topic_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->topic_id->EditValue = $arwrk;
 
 			// date
 			$this->date->EditAttrs["class"] = "form-control";
@@ -2626,12 +2708,26 @@ class corders_list extends corders {
 			// currency_id
 			$this->currency_id->EditAttrs["class"] = "form-control";
 			$this->currency_id->EditCustomAttributes = "";
-			$this->currency_id->EditValue = ew_HtmlEncode($this->currency_id->CurrentValue);
-			$this->currency_id->PlaceHolder = ew_RemoveHtml($this->currency_id->FldCaption());
+			if (trim(strval($this->currency_id->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->currency_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			}
+			$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `currencies`";
+			$sWhereWrk = "";
+			$this->currency_id->LookupFilters = array();
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->currency_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->currency_id->EditValue = $arwrk;
 
 			// status
+			$this->status->EditAttrs["class"] = "form-control";
 			$this->status->EditCustomAttributes = "";
-			$this->status->EditValue = $this->status->Options(FALSE);
+			$this->status->EditValue = $this->status->Options(TRUE);
 
 			// meeting_id
 			$this->meeting_id->EditAttrs["class"] = "form-control";
@@ -2639,17 +2735,11 @@ class corders_list extends corders {
 			$this->meeting_id->EditValue = ew_HtmlEncode($this->meeting_id->CurrentValue);
 			$this->meeting_id->PlaceHolder = ew_RemoveHtml($this->meeting_id->FldCaption());
 
-			// created_at
-			$this->created_at->EditAttrs["class"] = "form-control";
-			$this->created_at->EditCustomAttributes = "";
-			$this->created_at->EditValue = ew_HtmlEncode(ew_FormatDateTime($this->created_at->CurrentValue, 8));
-			$this->created_at->PlaceHolder = ew_RemoveHtml($this->created_at->FldCaption());
-
-			// updated_at
-			$this->updated_at->EditAttrs["class"] = "form-control";
-			$this->updated_at->EditCustomAttributes = "";
-			$this->updated_at->EditValue = ew_HtmlEncode(ew_FormatDateTime($this->updated_at->CurrentValue, 8));
-			$this->updated_at->PlaceHolder = ew_RemoveHtml($this->updated_at->FldCaption());
+			// package_id
+			$this->package_id->EditAttrs["class"] = "form-control";
+			$this->package_id->EditCustomAttributes = "";
+			$this->package_id->EditValue = ew_HtmlEncode($this->package_id->CurrentValue);
+			$this->package_id->PlaceHolder = ew_RemoveHtml($this->package_id->FldCaption());
 
 			// Add refer script
 			// id
@@ -2693,13 +2783,9 @@ class corders_list extends corders {
 			$this->meeting_id->LinkCustomAttributes = "";
 			$this->meeting_id->HrefValue = "";
 
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
-
-			// updated_at
-			$this->updated_at->LinkCustomAttributes = "";
-			$this->updated_at->HrefValue = "";
+			// package_id
+			$this->package_id->LinkCustomAttributes = "";
+			$this->package_id->HrefValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_EDIT) { // Edit row
 
 			// id
@@ -2711,20 +2797,59 @@ class corders_list extends corders {
 			// student_id
 			$this->student_id->EditAttrs["class"] = "form-control";
 			$this->student_id->EditCustomAttributes = "";
-			$this->student_id->EditValue = ew_HtmlEncode($this->student_id->CurrentValue);
-			$this->student_id->PlaceHolder = ew_RemoveHtml($this->student_id->FldCaption());
+			if (trim(strval($this->student_id->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->student_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			}
+			$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `users`";
+			$sWhereWrk = "";
+			$this->student_id->LookupFilters = array();
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->student_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->student_id->EditValue = $arwrk;
 
 			// teacher_id
 			$this->teacher_id->EditAttrs["class"] = "form-control";
 			$this->teacher_id->EditCustomAttributes = "";
-			$this->teacher_id->EditValue = ew_HtmlEncode($this->teacher_id->CurrentValue);
-			$this->teacher_id->PlaceHolder = ew_RemoveHtml($this->teacher_id->FldCaption());
+			if (trim(strval($this->teacher_id->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->teacher_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			}
+			$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `users`";
+			$sWhereWrk = "";
+			$this->teacher_id->LookupFilters = array();
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->teacher_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->teacher_id->EditValue = $arwrk;
 
 			// topic_id
 			$this->topic_id->EditAttrs["class"] = "form-control";
 			$this->topic_id->EditCustomAttributes = "";
-			$this->topic_id->EditValue = ew_HtmlEncode($this->topic_id->CurrentValue);
-			$this->topic_id->PlaceHolder = ew_RemoveHtml($this->topic_id->FldCaption());
+			if (trim(strval($this->topic_id->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->topic_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			}
+			$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `topics`";
+			$sWhereWrk = "";
+			$this->topic_id->LookupFilters = array();
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->topic_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->topic_id->EditValue = $arwrk;
 
 			// date
 			$this->date->EditAttrs["class"] = "form-control";
@@ -2747,12 +2872,26 @@ class corders_list extends corders {
 			// currency_id
 			$this->currency_id->EditAttrs["class"] = "form-control";
 			$this->currency_id->EditCustomAttributes = "";
-			$this->currency_id->EditValue = ew_HtmlEncode($this->currency_id->CurrentValue);
-			$this->currency_id->PlaceHolder = ew_RemoveHtml($this->currency_id->FldCaption());
+			if (trim(strval($this->currency_id->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->currency_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			}
+			$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `currencies`";
+			$sWhereWrk = "";
+			$this->currency_id->LookupFilters = array();
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->currency_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->currency_id->EditValue = $arwrk;
 
 			// status
+			$this->status->EditAttrs["class"] = "form-control";
 			$this->status->EditCustomAttributes = "";
-			$this->status->EditValue = $this->status->Options(FALSE);
+			$this->status->EditValue = $this->status->Options(TRUE);
 
 			// meeting_id
 			$this->meeting_id->EditAttrs["class"] = "form-control";
@@ -2760,17 +2899,11 @@ class corders_list extends corders {
 			$this->meeting_id->EditValue = ew_HtmlEncode($this->meeting_id->CurrentValue);
 			$this->meeting_id->PlaceHolder = ew_RemoveHtml($this->meeting_id->FldCaption());
 
-			// created_at
-			$this->created_at->EditAttrs["class"] = "form-control";
-			$this->created_at->EditCustomAttributes = "";
-			$this->created_at->EditValue = ew_HtmlEncode(ew_FormatDateTime($this->created_at->CurrentValue, 8));
-			$this->created_at->PlaceHolder = ew_RemoveHtml($this->created_at->FldCaption());
-
-			// updated_at
-			$this->updated_at->EditAttrs["class"] = "form-control";
-			$this->updated_at->EditCustomAttributes = "";
-			$this->updated_at->EditValue = ew_HtmlEncode(ew_FormatDateTime($this->updated_at->CurrentValue, 8));
-			$this->updated_at->PlaceHolder = ew_RemoveHtml($this->updated_at->FldCaption());
+			// package_id
+			$this->package_id->EditAttrs["class"] = "form-control";
+			$this->package_id->EditCustomAttributes = "";
+			$this->package_id->EditValue = ew_HtmlEncode($this->package_id->CurrentValue);
+			$this->package_id->PlaceHolder = ew_RemoveHtml($this->package_id->FldCaption());
 
 			// Edit refer script
 			// id
@@ -2814,13 +2947,9 @@ class corders_list extends corders {
 			$this->meeting_id->LinkCustomAttributes = "";
 			$this->meeting_id->HrefValue = "";
 
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
-
-			// updated_at
-			$this->updated_at->LinkCustomAttributes = "";
-			$this->updated_at->HrefValue = "";
+			// package_id
+			$this->package_id->LinkCustomAttributes = "";
+			$this->package_id->HrefValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_SEARCH) { // Search row
 
 			// id
@@ -2832,20 +2961,14 @@ class corders_list extends corders {
 			// student_id
 			$this->student_id->EditAttrs["class"] = "form-control";
 			$this->student_id->EditCustomAttributes = "";
-			$this->student_id->EditValue = ew_HtmlEncode($this->student_id->AdvancedSearch->SearchValue);
-			$this->student_id->PlaceHolder = ew_RemoveHtml($this->student_id->FldCaption());
 
 			// teacher_id
 			$this->teacher_id->EditAttrs["class"] = "form-control";
 			$this->teacher_id->EditCustomAttributes = "";
-			$this->teacher_id->EditValue = ew_HtmlEncode($this->teacher_id->AdvancedSearch->SearchValue);
-			$this->teacher_id->PlaceHolder = ew_RemoveHtml($this->teacher_id->FldCaption());
 
 			// topic_id
 			$this->topic_id->EditAttrs["class"] = "form-control";
 			$this->topic_id->EditCustomAttributes = "";
-			$this->topic_id->EditValue = ew_HtmlEncode($this->topic_id->AdvancedSearch->SearchValue);
-			$this->topic_id->PlaceHolder = ew_RemoveHtml($this->topic_id->FldCaption());
 
 			// date
 			$this->date->EditAttrs["class"] = "form-control";
@@ -2868,12 +2991,11 @@ class corders_list extends corders {
 			// currency_id
 			$this->currency_id->EditAttrs["class"] = "form-control";
 			$this->currency_id->EditCustomAttributes = "";
-			$this->currency_id->EditValue = ew_HtmlEncode($this->currency_id->AdvancedSearch->SearchValue);
-			$this->currency_id->PlaceHolder = ew_RemoveHtml($this->currency_id->FldCaption());
 
 			// status
+			$this->status->EditAttrs["class"] = "form-control";
 			$this->status->EditCustomAttributes = "";
-			$this->status->EditValue = $this->status->Options(FALSE);
+			$this->status->EditValue = $this->status->Options(TRUE);
 
 			// meeting_id
 			$this->meeting_id->EditAttrs["class"] = "form-control";
@@ -2881,17 +3003,11 @@ class corders_list extends corders {
 			$this->meeting_id->EditValue = ew_HtmlEncode($this->meeting_id->AdvancedSearch->SearchValue);
 			$this->meeting_id->PlaceHolder = ew_RemoveHtml($this->meeting_id->FldCaption());
 
-			// created_at
-			$this->created_at->EditAttrs["class"] = "form-control";
-			$this->created_at->EditCustomAttributes = "";
-			$this->created_at->EditValue = ew_HtmlEncode(ew_FormatDateTime(ew_UnFormatDateTime($this->created_at->AdvancedSearch->SearchValue, 0), 8));
-			$this->created_at->PlaceHolder = ew_RemoveHtml($this->created_at->FldCaption());
-
-			// updated_at
-			$this->updated_at->EditAttrs["class"] = "form-control";
-			$this->updated_at->EditCustomAttributes = "";
-			$this->updated_at->EditValue = ew_HtmlEncode(ew_FormatDateTime(ew_UnFormatDateTime($this->updated_at->AdvancedSearch->SearchValue, 0), 8));
-			$this->updated_at->PlaceHolder = ew_RemoveHtml($this->updated_at->FldCaption());
+			// package_id
+			$this->package_id->EditAttrs["class"] = "form-control";
+			$this->package_id->EditCustomAttributes = "";
+			$this->package_id->EditValue = ew_HtmlEncode($this->package_id->AdvancedSearch->SearchValue);
+			$this->package_id->PlaceHolder = ew_RemoveHtml($this->package_id->FldCaption());
 		}
 		if ($this->RowType == EW_ROWTYPE_ADD || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_SEARCH) // Add/Edit/Search row
 			$this->SetupFieldTitles();
@@ -2937,17 +3053,8 @@ class corders_list extends corders {
 		if (!$this->student_id->FldIsDetailKey && !is_null($this->student_id->FormValue) && $this->student_id->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->student_id->FldCaption(), $this->student_id->ReqErrMsg));
 		}
-		if (!ew_CheckInteger($this->student_id->FormValue)) {
-			ew_AddMessage($gsFormError, $this->student_id->FldErrMsg());
-		}
 		if (!$this->teacher_id->FldIsDetailKey && !is_null($this->teacher_id->FormValue) && $this->teacher_id->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->teacher_id->FldCaption(), $this->teacher_id->ReqErrMsg));
-		}
-		if (!ew_CheckInteger($this->teacher_id->FormValue)) {
-			ew_AddMessage($gsFormError, $this->teacher_id->FldErrMsg());
-		}
-		if (!ew_CheckInteger($this->topic_id->FormValue)) {
-			ew_AddMessage($gsFormError, $this->topic_id->FldErrMsg());
 		}
 		if (!ew_CheckDateDef($this->date->FormValue)) {
 			ew_AddMessage($gsFormError, $this->date->FldErrMsg());
@@ -2961,20 +3068,11 @@ class corders_list extends corders {
 		if (!$this->currency_id->FldIsDetailKey && !is_null($this->currency_id->FormValue) && $this->currency_id->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->currency_id->FldCaption(), $this->currency_id->ReqErrMsg));
 		}
-		if (!ew_CheckInteger($this->currency_id->FormValue)) {
-			ew_AddMessage($gsFormError, $this->currency_id->FldErrMsg());
-		}
-		if ($this->status->FormValue == "") {
+		if (!$this->status->FldIsDetailKey && !is_null($this->status->FormValue) && $this->status->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->status->FldCaption(), $this->status->ReqErrMsg));
 		}
-		if (!$this->created_at->FldIsDetailKey && !is_null($this->created_at->FormValue) && $this->created_at->FormValue == "") {
-			ew_AddMessage($gsFormError, str_replace("%s", $this->created_at->FldCaption(), $this->created_at->ReqErrMsg));
-		}
-		if (!ew_CheckDateDef($this->created_at->FormValue)) {
-			ew_AddMessage($gsFormError, $this->created_at->FldErrMsg());
-		}
-		if (!ew_CheckDateDef($this->updated_at->FormValue)) {
-			ew_AddMessage($gsFormError, $this->updated_at->FldErrMsg());
+		if (!ew_CheckInteger($this->package_id->FormValue)) {
+			ew_AddMessage($gsFormError, $this->package_id->FldErrMsg());
 		}
 
 		// Return validate result
@@ -3115,11 +3213,8 @@ class corders_list extends corders {
 			// meeting_id
 			$this->meeting_id->SetDbValueDef($rsnew, $this->meeting_id->CurrentValue, NULL, $this->meeting_id->ReadOnly);
 
-			// created_at
-			$this->created_at->SetDbValueDef($rsnew, ew_UnFormatDateTime($this->created_at->CurrentValue, 0), ew_CurrentDate(), $this->created_at->ReadOnly);
-
-			// updated_at
-			$this->updated_at->SetDbValueDef($rsnew, ew_UnFormatDateTime($this->updated_at->CurrentValue, 0), NULL, $this->updated_at->ReadOnly);
+			// package_id
+			$this->package_id->SetDbValueDef($rsnew, $this->package_id->CurrentValue, NULL, $this->package_id->ReadOnly);
 
 			// Call Row Updating event
 			$bUpdateRow = $this->Row_Updating($rsold, $rsnew);
@@ -3191,11 +3286,8 @@ class corders_list extends corders {
 		// meeting_id
 		$this->meeting_id->SetDbValueDef($rsnew, $this->meeting_id->CurrentValue, NULL, FALSE);
 
-		// created_at
-		$this->created_at->SetDbValueDef($rsnew, ew_UnFormatDateTime($this->created_at->CurrentValue, 0), ew_CurrentDate(), FALSE);
-
-		// updated_at
-		$this->updated_at->SetDbValueDef($rsnew, ew_UnFormatDateTime($this->updated_at->CurrentValue, 0), NULL, FALSE);
+		// package_id
+		$this->package_id->SetDbValueDef($rsnew, $this->package_id->CurrentValue, NULL, FALSE);
 
 		// Call Row Inserting event
 		$rs = ($rsold == NULL) ? NULL : $rsold->fields;
@@ -3239,8 +3331,7 @@ class corders_list extends corders {
 		$this->currency_id->AdvancedSearch->Load();
 		$this->status->AdvancedSearch->Load();
 		$this->meeting_id->AdvancedSearch->Load();
-		$this->created_at->AdvancedSearch->Load();
-		$this->updated_at->AdvancedSearch->Load();
+		$this->package_id->AdvancedSearch->Load();
 	}
 
 	// Set up export options
@@ -3401,6 +3492,54 @@ class corders_list extends corders {
 		$pageId = $pageId ?: $this->PageID;
 		if ($pageId == "list") {
 			switch ($fld->FldVar) {
+		case "x_student_id":
+			$sSqlWrk = "";
+				$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `users`";
+				$sWhereWrk = "";
+				$fld->LookupFilters = array();
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "19", "fn0" => "");
+			$sSqlWrk = "";
+				$this->Lookup_Selecting($this->student_id, $sWhereWrk); // Call Lookup Selecting
+				if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
+		case "x_teacher_id":
+			$sSqlWrk = "";
+				$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `users`";
+				$sWhereWrk = "";
+				$fld->LookupFilters = array();
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "19", "fn0" => "");
+			$sSqlWrk = "";
+				$this->Lookup_Selecting($this->teacher_id, $sWhereWrk); // Call Lookup Selecting
+				if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
+		case "x_topic_id":
+			$sSqlWrk = "";
+				$sSqlWrk = "SELECT `id` AS `LinkFld`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `topics`";
+				$sWhereWrk = "";
+				$fld->LookupFilters = array();
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "19", "fn0" => "");
+			$sSqlWrk = "";
+				$this->Lookup_Selecting($this->topic_id, $sWhereWrk); // Call Lookup Selecting
+				if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
+		case "x_currency_id":
+			$sSqlWrk = "";
+				$sSqlWrk = "SELECT `id` AS `LinkFld`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `currencies`";
+				$sWhereWrk = "";
+				$fld->LookupFilters = array();
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "19", "fn0" => "");
+			$sSqlWrk = "";
+				$this->Lookup_Selecting($this->currency_id, $sWhereWrk); // Call Lookup Selecting
+				if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
 			}
 		} elseif ($pageId == "extbs") {
 			switch ($fld->FldVar) {
@@ -3598,18 +3737,9 @@ forderslist.Validate = function() {
 			elm = this.GetElements("x" + infix + "_student_id");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $orders->student_id->FldCaption(), $orders->student_id->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_student_id");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($orders->student_id->FldErrMsg()) ?>");
 			elm = this.GetElements("x" + infix + "_teacher_id");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $orders->teacher_id->FldCaption(), $orders->teacher_id->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_teacher_id");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($orders->teacher_id->FldErrMsg()) ?>");
-			elm = this.GetElements("x" + infix + "_topic_id");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($orders->topic_id->FldErrMsg()) ?>");
 			elm = this.GetElements("x" + infix + "_date");
 			if (elm && !ew_CheckDateDef(elm.value))
 				return this.OnError(elm, "<?php echo ew_JsEncode2($orders->date->FldErrMsg()) ?>");
@@ -3622,21 +3752,12 @@ forderslist.Validate = function() {
 			elm = this.GetElements("x" + infix + "_currency_id");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $orders->currency_id->FldCaption(), $orders->currency_id->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_currency_id");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($orders->currency_id->FldErrMsg()) ?>");
 			elm = this.GetElements("x" + infix + "_status");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $orders->status->FldCaption(), $orders->status->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_created_at");
-			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
-				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $orders->created_at->FldCaption(), $orders->created_at->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_created_at");
-			if (elm && !ew_CheckDateDef(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($orders->created_at->FldErrMsg()) ?>");
-			elm = this.GetElements("x" + infix + "_updated_at");
-			if (elm && !ew_CheckDateDef(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($orders->updated_at->FldErrMsg()) ?>");
+			elm = this.GetElements("x" + infix + "_package_id");
+			if (elm && !ew_CheckInteger(elm.value))
+				return this.OnError(elm, "<?php echo ew_JsEncode2($orders->package_id->FldErrMsg()) ?>");
 
 			// Fire Form_CustomValidate event
 			if (!this.Form_CustomValidate(fobj))
@@ -3662,8 +3783,7 @@ forderslist.EmptyRow = function(infix) {
 	if (ew_ValueChanged(fobj, infix, "currency_id", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "status", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "meeting_id", false)) return false;
-	if (ew_ValueChanged(fobj, infix, "created_at", false)) return false;
-	if (ew_ValueChanged(fobj, infix, "updated_at", false)) return false;
+	if (ew_ValueChanged(fobj, infix, "package_id", false)) return false;
 	return true;
 }
 
@@ -3679,6 +3799,14 @@ forderslist.Form_CustomValidate =
 forderslist.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
+forderslist.Lists["x_student_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"users"};
+forderslist.Lists["x_student_id"].Data = "<?php echo $orders_list->student_id->LookupFilterQuery(FALSE, "list") ?>";
+forderslist.Lists["x_teacher_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"users"};
+forderslist.Lists["x_teacher_id"].Data = "<?php echo $orders_list->teacher_id->LookupFilterQuery(FALSE, "list") ?>";
+forderslist.Lists["x_topic_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name_ar","x_name_en","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"topics"};
+forderslist.Lists["x_topic_id"].Data = "<?php echo $orders_list->topic_id->LookupFilterQuery(FALSE, "list") ?>";
+forderslist.Lists["x_currency_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name_ar","x_name_en","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"currencies"};
+forderslist.Lists["x_currency_id"].Data = "<?php echo $orders_list->currency_id->LookupFilterQuery(FALSE, "list") ?>";
 forderslist.Lists["x_status"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
 forderslist.Lists["x_status"].Options = <?php echo json_encode($orders_list->status->Options()) ?>;
 
@@ -3788,13 +3916,12 @@ $orders_list->RenderRow();
 <div id="xsr_1" class="ewRow">
 <?php if ($orders->status->Visible) { // status ?>
 	<div id="xsc_status" class="ewCell form-group">
-		<label class="ewSearchCaption ewLabel"><?php echo $orders->status->FldCaption() ?></label>
+		<label for="x_status" class="ewSearchCaption ewLabel"><?php echo $orders->status->FldCaption() ?></label>
 		<span class="ewSearchOperator"><?php echo $Language->Phrase("=") ?><input type="hidden" name="z_status" id="z_status" value="="></span>
 		<span class="ewSearchField">
-<div id="tp_x_status" class="ewTemplate"><input type="radio" data-table="orders" data-field="x_status" data-value-separator="<?php echo $orders->status->DisplayValueSeparatorAttribute() ?>" name="x_status" id="x_status" value="{value}"<?php echo $orders->status->EditAttributes() ?>></div>
-<div id="dsl_x_status" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
-<?php echo $orders->status->RadioButtonListHtml(FALSE, "x_status") ?>
-</div></div>
+<select data-table="orders" data-field="x_status" data-value-separator="<?php echo $orders->status->DisplayValueSeparatorAttribute() ?>" id="x_status" name="x_status"<?php echo $orders->status->EditAttributes() ?>>
+<?php echo $orders->status->SelectOptionListHtml("x_status") ?>
+</select>
 </span>
 	</div>
 <?php } ?>
@@ -3997,21 +4124,12 @@ $orders_list->ListOptions->Render("header", "left");
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
-<?php if ($orders->created_at->Visible) { // created_at ?>
-	<?php if ($orders->SortUrl($orders->created_at) == "") { ?>
-		<th data-name="created_at" class="<?php echo $orders->created_at->HeaderCellClass() ?>"><div id="elh_orders_created_at" class="orders_created_at"><div class="ewTableHeaderCaption"><?php echo $orders->created_at->FldCaption() ?></div></div></th>
+<?php if ($orders->package_id->Visible) { // package_id ?>
+	<?php if ($orders->SortUrl($orders->package_id) == "") { ?>
+		<th data-name="package_id" class="<?php echo $orders->package_id->HeaderCellClass() ?>"><div id="elh_orders_package_id" class="orders_package_id"><div class="ewTableHeaderCaption"><?php echo $orders->package_id->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="created_at" class="<?php echo $orders->created_at->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $orders->SortUrl($orders->created_at) ?>',1);"><div id="elh_orders_created_at" class="orders_created_at">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $orders->created_at->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($orders->created_at->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($orders->created_at->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
-<?php if ($orders->updated_at->Visible) { // updated_at ?>
-	<?php if ($orders->SortUrl($orders->updated_at) == "") { ?>
-		<th data-name="updated_at" class="<?php echo $orders->updated_at->HeaderCellClass() ?>"><div id="elh_orders_updated_at" class="orders_updated_at"><div class="ewTableHeaderCaption"><?php echo $orders->updated_at->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="updated_at" class="<?php echo $orders->updated_at->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $orders->SortUrl($orders->updated_at) ?>',1);"><div id="elh_orders_updated_at" class="orders_updated_at">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $orders->updated_at->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($orders->updated_at->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($orders->updated_at->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		<th data-name="package_id" class="<?php echo $orders->package_id->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $orders->SortUrl($orders->package_id) ?>',1);"><div id="elh_orders_package_id" class="orders_package_id">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $orders->package_id->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($orders->package_id->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($orders->package_id->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
@@ -4148,13 +4266,17 @@ $orders_list->ListOptions->Render("body", "left", $orders_list->RowCnt);
 		<td data-name="student_id"<?php echo $orders->student_id->CellAttributes() ?>>
 <?php if ($orders->RowType == EW_ROWTYPE_ADD) { // Add record ?>
 <span id="el<?php echo $orders_list->RowCnt ?>_orders_student_id" class="form-group orders_student_id">
-<input type="text" data-table="orders" data-field="x_student_id" name="x<?php echo $orders_list->RowIndex ?>_student_id" id="x<?php echo $orders_list->RowIndex ?>_student_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->student_id->getPlaceHolder()) ?>" value="<?php echo $orders->student_id->EditValue ?>"<?php echo $orders->student_id->EditAttributes() ?>>
+<select data-table="orders" data-field="x_student_id" data-value-separator="<?php echo $orders->student_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_list->RowIndex ?>_student_id" name="x<?php echo $orders_list->RowIndex ?>_student_id"<?php echo $orders->student_id->EditAttributes() ?>>
+<?php echo $orders->student_id->SelectOptionListHtml("x<?php echo $orders_list->RowIndex ?>_student_id") ?>
+</select>
 </span>
 <input type="hidden" data-table="orders" data-field="x_student_id" name="o<?php echo $orders_list->RowIndex ?>_student_id" id="o<?php echo $orders_list->RowIndex ?>_student_id" value="<?php echo ew_HtmlEncode($orders->student_id->OldValue) ?>">
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
 <span id="el<?php echo $orders_list->RowCnt ?>_orders_student_id" class="form-group orders_student_id">
-<input type="text" data-table="orders" data-field="x_student_id" name="x<?php echo $orders_list->RowIndex ?>_student_id" id="x<?php echo $orders_list->RowIndex ?>_student_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->student_id->getPlaceHolder()) ?>" value="<?php echo $orders->student_id->EditValue ?>"<?php echo $orders->student_id->EditAttributes() ?>>
+<select data-table="orders" data-field="x_student_id" data-value-separator="<?php echo $orders->student_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_list->RowIndex ?>_student_id" name="x<?php echo $orders_list->RowIndex ?>_student_id"<?php echo $orders->student_id->EditAttributes() ?>>
+<?php echo $orders->student_id->SelectOptionListHtml("x<?php echo $orders_list->RowIndex ?>_student_id") ?>
+</select>
 </span>
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_VIEW) { // View record ?>
@@ -4169,13 +4291,17 @@ $orders_list->ListOptions->Render("body", "left", $orders_list->RowCnt);
 		<td data-name="teacher_id"<?php echo $orders->teacher_id->CellAttributes() ?>>
 <?php if ($orders->RowType == EW_ROWTYPE_ADD) { // Add record ?>
 <span id="el<?php echo $orders_list->RowCnt ?>_orders_teacher_id" class="form-group orders_teacher_id">
-<input type="text" data-table="orders" data-field="x_teacher_id" name="x<?php echo $orders_list->RowIndex ?>_teacher_id" id="x<?php echo $orders_list->RowIndex ?>_teacher_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->teacher_id->getPlaceHolder()) ?>" value="<?php echo $orders->teacher_id->EditValue ?>"<?php echo $orders->teacher_id->EditAttributes() ?>>
+<select data-table="orders" data-field="x_teacher_id" data-value-separator="<?php echo $orders->teacher_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_list->RowIndex ?>_teacher_id" name="x<?php echo $orders_list->RowIndex ?>_teacher_id"<?php echo $orders->teacher_id->EditAttributes() ?>>
+<?php echo $orders->teacher_id->SelectOptionListHtml("x<?php echo $orders_list->RowIndex ?>_teacher_id") ?>
+</select>
 </span>
 <input type="hidden" data-table="orders" data-field="x_teacher_id" name="o<?php echo $orders_list->RowIndex ?>_teacher_id" id="o<?php echo $orders_list->RowIndex ?>_teacher_id" value="<?php echo ew_HtmlEncode($orders->teacher_id->OldValue) ?>">
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
 <span id="el<?php echo $orders_list->RowCnt ?>_orders_teacher_id" class="form-group orders_teacher_id">
-<input type="text" data-table="orders" data-field="x_teacher_id" name="x<?php echo $orders_list->RowIndex ?>_teacher_id" id="x<?php echo $orders_list->RowIndex ?>_teacher_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->teacher_id->getPlaceHolder()) ?>" value="<?php echo $orders->teacher_id->EditValue ?>"<?php echo $orders->teacher_id->EditAttributes() ?>>
+<select data-table="orders" data-field="x_teacher_id" data-value-separator="<?php echo $orders->teacher_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_list->RowIndex ?>_teacher_id" name="x<?php echo $orders_list->RowIndex ?>_teacher_id"<?php echo $orders->teacher_id->EditAttributes() ?>>
+<?php echo $orders->teacher_id->SelectOptionListHtml("x<?php echo $orders_list->RowIndex ?>_teacher_id") ?>
+</select>
 </span>
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_VIEW) { // View record ?>
@@ -4190,13 +4316,17 @@ $orders_list->ListOptions->Render("body", "left", $orders_list->RowCnt);
 		<td data-name="topic_id"<?php echo $orders->topic_id->CellAttributes() ?>>
 <?php if ($orders->RowType == EW_ROWTYPE_ADD) { // Add record ?>
 <span id="el<?php echo $orders_list->RowCnt ?>_orders_topic_id" class="form-group orders_topic_id">
-<input type="text" data-table="orders" data-field="x_topic_id" name="x<?php echo $orders_list->RowIndex ?>_topic_id" id="x<?php echo $orders_list->RowIndex ?>_topic_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->topic_id->getPlaceHolder()) ?>" value="<?php echo $orders->topic_id->EditValue ?>"<?php echo $orders->topic_id->EditAttributes() ?>>
+<select data-table="orders" data-field="x_topic_id" data-value-separator="<?php echo $orders->topic_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_list->RowIndex ?>_topic_id" name="x<?php echo $orders_list->RowIndex ?>_topic_id"<?php echo $orders->topic_id->EditAttributes() ?>>
+<?php echo $orders->topic_id->SelectOptionListHtml("x<?php echo $orders_list->RowIndex ?>_topic_id") ?>
+</select>
 </span>
 <input type="hidden" data-table="orders" data-field="x_topic_id" name="o<?php echo $orders_list->RowIndex ?>_topic_id" id="o<?php echo $orders_list->RowIndex ?>_topic_id" value="<?php echo ew_HtmlEncode($orders->topic_id->OldValue) ?>">
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
 <span id="el<?php echo $orders_list->RowCnt ?>_orders_topic_id" class="form-group orders_topic_id">
-<input type="text" data-table="orders" data-field="x_topic_id" name="x<?php echo $orders_list->RowIndex ?>_topic_id" id="x<?php echo $orders_list->RowIndex ?>_topic_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->topic_id->getPlaceHolder()) ?>" value="<?php echo $orders->topic_id->EditValue ?>"<?php echo $orders->topic_id->EditAttributes() ?>>
+<select data-table="orders" data-field="x_topic_id" data-value-separator="<?php echo $orders->topic_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_list->RowIndex ?>_topic_id" name="x<?php echo $orders_list->RowIndex ?>_topic_id"<?php echo $orders->topic_id->EditAttributes() ?>>
+<?php echo $orders->topic_id->SelectOptionListHtml("x<?php echo $orders_list->RowIndex ?>_topic_id") ?>
+</select>
 </span>
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_VIEW) { // View record ?>
@@ -4232,13 +4362,13 @@ $orders_list->ListOptions->Render("body", "left", $orders_list->RowCnt);
 		<td data-name="time"<?php echo $orders->time->CellAttributes() ?>>
 <?php if ($orders->RowType == EW_ROWTYPE_ADD) { // Add record ?>
 <span id="el<?php echo $orders_list->RowCnt ?>_orders_time" class="form-group orders_time">
-<textarea data-table="orders" data-field="x_time" name="x<?php echo $orders_list->RowIndex ?>_time" id="x<?php echo $orders_list->RowIndex ?>_time" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($orders->time->getPlaceHolder()) ?>"<?php echo $orders->time->EditAttributes() ?>><?php echo $orders->time->EditValue ?></textarea>
+<input type="text" data-table="orders" data-field="x_time" name="x<?php echo $orders_list->RowIndex ?>_time" id="x<?php echo $orders_list->RowIndex ?>_time" placeholder="<?php echo ew_HtmlEncode($orders->time->getPlaceHolder()) ?>" value="<?php echo $orders->time->EditValue ?>"<?php echo $orders->time->EditAttributes() ?>>
 </span>
 <input type="hidden" data-table="orders" data-field="x_time" name="o<?php echo $orders_list->RowIndex ?>_time" id="o<?php echo $orders_list->RowIndex ?>_time" value="<?php echo ew_HtmlEncode($orders->time->OldValue) ?>">
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
 <span id="el<?php echo $orders_list->RowCnt ?>_orders_time" class="form-group orders_time">
-<textarea data-table="orders" data-field="x_time" name="x<?php echo $orders_list->RowIndex ?>_time" id="x<?php echo $orders_list->RowIndex ?>_time" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($orders->time->getPlaceHolder()) ?>"<?php echo $orders->time->EditAttributes() ?>><?php echo $orders->time->EditValue ?></textarea>
+<input type="text" data-table="orders" data-field="x_time" name="x<?php echo $orders_list->RowIndex ?>_time" id="x<?php echo $orders_list->RowIndex ?>_time" placeholder="<?php echo ew_HtmlEncode($orders->time->getPlaceHolder()) ?>" value="<?php echo $orders->time->EditValue ?>"<?php echo $orders->time->EditAttributes() ?>>
 </span>
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_VIEW) { // View record ?>
@@ -4274,13 +4404,17 @@ $orders_list->ListOptions->Render("body", "left", $orders_list->RowCnt);
 		<td data-name="currency_id"<?php echo $orders->currency_id->CellAttributes() ?>>
 <?php if ($orders->RowType == EW_ROWTYPE_ADD) { // Add record ?>
 <span id="el<?php echo $orders_list->RowCnt ?>_orders_currency_id" class="form-group orders_currency_id">
-<input type="text" data-table="orders" data-field="x_currency_id" name="x<?php echo $orders_list->RowIndex ?>_currency_id" id="x<?php echo $orders_list->RowIndex ?>_currency_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->currency_id->getPlaceHolder()) ?>" value="<?php echo $orders->currency_id->EditValue ?>"<?php echo $orders->currency_id->EditAttributes() ?>>
+<select data-table="orders" data-field="x_currency_id" data-value-separator="<?php echo $orders->currency_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_list->RowIndex ?>_currency_id" name="x<?php echo $orders_list->RowIndex ?>_currency_id"<?php echo $orders->currency_id->EditAttributes() ?>>
+<?php echo $orders->currency_id->SelectOptionListHtml("x<?php echo $orders_list->RowIndex ?>_currency_id") ?>
+</select>
 </span>
 <input type="hidden" data-table="orders" data-field="x_currency_id" name="o<?php echo $orders_list->RowIndex ?>_currency_id" id="o<?php echo $orders_list->RowIndex ?>_currency_id" value="<?php echo ew_HtmlEncode($orders->currency_id->OldValue) ?>">
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
 <span id="el<?php echo $orders_list->RowCnt ?>_orders_currency_id" class="form-group orders_currency_id">
-<input type="text" data-table="orders" data-field="x_currency_id" name="x<?php echo $orders_list->RowIndex ?>_currency_id" id="x<?php echo $orders_list->RowIndex ?>_currency_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->currency_id->getPlaceHolder()) ?>" value="<?php echo $orders->currency_id->EditValue ?>"<?php echo $orders->currency_id->EditAttributes() ?>>
+<select data-table="orders" data-field="x_currency_id" data-value-separator="<?php echo $orders->currency_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_list->RowIndex ?>_currency_id" name="x<?php echo $orders_list->RowIndex ?>_currency_id"<?php echo $orders->currency_id->EditAttributes() ?>>
+<?php echo $orders->currency_id->SelectOptionListHtml("x<?php echo $orders_list->RowIndex ?>_currency_id") ?>
+</select>
 </span>
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_VIEW) { // View record ?>
@@ -4295,19 +4429,17 @@ $orders_list->ListOptions->Render("body", "left", $orders_list->RowCnt);
 		<td data-name="status"<?php echo $orders->status->CellAttributes() ?>>
 <?php if ($orders->RowType == EW_ROWTYPE_ADD) { // Add record ?>
 <span id="el<?php echo $orders_list->RowCnt ?>_orders_status" class="form-group orders_status">
-<div id="tp_x<?php echo $orders_list->RowIndex ?>_status" class="ewTemplate"><input type="radio" data-table="orders" data-field="x_status" data-value-separator="<?php echo $orders->status->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $orders_list->RowIndex ?>_status" id="x<?php echo $orders_list->RowIndex ?>_status" value="{value}"<?php echo $orders->status->EditAttributes() ?>></div>
-<div id="dsl_x<?php echo $orders_list->RowIndex ?>_status" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
-<?php echo $orders->status->RadioButtonListHtml(FALSE, "x{$orders_list->RowIndex}_status") ?>
-</div></div>
+<select data-table="orders" data-field="x_status" data-value-separator="<?php echo $orders->status->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_list->RowIndex ?>_status" name="x<?php echo $orders_list->RowIndex ?>_status"<?php echo $orders->status->EditAttributes() ?>>
+<?php echo $orders->status->SelectOptionListHtml("x<?php echo $orders_list->RowIndex ?>_status") ?>
+</select>
 </span>
 <input type="hidden" data-table="orders" data-field="x_status" name="o<?php echo $orders_list->RowIndex ?>_status" id="o<?php echo $orders_list->RowIndex ?>_status" value="<?php echo ew_HtmlEncode($orders->status->OldValue) ?>">
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
 <span id="el<?php echo $orders_list->RowCnt ?>_orders_status" class="form-group orders_status">
-<div id="tp_x<?php echo $orders_list->RowIndex ?>_status" class="ewTemplate"><input type="radio" data-table="orders" data-field="x_status" data-value-separator="<?php echo $orders->status->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $orders_list->RowIndex ?>_status" id="x<?php echo $orders_list->RowIndex ?>_status" value="{value}"<?php echo $orders->status->EditAttributes() ?>></div>
-<div id="dsl_x<?php echo $orders_list->RowIndex ?>_status" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
-<?php echo $orders->status->RadioButtonListHtml(FALSE, "x{$orders_list->RowIndex}_status") ?>
-</div></div>
+<select data-table="orders" data-field="x_status" data-value-separator="<?php echo $orders->status->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_list->RowIndex ?>_status" name="x<?php echo $orders_list->RowIndex ?>_status"<?php echo $orders->status->EditAttributes() ?>>
+<?php echo $orders->status->SelectOptionListHtml("x<?php echo $orders_list->RowIndex ?>_status") ?>
+</select>
 </span>
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_VIEW) { // View record ?>
@@ -4322,13 +4454,13 @@ $orders_list->ListOptions->Render("body", "left", $orders_list->RowCnt);
 		<td data-name="meeting_id"<?php echo $orders->meeting_id->CellAttributes() ?>>
 <?php if ($orders->RowType == EW_ROWTYPE_ADD) { // Add record ?>
 <span id="el<?php echo $orders_list->RowCnt ?>_orders_meeting_id" class="form-group orders_meeting_id">
-<textarea data-table="orders" data-field="x_meeting_id" name="x<?php echo $orders_list->RowIndex ?>_meeting_id" id="x<?php echo $orders_list->RowIndex ?>_meeting_id" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($orders->meeting_id->getPlaceHolder()) ?>"<?php echo $orders->meeting_id->EditAttributes() ?>><?php echo $orders->meeting_id->EditValue ?></textarea>
+<input type="text" data-table="orders" data-field="x_meeting_id" name="x<?php echo $orders_list->RowIndex ?>_meeting_id" id="x<?php echo $orders_list->RowIndex ?>_meeting_id" placeholder="<?php echo ew_HtmlEncode($orders->meeting_id->getPlaceHolder()) ?>" value="<?php echo $orders->meeting_id->EditValue ?>"<?php echo $orders->meeting_id->EditAttributes() ?>>
 </span>
 <input type="hidden" data-table="orders" data-field="x_meeting_id" name="o<?php echo $orders_list->RowIndex ?>_meeting_id" id="o<?php echo $orders_list->RowIndex ?>_meeting_id" value="<?php echo ew_HtmlEncode($orders->meeting_id->OldValue) ?>">
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
 <span id="el<?php echo $orders_list->RowCnt ?>_orders_meeting_id" class="form-group orders_meeting_id">
-<textarea data-table="orders" data-field="x_meeting_id" name="x<?php echo $orders_list->RowIndex ?>_meeting_id" id="x<?php echo $orders_list->RowIndex ?>_meeting_id" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($orders->meeting_id->getPlaceHolder()) ?>"<?php echo $orders->meeting_id->EditAttributes() ?>><?php echo $orders->meeting_id->EditValue ?></textarea>
+<input type="text" data-table="orders" data-field="x_meeting_id" name="x<?php echo $orders_list->RowIndex ?>_meeting_id" id="x<?php echo $orders_list->RowIndex ?>_meeting_id" placeholder="<?php echo ew_HtmlEncode($orders->meeting_id->getPlaceHolder()) ?>" value="<?php echo $orders->meeting_id->EditValue ?>"<?php echo $orders->meeting_id->EditAttributes() ?>>
 </span>
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_VIEW) { // View record ?>
@@ -4339,44 +4471,23 @@ $orders_list->ListOptions->Render("body", "left", $orders_list->RowCnt);
 <?php } ?>
 </td>
 	<?php } ?>
-	<?php if ($orders->created_at->Visible) { // created_at ?>
-		<td data-name="created_at"<?php echo $orders->created_at->CellAttributes() ?>>
+	<?php if ($orders->package_id->Visible) { // package_id ?>
+		<td data-name="package_id"<?php echo $orders->package_id->CellAttributes() ?>>
 <?php if ($orders->RowType == EW_ROWTYPE_ADD) { // Add record ?>
-<span id="el<?php echo $orders_list->RowCnt ?>_orders_created_at" class="form-group orders_created_at">
-<input type="text" data-table="orders" data-field="x_created_at" name="x<?php echo $orders_list->RowIndex ?>_created_at" id="x<?php echo $orders_list->RowIndex ?>_created_at" placeholder="<?php echo ew_HtmlEncode($orders->created_at->getPlaceHolder()) ?>" value="<?php echo $orders->created_at->EditValue ?>"<?php echo $orders->created_at->EditAttributes() ?>>
+<span id="el<?php echo $orders_list->RowCnt ?>_orders_package_id" class="form-group orders_package_id">
+<input type="text" data-table="orders" data-field="x_package_id" name="x<?php echo $orders_list->RowIndex ?>_package_id" id="x<?php echo $orders_list->RowIndex ?>_package_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->package_id->getPlaceHolder()) ?>" value="<?php echo $orders->package_id->EditValue ?>"<?php echo $orders->package_id->EditAttributes() ?>>
 </span>
-<input type="hidden" data-table="orders" data-field="x_created_at" name="o<?php echo $orders_list->RowIndex ?>_created_at" id="o<?php echo $orders_list->RowIndex ?>_created_at" value="<?php echo ew_HtmlEncode($orders->created_at->OldValue) ?>">
+<input type="hidden" data-table="orders" data-field="x_package_id" name="o<?php echo $orders_list->RowIndex ?>_package_id" id="o<?php echo $orders_list->RowIndex ?>_package_id" value="<?php echo ew_HtmlEncode($orders->package_id->OldValue) ?>">
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
-<span id="el<?php echo $orders_list->RowCnt ?>_orders_created_at" class="form-group orders_created_at">
-<input type="text" data-table="orders" data-field="x_created_at" name="x<?php echo $orders_list->RowIndex ?>_created_at" id="x<?php echo $orders_list->RowIndex ?>_created_at" placeholder="<?php echo ew_HtmlEncode($orders->created_at->getPlaceHolder()) ?>" value="<?php echo $orders->created_at->EditValue ?>"<?php echo $orders->created_at->EditAttributes() ?>>
+<span id="el<?php echo $orders_list->RowCnt ?>_orders_package_id" class="form-group orders_package_id">
+<input type="text" data-table="orders" data-field="x_package_id" name="x<?php echo $orders_list->RowIndex ?>_package_id" id="x<?php echo $orders_list->RowIndex ?>_package_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->package_id->getPlaceHolder()) ?>" value="<?php echo $orders->package_id->EditValue ?>"<?php echo $orders->package_id->EditAttributes() ?>>
 </span>
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_VIEW) { // View record ?>
-<span id="el<?php echo $orders_list->RowCnt ?>_orders_created_at" class="orders_created_at">
-<span<?php echo $orders->created_at->ViewAttributes() ?>>
-<?php echo $orders->created_at->ListViewValue() ?></span>
-</span>
-<?php } ?>
-</td>
-	<?php } ?>
-	<?php if ($orders->updated_at->Visible) { // updated_at ?>
-		<td data-name="updated_at"<?php echo $orders->updated_at->CellAttributes() ?>>
-<?php if ($orders->RowType == EW_ROWTYPE_ADD) { // Add record ?>
-<span id="el<?php echo $orders_list->RowCnt ?>_orders_updated_at" class="form-group orders_updated_at">
-<input type="text" data-table="orders" data-field="x_updated_at" name="x<?php echo $orders_list->RowIndex ?>_updated_at" id="x<?php echo $orders_list->RowIndex ?>_updated_at" placeholder="<?php echo ew_HtmlEncode($orders->updated_at->getPlaceHolder()) ?>" value="<?php echo $orders->updated_at->EditValue ?>"<?php echo $orders->updated_at->EditAttributes() ?>>
-</span>
-<input type="hidden" data-table="orders" data-field="x_updated_at" name="o<?php echo $orders_list->RowIndex ?>_updated_at" id="o<?php echo $orders_list->RowIndex ?>_updated_at" value="<?php echo ew_HtmlEncode($orders->updated_at->OldValue) ?>">
-<?php } ?>
-<?php if ($orders->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
-<span id="el<?php echo $orders_list->RowCnt ?>_orders_updated_at" class="form-group orders_updated_at">
-<input type="text" data-table="orders" data-field="x_updated_at" name="x<?php echo $orders_list->RowIndex ?>_updated_at" id="x<?php echo $orders_list->RowIndex ?>_updated_at" placeholder="<?php echo ew_HtmlEncode($orders->updated_at->getPlaceHolder()) ?>" value="<?php echo $orders->updated_at->EditValue ?>"<?php echo $orders->updated_at->EditAttributes() ?>>
-</span>
-<?php } ?>
-<?php if ($orders->RowType == EW_ROWTYPE_VIEW) { // View record ?>
-<span id="el<?php echo $orders_list->RowCnt ?>_orders_updated_at" class="orders_updated_at">
-<span<?php echo $orders->updated_at->ViewAttributes() ?>>
-<?php echo $orders->updated_at->ListViewValue() ?></span>
+<span id="el<?php echo $orders_list->RowCnt ?>_orders_package_id" class="orders_package_id">
+<span<?php echo $orders->package_id->ViewAttributes() ?>>
+<?php echo $orders->package_id->ListViewValue() ?></span>
 </span>
 <?php } ?>
 </td>
@@ -4431,7 +4542,9 @@ $orders_list->ListOptions->Render("body", "left", $orders_list->RowIndex);
 	<?php if ($orders->student_id->Visible) { // student_id ?>
 		<td data-name="student_id">
 <span id="el$rowindex$_orders_student_id" class="form-group orders_student_id">
-<input type="text" data-table="orders" data-field="x_student_id" name="x<?php echo $orders_list->RowIndex ?>_student_id" id="x<?php echo $orders_list->RowIndex ?>_student_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->student_id->getPlaceHolder()) ?>" value="<?php echo $orders->student_id->EditValue ?>"<?php echo $orders->student_id->EditAttributes() ?>>
+<select data-table="orders" data-field="x_student_id" data-value-separator="<?php echo $orders->student_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_list->RowIndex ?>_student_id" name="x<?php echo $orders_list->RowIndex ?>_student_id"<?php echo $orders->student_id->EditAttributes() ?>>
+<?php echo $orders->student_id->SelectOptionListHtml("x<?php echo $orders_list->RowIndex ?>_student_id") ?>
+</select>
 </span>
 <input type="hidden" data-table="orders" data-field="x_student_id" name="o<?php echo $orders_list->RowIndex ?>_student_id" id="o<?php echo $orders_list->RowIndex ?>_student_id" value="<?php echo ew_HtmlEncode($orders->student_id->OldValue) ?>">
 </td>
@@ -4439,7 +4552,9 @@ $orders_list->ListOptions->Render("body", "left", $orders_list->RowIndex);
 	<?php if ($orders->teacher_id->Visible) { // teacher_id ?>
 		<td data-name="teacher_id">
 <span id="el$rowindex$_orders_teacher_id" class="form-group orders_teacher_id">
-<input type="text" data-table="orders" data-field="x_teacher_id" name="x<?php echo $orders_list->RowIndex ?>_teacher_id" id="x<?php echo $orders_list->RowIndex ?>_teacher_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->teacher_id->getPlaceHolder()) ?>" value="<?php echo $orders->teacher_id->EditValue ?>"<?php echo $orders->teacher_id->EditAttributes() ?>>
+<select data-table="orders" data-field="x_teacher_id" data-value-separator="<?php echo $orders->teacher_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_list->RowIndex ?>_teacher_id" name="x<?php echo $orders_list->RowIndex ?>_teacher_id"<?php echo $orders->teacher_id->EditAttributes() ?>>
+<?php echo $orders->teacher_id->SelectOptionListHtml("x<?php echo $orders_list->RowIndex ?>_teacher_id") ?>
+</select>
 </span>
 <input type="hidden" data-table="orders" data-field="x_teacher_id" name="o<?php echo $orders_list->RowIndex ?>_teacher_id" id="o<?php echo $orders_list->RowIndex ?>_teacher_id" value="<?php echo ew_HtmlEncode($orders->teacher_id->OldValue) ?>">
 </td>
@@ -4447,7 +4562,9 @@ $orders_list->ListOptions->Render("body", "left", $orders_list->RowIndex);
 	<?php if ($orders->topic_id->Visible) { // topic_id ?>
 		<td data-name="topic_id">
 <span id="el$rowindex$_orders_topic_id" class="form-group orders_topic_id">
-<input type="text" data-table="orders" data-field="x_topic_id" name="x<?php echo $orders_list->RowIndex ?>_topic_id" id="x<?php echo $orders_list->RowIndex ?>_topic_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->topic_id->getPlaceHolder()) ?>" value="<?php echo $orders->topic_id->EditValue ?>"<?php echo $orders->topic_id->EditAttributes() ?>>
+<select data-table="orders" data-field="x_topic_id" data-value-separator="<?php echo $orders->topic_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_list->RowIndex ?>_topic_id" name="x<?php echo $orders_list->RowIndex ?>_topic_id"<?php echo $orders->topic_id->EditAttributes() ?>>
+<?php echo $orders->topic_id->SelectOptionListHtml("x<?php echo $orders_list->RowIndex ?>_topic_id") ?>
+</select>
 </span>
 <input type="hidden" data-table="orders" data-field="x_topic_id" name="o<?php echo $orders_list->RowIndex ?>_topic_id" id="o<?php echo $orders_list->RowIndex ?>_topic_id" value="<?php echo ew_HtmlEncode($orders->topic_id->OldValue) ?>">
 </td>
@@ -4463,7 +4580,7 @@ $orders_list->ListOptions->Render("body", "left", $orders_list->RowIndex);
 	<?php if ($orders->time->Visible) { // time ?>
 		<td data-name="time">
 <span id="el$rowindex$_orders_time" class="form-group orders_time">
-<textarea data-table="orders" data-field="x_time" name="x<?php echo $orders_list->RowIndex ?>_time" id="x<?php echo $orders_list->RowIndex ?>_time" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($orders->time->getPlaceHolder()) ?>"<?php echo $orders->time->EditAttributes() ?>><?php echo $orders->time->EditValue ?></textarea>
+<input type="text" data-table="orders" data-field="x_time" name="x<?php echo $orders_list->RowIndex ?>_time" id="x<?php echo $orders_list->RowIndex ?>_time" placeholder="<?php echo ew_HtmlEncode($orders->time->getPlaceHolder()) ?>" value="<?php echo $orders->time->EditValue ?>"<?php echo $orders->time->EditAttributes() ?>>
 </span>
 <input type="hidden" data-table="orders" data-field="x_time" name="o<?php echo $orders_list->RowIndex ?>_time" id="o<?php echo $orders_list->RowIndex ?>_time" value="<?php echo ew_HtmlEncode($orders->time->OldValue) ?>">
 </td>
@@ -4479,7 +4596,9 @@ $orders_list->ListOptions->Render("body", "left", $orders_list->RowIndex);
 	<?php if ($orders->currency_id->Visible) { // currency_id ?>
 		<td data-name="currency_id">
 <span id="el$rowindex$_orders_currency_id" class="form-group orders_currency_id">
-<input type="text" data-table="orders" data-field="x_currency_id" name="x<?php echo $orders_list->RowIndex ?>_currency_id" id="x<?php echo $orders_list->RowIndex ?>_currency_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->currency_id->getPlaceHolder()) ?>" value="<?php echo $orders->currency_id->EditValue ?>"<?php echo $orders->currency_id->EditAttributes() ?>>
+<select data-table="orders" data-field="x_currency_id" data-value-separator="<?php echo $orders->currency_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_list->RowIndex ?>_currency_id" name="x<?php echo $orders_list->RowIndex ?>_currency_id"<?php echo $orders->currency_id->EditAttributes() ?>>
+<?php echo $orders->currency_id->SelectOptionListHtml("x<?php echo $orders_list->RowIndex ?>_currency_id") ?>
+</select>
 </span>
 <input type="hidden" data-table="orders" data-field="x_currency_id" name="o<?php echo $orders_list->RowIndex ?>_currency_id" id="o<?php echo $orders_list->RowIndex ?>_currency_id" value="<?php echo ew_HtmlEncode($orders->currency_id->OldValue) ?>">
 </td>
@@ -4487,10 +4606,9 @@ $orders_list->ListOptions->Render("body", "left", $orders_list->RowIndex);
 	<?php if ($orders->status->Visible) { // status ?>
 		<td data-name="status">
 <span id="el$rowindex$_orders_status" class="form-group orders_status">
-<div id="tp_x<?php echo $orders_list->RowIndex ?>_status" class="ewTemplate"><input type="radio" data-table="orders" data-field="x_status" data-value-separator="<?php echo $orders->status->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $orders_list->RowIndex ?>_status" id="x<?php echo $orders_list->RowIndex ?>_status" value="{value}"<?php echo $orders->status->EditAttributes() ?>></div>
-<div id="dsl_x<?php echo $orders_list->RowIndex ?>_status" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
-<?php echo $orders->status->RadioButtonListHtml(FALSE, "x{$orders_list->RowIndex}_status") ?>
-</div></div>
+<select data-table="orders" data-field="x_status" data-value-separator="<?php echo $orders->status->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_list->RowIndex ?>_status" name="x<?php echo $orders_list->RowIndex ?>_status"<?php echo $orders->status->EditAttributes() ?>>
+<?php echo $orders->status->SelectOptionListHtml("x<?php echo $orders_list->RowIndex ?>_status") ?>
+</select>
 </span>
 <input type="hidden" data-table="orders" data-field="x_status" name="o<?php echo $orders_list->RowIndex ?>_status" id="o<?php echo $orders_list->RowIndex ?>_status" value="<?php echo ew_HtmlEncode($orders->status->OldValue) ?>">
 </td>
@@ -4498,25 +4616,17 @@ $orders_list->ListOptions->Render("body", "left", $orders_list->RowIndex);
 	<?php if ($orders->meeting_id->Visible) { // meeting_id ?>
 		<td data-name="meeting_id">
 <span id="el$rowindex$_orders_meeting_id" class="form-group orders_meeting_id">
-<textarea data-table="orders" data-field="x_meeting_id" name="x<?php echo $orders_list->RowIndex ?>_meeting_id" id="x<?php echo $orders_list->RowIndex ?>_meeting_id" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($orders->meeting_id->getPlaceHolder()) ?>"<?php echo $orders->meeting_id->EditAttributes() ?>><?php echo $orders->meeting_id->EditValue ?></textarea>
+<input type="text" data-table="orders" data-field="x_meeting_id" name="x<?php echo $orders_list->RowIndex ?>_meeting_id" id="x<?php echo $orders_list->RowIndex ?>_meeting_id" placeholder="<?php echo ew_HtmlEncode($orders->meeting_id->getPlaceHolder()) ?>" value="<?php echo $orders->meeting_id->EditValue ?>"<?php echo $orders->meeting_id->EditAttributes() ?>>
 </span>
 <input type="hidden" data-table="orders" data-field="x_meeting_id" name="o<?php echo $orders_list->RowIndex ?>_meeting_id" id="o<?php echo $orders_list->RowIndex ?>_meeting_id" value="<?php echo ew_HtmlEncode($orders->meeting_id->OldValue) ?>">
 </td>
 	<?php } ?>
-	<?php if ($orders->created_at->Visible) { // created_at ?>
-		<td data-name="created_at">
-<span id="el$rowindex$_orders_created_at" class="form-group orders_created_at">
-<input type="text" data-table="orders" data-field="x_created_at" name="x<?php echo $orders_list->RowIndex ?>_created_at" id="x<?php echo $orders_list->RowIndex ?>_created_at" placeholder="<?php echo ew_HtmlEncode($orders->created_at->getPlaceHolder()) ?>" value="<?php echo $orders->created_at->EditValue ?>"<?php echo $orders->created_at->EditAttributes() ?>>
+	<?php if ($orders->package_id->Visible) { // package_id ?>
+		<td data-name="package_id">
+<span id="el$rowindex$_orders_package_id" class="form-group orders_package_id">
+<input type="text" data-table="orders" data-field="x_package_id" name="x<?php echo $orders_list->RowIndex ?>_package_id" id="x<?php echo $orders_list->RowIndex ?>_package_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->package_id->getPlaceHolder()) ?>" value="<?php echo $orders->package_id->EditValue ?>"<?php echo $orders->package_id->EditAttributes() ?>>
 </span>
-<input type="hidden" data-table="orders" data-field="x_created_at" name="o<?php echo $orders_list->RowIndex ?>_created_at" id="o<?php echo $orders_list->RowIndex ?>_created_at" value="<?php echo ew_HtmlEncode($orders->created_at->OldValue) ?>">
-</td>
-	<?php } ?>
-	<?php if ($orders->updated_at->Visible) { // updated_at ?>
-		<td data-name="updated_at">
-<span id="el$rowindex$_orders_updated_at" class="form-group orders_updated_at">
-<input type="text" data-table="orders" data-field="x_updated_at" name="x<?php echo $orders_list->RowIndex ?>_updated_at" id="x<?php echo $orders_list->RowIndex ?>_updated_at" placeholder="<?php echo ew_HtmlEncode($orders->updated_at->getPlaceHolder()) ?>" value="<?php echo $orders->updated_at->EditValue ?>"<?php echo $orders->updated_at->EditAttributes() ?>>
-</span>
-<input type="hidden" data-table="orders" data-field="x_updated_at" name="o<?php echo $orders_list->RowIndex ?>_updated_at" id="o<?php echo $orders_list->RowIndex ?>_updated_at" value="<?php echo ew_HtmlEncode($orders->updated_at->OldValue) ?>">
+<input type="hidden" data-table="orders" data-field="x_package_id" name="o<?php echo $orders_list->RowIndex ?>_package_id" id="o<?php echo $orders_list->RowIndex ?>_package_id" value="<?php echo ew_HtmlEncode($orders->package_id->OldValue) ?>">
 </td>
 	<?php } ?>
 <?php

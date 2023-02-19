@@ -343,8 +343,7 @@ class corders_grid extends corders {
 		$this->currency_id->SetVisibility();
 		$this->status->SetVisibility();
 		$this->meeting_id->SetVisibility();
-		$this->created_at->SetVisibility();
-		$this->updated_at->SetVisibility();
+		$this->package_id->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -798,9 +797,7 @@ class corders_grid extends corders {
 			return FALSE;
 		if ($objForm->HasValue("x_meeting_id") && $objForm->HasValue("o_meeting_id") && $this->meeting_id->CurrentValue <> $this->meeting_id->OldValue)
 			return FALSE;
-		if ($objForm->HasValue("x_created_at") && $objForm->HasValue("o_created_at") && $this->created_at->CurrentValue <> $this->created_at->OldValue)
-			return FALSE;
-		if ($objForm->HasValue("x_updated_at") && $objForm->HasValue("o_updated_at") && $this->updated_at->CurrentValue <> $this->updated_at->OldValue)
+		if ($objForm->HasValue("x_package_id") && $objForm->HasValue("o_package_id") && $this->package_id->CurrentValue <> $this->package_id->OldValue)
 			return FALSE;
 		return TRUE;
 	}
@@ -1159,6 +1156,8 @@ class corders_grid extends corders {
 		$this->created_at->OldValue = $this->created_at->CurrentValue;
 		$this->updated_at->CurrentValue = NULL;
 		$this->updated_at->OldValue = $this->updated_at->CurrentValue;
+		$this->package_id->CurrentValue = NULL;
+		$this->package_id->OldValue = $this->package_id->CurrentValue;
 	}
 
 	// Load form values
@@ -1206,16 +1205,10 @@ class corders_grid extends corders {
 			$this->meeting_id->setFormValue($objForm->GetValue("x_meeting_id"));
 		}
 		$this->meeting_id->setOldValue($objForm->GetValue("o_meeting_id"));
-		if (!$this->created_at->FldIsDetailKey) {
-			$this->created_at->setFormValue($objForm->GetValue("x_created_at"));
-			$this->created_at->CurrentValue = ew_UnFormatDateTime($this->created_at->CurrentValue, 0);
+		if (!$this->package_id->FldIsDetailKey) {
+			$this->package_id->setFormValue($objForm->GetValue("x_package_id"));
 		}
-		$this->created_at->setOldValue($objForm->GetValue("o_created_at"));
-		if (!$this->updated_at->FldIsDetailKey) {
-			$this->updated_at->setFormValue($objForm->GetValue("x_updated_at"));
-			$this->updated_at->CurrentValue = ew_UnFormatDateTime($this->updated_at->CurrentValue, 0);
-		}
-		$this->updated_at->setOldValue($objForm->GetValue("o_updated_at"));
+		$this->package_id->setOldValue($objForm->GetValue("o_package_id"));
 	}
 
 	// Restore form values
@@ -1233,10 +1226,7 @@ class corders_grid extends corders {
 		$this->currency_id->CurrentValue = $this->currency_id->FormValue;
 		$this->status->CurrentValue = $this->status->FormValue;
 		$this->meeting_id->CurrentValue = $this->meeting_id->FormValue;
-		$this->created_at->CurrentValue = $this->created_at->FormValue;
-		$this->created_at->CurrentValue = ew_UnFormatDateTime($this->created_at->CurrentValue, 0);
-		$this->updated_at->CurrentValue = $this->updated_at->FormValue;
-		$this->updated_at->CurrentValue = ew_UnFormatDateTime($this->updated_at->CurrentValue, 0);
+		$this->package_id->CurrentValue = $this->package_id->FormValue;
 	}
 
 	// Load recordset
@@ -1310,6 +1300,7 @@ class corders_grid extends corders {
 		$this->meeting_id->setDbValue($row['meeting_id']);
 		$this->created_at->setDbValue($row['created_at']);
 		$this->updated_at->setDbValue($row['updated_at']);
+		$this->package_id->setDbValue($row['package_id']);
 	}
 
 	// Return a row with default values
@@ -1328,6 +1319,7 @@ class corders_grid extends corders {
 		$row['meeting_id'] = $this->meeting_id->CurrentValue;
 		$row['created_at'] = $this->created_at->CurrentValue;
 		$row['updated_at'] = $this->updated_at->CurrentValue;
+		$row['package_id'] = $this->package_id->CurrentValue;
 		return $row;
 	}
 
@@ -1348,6 +1340,7 @@ class corders_grid extends corders {
 		$this->meeting_id->DbValue = $row['meeting_id'];
 		$this->created_at->DbValue = $row['created_at'];
 		$this->updated_at->DbValue = $row['updated_at'];
+		$this->package_id->DbValue = $row['package_id'];
 	}
 
 	// Load old record
@@ -1403,8 +1396,13 @@ class corders_grid extends corders {
 		// status
 		// meeting_id
 		// created_at
-		// updated_at
 
+		$this->created_at->CellCssStyle = "white-space: nowrap;";
+
+		// updated_at
+		$this->updated_at->CellCssStyle = "white-space: nowrap;";
+
+		// package_id
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
 		// id
@@ -1412,15 +1410,73 @@ class corders_grid extends corders {
 		$this->id->ViewCustomAttributes = "";
 
 		// student_id
-		$this->student_id->ViewValue = $this->student_id->CurrentValue;
+		if (strval($this->student_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->student_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `users`";
+		$sWhereWrk = "";
+		$this->student_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->student_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->student_id->ViewValue = $this->student_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->student_id->ViewValue = $this->student_id->CurrentValue;
+			}
+		} else {
+			$this->student_id->ViewValue = NULL;
+		}
 		$this->student_id->ViewCustomAttributes = "";
 
 		// teacher_id
-		$this->teacher_id->ViewValue = $this->teacher_id->CurrentValue;
+		if (strval($this->teacher_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->teacher_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `users`";
+		$sWhereWrk = "";
+		$this->teacher_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->teacher_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->teacher_id->ViewValue = $this->teacher_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->teacher_id->ViewValue = $this->teacher_id->CurrentValue;
+			}
+		} else {
+			$this->teacher_id->ViewValue = NULL;
+		}
 		$this->teacher_id->ViewCustomAttributes = "";
 
 		// topic_id
-		$this->topic_id->ViewValue = $this->topic_id->CurrentValue;
+		if (strval($this->topic_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->topic_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `topics`";
+		$sWhereWrk = "";
+		$this->topic_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->topic_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[2] = $rswrk->fields('Disp2Fld');
+				$this->topic_id->ViewValue = $this->topic_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->topic_id->ViewValue = $this->topic_id->CurrentValue;
+			}
+		} else {
+			$this->topic_id->ViewValue = NULL;
+		}
 		$this->topic_id->ViewCustomAttributes = "";
 
 		// date
@@ -1437,7 +1493,27 @@ class corders_grid extends corders {
 		$this->fees->ViewCustomAttributes = "";
 
 		// currency_id
-		$this->currency_id->ViewValue = $this->currency_id->CurrentValue;
+		if (strval($this->currency_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->currency_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `currencies`";
+		$sWhereWrk = "";
+		$this->currency_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->currency_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[2] = $rswrk->fields('Disp2Fld');
+				$this->currency_id->ViewValue = $this->currency_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->currency_id->ViewValue = $this->currency_id->CurrentValue;
+			}
+		} else {
+			$this->currency_id->ViewValue = NULL;
+		}
 		$this->currency_id->ViewCustomAttributes = "";
 
 		// status
@@ -1452,15 +1528,9 @@ class corders_grid extends corders {
 		$this->meeting_id->ViewValue = $this->meeting_id->CurrentValue;
 		$this->meeting_id->ViewCustomAttributes = "";
 
-		// created_at
-		$this->created_at->ViewValue = $this->created_at->CurrentValue;
-		$this->created_at->ViewValue = ew_FormatDateTime($this->created_at->ViewValue, 0);
-		$this->created_at->ViewCustomAttributes = "";
-
-		// updated_at
-		$this->updated_at->ViewValue = $this->updated_at->CurrentValue;
-		$this->updated_at->ViewValue = ew_FormatDateTime($this->updated_at->ViewValue, 0);
-		$this->updated_at->ViewCustomAttributes = "";
+		// package_id
+		$this->package_id->ViewValue = $this->package_id->CurrentValue;
+		$this->package_id->ViewCustomAttributes = "";
 
 			// id
 			$this->id->LinkCustomAttributes = "";
@@ -1512,15 +1582,10 @@ class corders_grid extends corders {
 			$this->meeting_id->HrefValue = "";
 			$this->meeting_id->TooltipValue = "";
 
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
-			$this->created_at->TooltipValue = "";
-
-			// updated_at
-			$this->updated_at->LinkCustomAttributes = "";
-			$this->updated_at->HrefValue = "";
-			$this->updated_at->TooltipValue = "";
+			// package_id
+			$this->package_id->LinkCustomAttributes = "";
+			$this->package_id->HrefValue = "";
+			$this->package_id->TooltipValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_ADD) { // Add row
 
 			// id
@@ -1528,20 +1593,59 @@ class corders_grid extends corders {
 
 			$this->student_id->EditAttrs["class"] = "form-control";
 			$this->student_id->EditCustomAttributes = "";
-			$this->student_id->EditValue = ew_HtmlEncode($this->student_id->CurrentValue);
-			$this->student_id->PlaceHolder = ew_RemoveHtml($this->student_id->FldCaption());
+			if (trim(strval($this->student_id->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->student_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			}
+			$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `users`";
+			$sWhereWrk = "";
+			$this->student_id->LookupFilters = array();
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->student_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->student_id->EditValue = $arwrk;
 
 			// teacher_id
 			$this->teacher_id->EditAttrs["class"] = "form-control";
 			$this->teacher_id->EditCustomAttributes = "";
-			$this->teacher_id->EditValue = ew_HtmlEncode($this->teacher_id->CurrentValue);
-			$this->teacher_id->PlaceHolder = ew_RemoveHtml($this->teacher_id->FldCaption());
+			if (trim(strval($this->teacher_id->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->teacher_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			}
+			$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `users`";
+			$sWhereWrk = "";
+			$this->teacher_id->LookupFilters = array();
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->teacher_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->teacher_id->EditValue = $arwrk;
 
 			// topic_id
 			$this->topic_id->EditAttrs["class"] = "form-control";
 			$this->topic_id->EditCustomAttributes = "";
-			$this->topic_id->EditValue = ew_HtmlEncode($this->topic_id->CurrentValue);
-			$this->topic_id->PlaceHolder = ew_RemoveHtml($this->topic_id->FldCaption());
+			if (trim(strval($this->topic_id->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->topic_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			}
+			$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `topics`";
+			$sWhereWrk = "";
+			$this->topic_id->LookupFilters = array();
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->topic_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->topic_id->EditValue = $arwrk;
 
 			// date
 			$this->date->EditAttrs["class"] = "form-control";
@@ -1564,12 +1668,26 @@ class corders_grid extends corders {
 			// currency_id
 			$this->currency_id->EditAttrs["class"] = "form-control";
 			$this->currency_id->EditCustomAttributes = "";
-			$this->currency_id->EditValue = ew_HtmlEncode($this->currency_id->CurrentValue);
-			$this->currency_id->PlaceHolder = ew_RemoveHtml($this->currency_id->FldCaption());
+			if (trim(strval($this->currency_id->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->currency_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			}
+			$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `currencies`";
+			$sWhereWrk = "";
+			$this->currency_id->LookupFilters = array();
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->currency_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->currency_id->EditValue = $arwrk;
 
 			// status
+			$this->status->EditAttrs["class"] = "form-control";
 			$this->status->EditCustomAttributes = "";
-			$this->status->EditValue = $this->status->Options(FALSE);
+			$this->status->EditValue = $this->status->Options(TRUE);
 
 			// meeting_id
 			$this->meeting_id->EditAttrs["class"] = "form-control";
@@ -1577,17 +1695,11 @@ class corders_grid extends corders {
 			$this->meeting_id->EditValue = ew_HtmlEncode($this->meeting_id->CurrentValue);
 			$this->meeting_id->PlaceHolder = ew_RemoveHtml($this->meeting_id->FldCaption());
 
-			// created_at
-			$this->created_at->EditAttrs["class"] = "form-control";
-			$this->created_at->EditCustomAttributes = "";
-			$this->created_at->EditValue = ew_HtmlEncode(ew_FormatDateTime($this->created_at->CurrentValue, 8));
-			$this->created_at->PlaceHolder = ew_RemoveHtml($this->created_at->FldCaption());
-
-			// updated_at
-			$this->updated_at->EditAttrs["class"] = "form-control";
-			$this->updated_at->EditCustomAttributes = "";
-			$this->updated_at->EditValue = ew_HtmlEncode(ew_FormatDateTime($this->updated_at->CurrentValue, 8));
-			$this->updated_at->PlaceHolder = ew_RemoveHtml($this->updated_at->FldCaption());
+			// package_id
+			$this->package_id->EditAttrs["class"] = "form-control";
+			$this->package_id->EditCustomAttributes = "";
+			$this->package_id->EditValue = ew_HtmlEncode($this->package_id->CurrentValue);
+			$this->package_id->PlaceHolder = ew_RemoveHtml($this->package_id->FldCaption());
 
 			// Add refer script
 			// id
@@ -1631,13 +1743,9 @@ class corders_grid extends corders {
 			$this->meeting_id->LinkCustomAttributes = "";
 			$this->meeting_id->HrefValue = "";
 
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
-
-			// updated_at
-			$this->updated_at->LinkCustomAttributes = "";
-			$this->updated_at->HrefValue = "";
+			// package_id
+			$this->package_id->LinkCustomAttributes = "";
+			$this->package_id->HrefValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_EDIT) { // Edit row
 
 			// id
@@ -1649,20 +1757,59 @@ class corders_grid extends corders {
 			// student_id
 			$this->student_id->EditAttrs["class"] = "form-control";
 			$this->student_id->EditCustomAttributes = "";
-			$this->student_id->EditValue = ew_HtmlEncode($this->student_id->CurrentValue);
-			$this->student_id->PlaceHolder = ew_RemoveHtml($this->student_id->FldCaption());
+			if (trim(strval($this->student_id->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->student_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			}
+			$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `users`";
+			$sWhereWrk = "";
+			$this->student_id->LookupFilters = array();
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->student_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->student_id->EditValue = $arwrk;
 
 			// teacher_id
 			$this->teacher_id->EditAttrs["class"] = "form-control";
 			$this->teacher_id->EditCustomAttributes = "";
-			$this->teacher_id->EditValue = ew_HtmlEncode($this->teacher_id->CurrentValue);
-			$this->teacher_id->PlaceHolder = ew_RemoveHtml($this->teacher_id->FldCaption());
+			if (trim(strval($this->teacher_id->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->teacher_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			}
+			$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `users`";
+			$sWhereWrk = "";
+			$this->teacher_id->LookupFilters = array();
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->teacher_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->teacher_id->EditValue = $arwrk;
 
 			// topic_id
 			$this->topic_id->EditAttrs["class"] = "form-control";
 			$this->topic_id->EditCustomAttributes = "";
-			$this->topic_id->EditValue = ew_HtmlEncode($this->topic_id->CurrentValue);
-			$this->topic_id->PlaceHolder = ew_RemoveHtml($this->topic_id->FldCaption());
+			if (trim(strval($this->topic_id->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->topic_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			}
+			$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `topics`";
+			$sWhereWrk = "";
+			$this->topic_id->LookupFilters = array();
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->topic_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->topic_id->EditValue = $arwrk;
 
 			// date
 			$this->date->EditAttrs["class"] = "form-control";
@@ -1685,12 +1832,26 @@ class corders_grid extends corders {
 			// currency_id
 			$this->currency_id->EditAttrs["class"] = "form-control";
 			$this->currency_id->EditCustomAttributes = "";
-			$this->currency_id->EditValue = ew_HtmlEncode($this->currency_id->CurrentValue);
-			$this->currency_id->PlaceHolder = ew_RemoveHtml($this->currency_id->FldCaption());
+			if (trim(strval($this->currency_id->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->currency_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			}
+			$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `currencies`";
+			$sWhereWrk = "";
+			$this->currency_id->LookupFilters = array();
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->currency_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->currency_id->EditValue = $arwrk;
 
 			// status
+			$this->status->EditAttrs["class"] = "form-control";
 			$this->status->EditCustomAttributes = "";
-			$this->status->EditValue = $this->status->Options(FALSE);
+			$this->status->EditValue = $this->status->Options(TRUE);
 
 			// meeting_id
 			$this->meeting_id->EditAttrs["class"] = "form-control";
@@ -1698,17 +1859,11 @@ class corders_grid extends corders {
 			$this->meeting_id->EditValue = ew_HtmlEncode($this->meeting_id->CurrentValue);
 			$this->meeting_id->PlaceHolder = ew_RemoveHtml($this->meeting_id->FldCaption());
 
-			// created_at
-			$this->created_at->EditAttrs["class"] = "form-control";
-			$this->created_at->EditCustomAttributes = "";
-			$this->created_at->EditValue = ew_HtmlEncode(ew_FormatDateTime($this->created_at->CurrentValue, 8));
-			$this->created_at->PlaceHolder = ew_RemoveHtml($this->created_at->FldCaption());
-
-			// updated_at
-			$this->updated_at->EditAttrs["class"] = "form-control";
-			$this->updated_at->EditCustomAttributes = "";
-			$this->updated_at->EditValue = ew_HtmlEncode(ew_FormatDateTime($this->updated_at->CurrentValue, 8));
-			$this->updated_at->PlaceHolder = ew_RemoveHtml($this->updated_at->FldCaption());
+			// package_id
+			$this->package_id->EditAttrs["class"] = "form-control";
+			$this->package_id->EditCustomAttributes = "";
+			$this->package_id->EditValue = ew_HtmlEncode($this->package_id->CurrentValue);
+			$this->package_id->PlaceHolder = ew_RemoveHtml($this->package_id->FldCaption());
 
 			// Edit refer script
 			// id
@@ -1752,13 +1907,9 @@ class corders_grid extends corders {
 			$this->meeting_id->LinkCustomAttributes = "";
 			$this->meeting_id->HrefValue = "";
 
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
-
-			// updated_at
-			$this->updated_at->LinkCustomAttributes = "";
-			$this->updated_at->HrefValue = "";
+			// package_id
+			$this->package_id->LinkCustomAttributes = "";
+			$this->package_id->HrefValue = "";
 		}
 		if ($this->RowType == EW_ROWTYPE_ADD || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_SEARCH) // Add/Edit/Search row
 			$this->SetupFieldTitles();
@@ -1778,17 +1929,8 @@ class corders_grid extends corders {
 		if (!$this->student_id->FldIsDetailKey && !is_null($this->student_id->FormValue) && $this->student_id->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->student_id->FldCaption(), $this->student_id->ReqErrMsg));
 		}
-		if (!ew_CheckInteger($this->student_id->FormValue)) {
-			ew_AddMessage($gsFormError, $this->student_id->FldErrMsg());
-		}
 		if (!$this->teacher_id->FldIsDetailKey && !is_null($this->teacher_id->FormValue) && $this->teacher_id->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->teacher_id->FldCaption(), $this->teacher_id->ReqErrMsg));
-		}
-		if (!ew_CheckInteger($this->teacher_id->FormValue)) {
-			ew_AddMessage($gsFormError, $this->teacher_id->FldErrMsg());
-		}
-		if (!ew_CheckInteger($this->topic_id->FormValue)) {
-			ew_AddMessage($gsFormError, $this->topic_id->FldErrMsg());
 		}
 		if (!ew_CheckDateDef($this->date->FormValue)) {
 			ew_AddMessage($gsFormError, $this->date->FldErrMsg());
@@ -1802,20 +1944,11 @@ class corders_grid extends corders {
 		if (!$this->currency_id->FldIsDetailKey && !is_null($this->currency_id->FormValue) && $this->currency_id->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->currency_id->FldCaption(), $this->currency_id->ReqErrMsg));
 		}
-		if (!ew_CheckInteger($this->currency_id->FormValue)) {
-			ew_AddMessage($gsFormError, $this->currency_id->FldErrMsg());
-		}
-		if ($this->status->FormValue == "") {
+		if (!$this->status->FldIsDetailKey && !is_null($this->status->FormValue) && $this->status->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->status->FldCaption(), $this->status->ReqErrMsg));
 		}
-		if (!$this->created_at->FldIsDetailKey && !is_null($this->created_at->FormValue) && $this->created_at->FormValue == "") {
-			ew_AddMessage($gsFormError, str_replace("%s", $this->created_at->FldCaption(), $this->created_at->ReqErrMsg));
-		}
-		if (!ew_CheckDateDef($this->created_at->FormValue)) {
-			ew_AddMessage($gsFormError, $this->created_at->FldErrMsg());
-		}
-		if (!ew_CheckDateDef($this->updated_at->FormValue)) {
-			ew_AddMessage($gsFormError, $this->updated_at->FldErrMsg());
+		if (!ew_CheckInteger($this->package_id->FormValue)) {
+			ew_AddMessage($gsFormError, $this->package_id->FldErrMsg());
 		}
 
 		// Return validate result
@@ -1956,11 +2089,8 @@ class corders_grid extends corders {
 			// meeting_id
 			$this->meeting_id->SetDbValueDef($rsnew, $this->meeting_id->CurrentValue, NULL, $this->meeting_id->ReadOnly);
 
-			// created_at
-			$this->created_at->SetDbValueDef($rsnew, ew_UnFormatDateTime($this->created_at->CurrentValue, 0), ew_CurrentDate(), $this->created_at->ReadOnly);
-
-			// updated_at
-			$this->updated_at->SetDbValueDef($rsnew, ew_UnFormatDateTime($this->updated_at->CurrentValue, 0), NULL, $this->updated_at->ReadOnly);
+			// package_id
+			$this->package_id->SetDbValueDef($rsnew, $this->package_id->CurrentValue, NULL, $this->package_id->ReadOnly);
 
 			// Call Row Updating event
 			$bUpdateRow = $this->Row_Updating($rsold, $rsnew);
@@ -2034,11 +2164,8 @@ class corders_grid extends corders {
 		// meeting_id
 		$this->meeting_id->SetDbValueDef($rsnew, $this->meeting_id->CurrentValue, NULL, FALSE);
 
-		// created_at
-		$this->created_at->SetDbValueDef($rsnew, ew_UnFormatDateTime($this->created_at->CurrentValue, 0), ew_CurrentDate(), FALSE);
-
-		// updated_at
-		$this->updated_at->SetDbValueDef($rsnew, ew_UnFormatDateTime($this->updated_at->CurrentValue, 0), NULL, FALSE);
+		// package_id
+		$this->package_id->SetDbValueDef($rsnew, $this->package_id->CurrentValue, NULL, FALSE);
 
 		// Call Row Inserting event
 		$rs = ($rsold == NULL) ? NULL : $rsold->fields;
@@ -2075,6 +2202,54 @@ class corders_grid extends corders {
 		global $gsLanguage;
 		$pageId = $pageId ?: $this->PageID;
 		switch ($fld->FldVar) {
+		case "x_student_id":
+			$sSqlWrk = "";
+			$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `users`";
+			$sWhereWrk = "";
+			$fld->LookupFilters = array();
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "19", "fn0" => "");
+			$sSqlWrk = "";
+			$this->Lookup_Selecting($this->student_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
+		case "x_teacher_id":
+			$sSqlWrk = "";
+			$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `users`";
+			$sWhereWrk = "";
+			$fld->LookupFilters = array();
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "19", "fn0" => "");
+			$sSqlWrk = "";
+			$this->Lookup_Selecting($this->teacher_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
+		case "x_topic_id":
+			$sSqlWrk = "";
+			$sSqlWrk = "SELECT `id` AS `LinkFld`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `topics`";
+			$sWhereWrk = "";
+			$fld->LookupFilters = array();
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "19", "fn0" => "");
+			$sSqlWrk = "";
+			$this->Lookup_Selecting($this->topic_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
+		case "x_currency_id":
+			$sSqlWrk = "";
+			$sSqlWrk = "SELECT `id` AS `LinkFld`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `currencies`";
+			$sWhereWrk = "";
+			$fld->LookupFilters = array();
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "19", "fn0" => "");
+			$sSqlWrk = "";
+			$this->Lookup_Selecting($this->currency_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
 		}
 	}
 

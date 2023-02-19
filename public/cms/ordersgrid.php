@@ -44,18 +44,9 @@ fordersgrid.Validate = function() {
 			elm = this.GetElements("x" + infix + "_student_id");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $orders->student_id->FldCaption(), $orders->student_id->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_student_id");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($orders->student_id->FldErrMsg()) ?>");
 			elm = this.GetElements("x" + infix + "_teacher_id");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $orders->teacher_id->FldCaption(), $orders->teacher_id->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_teacher_id");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($orders->teacher_id->FldErrMsg()) ?>");
-			elm = this.GetElements("x" + infix + "_topic_id");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($orders->topic_id->FldErrMsg()) ?>");
 			elm = this.GetElements("x" + infix + "_date");
 			if (elm && !ew_CheckDateDef(elm.value))
 				return this.OnError(elm, "<?php echo ew_JsEncode2($orders->date->FldErrMsg()) ?>");
@@ -68,21 +59,12 @@ fordersgrid.Validate = function() {
 			elm = this.GetElements("x" + infix + "_currency_id");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $orders->currency_id->FldCaption(), $orders->currency_id->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_currency_id");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($orders->currency_id->FldErrMsg()) ?>");
 			elm = this.GetElements("x" + infix + "_status");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $orders->status->FldCaption(), $orders->status->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_created_at");
-			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
-				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $orders->created_at->FldCaption(), $orders->created_at->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_created_at");
-			if (elm && !ew_CheckDateDef(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($orders->created_at->FldErrMsg()) ?>");
-			elm = this.GetElements("x" + infix + "_updated_at");
-			if (elm && !ew_CheckDateDef(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($orders->updated_at->FldErrMsg()) ?>");
+			elm = this.GetElements("x" + infix + "_package_id");
+			if (elm && !ew_CheckInteger(elm.value))
+				return this.OnError(elm, "<?php echo ew_JsEncode2($orders->package_id->FldErrMsg()) ?>");
 
 			// Fire Form_CustomValidate event
 			if (!this.Form_CustomValidate(fobj))
@@ -104,8 +86,7 @@ fordersgrid.EmptyRow = function(infix) {
 	if (ew_ValueChanged(fobj, infix, "currency_id", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "status", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "meeting_id", false)) return false;
-	if (ew_ValueChanged(fobj, infix, "created_at", false)) return false;
-	if (ew_ValueChanged(fobj, infix, "updated_at", false)) return false;
+	if (ew_ValueChanged(fobj, infix, "package_id", false)) return false;
 	return true;
 }
 
@@ -121,6 +102,14 @@ fordersgrid.Form_CustomValidate =
 fordersgrid.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
+fordersgrid.Lists["x_student_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"users"};
+fordersgrid.Lists["x_student_id"].Data = "<?php echo $orders_grid->student_id->LookupFilterQuery(FALSE, "grid") ?>";
+fordersgrid.Lists["x_teacher_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"users"};
+fordersgrid.Lists["x_teacher_id"].Data = "<?php echo $orders_grid->teacher_id->LookupFilterQuery(FALSE, "grid") ?>";
+fordersgrid.Lists["x_topic_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name_ar","x_name_en","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"topics"};
+fordersgrid.Lists["x_topic_id"].Data = "<?php echo $orders_grid->topic_id->LookupFilterQuery(FALSE, "grid") ?>";
+fordersgrid.Lists["x_currency_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name_ar","x_name_en","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"currencies"};
+fordersgrid.Lists["x_currency_id"].Data = "<?php echo $orders_grid->currency_id->LookupFilterQuery(FALSE, "grid") ?>";
 fordersgrid.Lists["x_status"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
 fordersgrid.Lists["x_status"].Options = <?php echo json_encode($orders_grid->status->Options()) ?>;
 
@@ -292,21 +281,12 @@ $orders_grid->ListOptions->Render("header", "left");
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
-<?php if ($orders->created_at->Visible) { // created_at ?>
-	<?php if ($orders->SortUrl($orders->created_at) == "") { ?>
-		<th data-name="created_at" class="<?php echo $orders->created_at->HeaderCellClass() ?>"><div id="elh_orders_created_at" class="orders_created_at"><div class="ewTableHeaderCaption"><?php echo $orders->created_at->FldCaption() ?></div></div></th>
+<?php if ($orders->package_id->Visible) { // package_id ?>
+	<?php if ($orders->SortUrl($orders->package_id) == "") { ?>
+		<th data-name="package_id" class="<?php echo $orders->package_id->HeaderCellClass() ?>"><div id="elh_orders_package_id" class="orders_package_id"><div class="ewTableHeaderCaption"><?php echo $orders->package_id->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="created_at" class="<?php echo $orders->created_at->HeaderCellClass() ?>"><div><div id="elh_orders_created_at" class="orders_created_at">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $orders->created_at->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($orders->created_at->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($orders->created_at->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
-<?php if ($orders->updated_at->Visible) { // updated_at ?>
-	<?php if ($orders->SortUrl($orders->updated_at) == "") { ?>
-		<th data-name="updated_at" class="<?php echo $orders->updated_at->HeaderCellClass() ?>"><div id="elh_orders_updated_at" class="orders_updated_at"><div class="ewTableHeaderCaption"><?php echo $orders->updated_at->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="updated_at" class="<?php echo $orders->updated_at->HeaderCellClass() ?>"><div><div id="elh_orders_updated_at" class="orders_updated_at">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $orders->updated_at->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($orders->updated_at->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($orders->updated_at->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		<th data-name="package_id" class="<?php echo $orders->package_id->HeaderCellClass() ?>"><div><div id="elh_orders_package_id" class="orders_package_id">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $orders->package_id->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($orders->package_id->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($orders->package_id->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
@@ -450,13 +430,17 @@ $orders_grid->ListOptions->Render("body", "left", $orders_grid->RowCnt);
 		<td data-name="student_id"<?php echo $orders->student_id->CellAttributes() ?>>
 <?php if ($orders->RowType == EW_ROWTYPE_ADD) { // Add record ?>
 <span id="el<?php echo $orders_grid->RowCnt ?>_orders_student_id" class="form-group orders_student_id">
-<input type="text" data-table="orders" data-field="x_student_id" name="x<?php echo $orders_grid->RowIndex ?>_student_id" id="x<?php echo $orders_grid->RowIndex ?>_student_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->student_id->getPlaceHolder()) ?>" value="<?php echo $orders->student_id->EditValue ?>"<?php echo $orders->student_id->EditAttributes() ?>>
+<select data-table="orders" data-field="x_student_id" data-value-separator="<?php echo $orders->student_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_grid->RowIndex ?>_student_id" name="x<?php echo $orders_grid->RowIndex ?>_student_id"<?php echo $orders->student_id->EditAttributes() ?>>
+<?php echo $orders->student_id->SelectOptionListHtml("x<?php echo $orders_grid->RowIndex ?>_student_id") ?>
+</select>
 </span>
 <input type="hidden" data-table="orders" data-field="x_student_id" name="o<?php echo $orders_grid->RowIndex ?>_student_id" id="o<?php echo $orders_grid->RowIndex ?>_student_id" value="<?php echo ew_HtmlEncode($orders->student_id->OldValue) ?>">
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
 <span id="el<?php echo $orders_grid->RowCnt ?>_orders_student_id" class="form-group orders_student_id">
-<input type="text" data-table="orders" data-field="x_student_id" name="x<?php echo $orders_grid->RowIndex ?>_student_id" id="x<?php echo $orders_grid->RowIndex ?>_student_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->student_id->getPlaceHolder()) ?>" value="<?php echo $orders->student_id->EditValue ?>"<?php echo $orders->student_id->EditAttributes() ?>>
+<select data-table="orders" data-field="x_student_id" data-value-separator="<?php echo $orders->student_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_grid->RowIndex ?>_student_id" name="x<?php echo $orders_grid->RowIndex ?>_student_id"<?php echo $orders->student_id->EditAttributes() ?>>
+<?php echo $orders->student_id->SelectOptionListHtml("x<?php echo $orders_grid->RowIndex ?>_student_id") ?>
+</select>
 </span>
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_VIEW) { // View record ?>
@@ -478,13 +462,17 @@ $orders_grid->ListOptions->Render("body", "left", $orders_grid->RowCnt);
 		<td data-name="teacher_id"<?php echo $orders->teacher_id->CellAttributes() ?>>
 <?php if ($orders->RowType == EW_ROWTYPE_ADD) { // Add record ?>
 <span id="el<?php echo $orders_grid->RowCnt ?>_orders_teacher_id" class="form-group orders_teacher_id">
-<input type="text" data-table="orders" data-field="x_teacher_id" name="x<?php echo $orders_grid->RowIndex ?>_teacher_id" id="x<?php echo $orders_grid->RowIndex ?>_teacher_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->teacher_id->getPlaceHolder()) ?>" value="<?php echo $orders->teacher_id->EditValue ?>"<?php echo $orders->teacher_id->EditAttributes() ?>>
+<select data-table="orders" data-field="x_teacher_id" data-value-separator="<?php echo $orders->teacher_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_grid->RowIndex ?>_teacher_id" name="x<?php echo $orders_grid->RowIndex ?>_teacher_id"<?php echo $orders->teacher_id->EditAttributes() ?>>
+<?php echo $orders->teacher_id->SelectOptionListHtml("x<?php echo $orders_grid->RowIndex ?>_teacher_id") ?>
+</select>
 </span>
 <input type="hidden" data-table="orders" data-field="x_teacher_id" name="o<?php echo $orders_grid->RowIndex ?>_teacher_id" id="o<?php echo $orders_grid->RowIndex ?>_teacher_id" value="<?php echo ew_HtmlEncode($orders->teacher_id->OldValue) ?>">
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
 <span id="el<?php echo $orders_grid->RowCnt ?>_orders_teacher_id" class="form-group orders_teacher_id">
-<input type="text" data-table="orders" data-field="x_teacher_id" name="x<?php echo $orders_grid->RowIndex ?>_teacher_id" id="x<?php echo $orders_grid->RowIndex ?>_teacher_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->teacher_id->getPlaceHolder()) ?>" value="<?php echo $orders->teacher_id->EditValue ?>"<?php echo $orders->teacher_id->EditAttributes() ?>>
+<select data-table="orders" data-field="x_teacher_id" data-value-separator="<?php echo $orders->teacher_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_grid->RowIndex ?>_teacher_id" name="x<?php echo $orders_grid->RowIndex ?>_teacher_id"<?php echo $orders->teacher_id->EditAttributes() ?>>
+<?php echo $orders->teacher_id->SelectOptionListHtml("x<?php echo $orders_grid->RowIndex ?>_teacher_id") ?>
+</select>
 </span>
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_VIEW) { // View record ?>
@@ -506,13 +494,17 @@ $orders_grid->ListOptions->Render("body", "left", $orders_grid->RowCnt);
 		<td data-name="topic_id"<?php echo $orders->topic_id->CellAttributes() ?>>
 <?php if ($orders->RowType == EW_ROWTYPE_ADD) { // Add record ?>
 <span id="el<?php echo $orders_grid->RowCnt ?>_orders_topic_id" class="form-group orders_topic_id">
-<input type="text" data-table="orders" data-field="x_topic_id" name="x<?php echo $orders_grid->RowIndex ?>_topic_id" id="x<?php echo $orders_grid->RowIndex ?>_topic_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->topic_id->getPlaceHolder()) ?>" value="<?php echo $orders->topic_id->EditValue ?>"<?php echo $orders->topic_id->EditAttributes() ?>>
+<select data-table="orders" data-field="x_topic_id" data-value-separator="<?php echo $orders->topic_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_grid->RowIndex ?>_topic_id" name="x<?php echo $orders_grid->RowIndex ?>_topic_id"<?php echo $orders->topic_id->EditAttributes() ?>>
+<?php echo $orders->topic_id->SelectOptionListHtml("x<?php echo $orders_grid->RowIndex ?>_topic_id") ?>
+</select>
 </span>
 <input type="hidden" data-table="orders" data-field="x_topic_id" name="o<?php echo $orders_grid->RowIndex ?>_topic_id" id="o<?php echo $orders_grid->RowIndex ?>_topic_id" value="<?php echo ew_HtmlEncode($orders->topic_id->OldValue) ?>">
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
 <span id="el<?php echo $orders_grid->RowCnt ?>_orders_topic_id" class="form-group orders_topic_id">
-<input type="text" data-table="orders" data-field="x_topic_id" name="x<?php echo $orders_grid->RowIndex ?>_topic_id" id="x<?php echo $orders_grid->RowIndex ?>_topic_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->topic_id->getPlaceHolder()) ?>" value="<?php echo $orders->topic_id->EditValue ?>"<?php echo $orders->topic_id->EditAttributes() ?>>
+<select data-table="orders" data-field="x_topic_id" data-value-separator="<?php echo $orders->topic_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_grid->RowIndex ?>_topic_id" name="x<?php echo $orders_grid->RowIndex ?>_topic_id"<?php echo $orders->topic_id->EditAttributes() ?>>
+<?php echo $orders->topic_id->SelectOptionListHtml("x<?php echo $orders_grid->RowIndex ?>_topic_id") ?>
+</select>
 </span>
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_VIEW) { // View record ?>
@@ -562,13 +554,13 @@ $orders_grid->ListOptions->Render("body", "left", $orders_grid->RowCnt);
 		<td data-name="time"<?php echo $orders->time->CellAttributes() ?>>
 <?php if ($orders->RowType == EW_ROWTYPE_ADD) { // Add record ?>
 <span id="el<?php echo $orders_grid->RowCnt ?>_orders_time" class="form-group orders_time">
-<textarea data-table="orders" data-field="x_time" name="x<?php echo $orders_grid->RowIndex ?>_time" id="x<?php echo $orders_grid->RowIndex ?>_time" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($orders->time->getPlaceHolder()) ?>"<?php echo $orders->time->EditAttributes() ?>><?php echo $orders->time->EditValue ?></textarea>
+<input type="text" data-table="orders" data-field="x_time" name="x<?php echo $orders_grid->RowIndex ?>_time" id="x<?php echo $orders_grid->RowIndex ?>_time" placeholder="<?php echo ew_HtmlEncode($orders->time->getPlaceHolder()) ?>" value="<?php echo $orders->time->EditValue ?>"<?php echo $orders->time->EditAttributes() ?>>
 </span>
 <input type="hidden" data-table="orders" data-field="x_time" name="o<?php echo $orders_grid->RowIndex ?>_time" id="o<?php echo $orders_grid->RowIndex ?>_time" value="<?php echo ew_HtmlEncode($orders->time->OldValue) ?>">
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
 <span id="el<?php echo $orders_grid->RowCnt ?>_orders_time" class="form-group orders_time">
-<textarea data-table="orders" data-field="x_time" name="x<?php echo $orders_grid->RowIndex ?>_time" id="x<?php echo $orders_grid->RowIndex ?>_time" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($orders->time->getPlaceHolder()) ?>"<?php echo $orders->time->EditAttributes() ?>><?php echo $orders->time->EditValue ?></textarea>
+<input type="text" data-table="orders" data-field="x_time" name="x<?php echo $orders_grid->RowIndex ?>_time" id="x<?php echo $orders_grid->RowIndex ?>_time" placeholder="<?php echo ew_HtmlEncode($orders->time->getPlaceHolder()) ?>" value="<?php echo $orders->time->EditValue ?>"<?php echo $orders->time->EditAttributes() ?>>
 </span>
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_VIEW) { // View record ?>
@@ -618,13 +610,17 @@ $orders_grid->ListOptions->Render("body", "left", $orders_grid->RowCnt);
 		<td data-name="currency_id"<?php echo $orders->currency_id->CellAttributes() ?>>
 <?php if ($orders->RowType == EW_ROWTYPE_ADD) { // Add record ?>
 <span id="el<?php echo $orders_grid->RowCnt ?>_orders_currency_id" class="form-group orders_currency_id">
-<input type="text" data-table="orders" data-field="x_currency_id" name="x<?php echo $orders_grid->RowIndex ?>_currency_id" id="x<?php echo $orders_grid->RowIndex ?>_currency_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->currency_id->getPlaceHolder()) ?>" value="<?php echo $orders->currency_id->EditValue ?>"<?php echo $orders->currency_id->EditAttributes() ?>>
+<select data-table="orders" data-field="x_currency_id" data-value-separator="<?php echo $orders->currency_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_grid->RowIndex ?>_currency_id" name="x<?php echo $orders_grid->RowIndex ?>_currency_id"<?php echo $orders->currency_id->EditAttributes() ?>>
+<?php echo $orders->currency_id->SelectOptionListHtml("x<?php echo $orders_grid->RowIndex ?>_currency_id") ?>
+</select>
 </span>
 <input type="hidden" data-table="orders" data-field="x_currency_id" name="o<?php echo $orders_grid->RowIndex ?>_currency_id" id="o<?php echo $orders_grid->RowIndex ?>_currency_id" value="<?php echo ew_HtmlEncode($orders->currency_id->OldValue) ?>">
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
 <span id="el<?php echo $orders_grid->RowCnt ?>_orders_currency_id" class="form-group orders_currency_id">
-<input type="text" data-table="orders" data-field="x_currency_id" name="x<?php echo $orders_grid->RowIndex ?>_currency_id" id="x<?php echo $orders_grid->RowIndex ?>_currency_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->currency_id->getPlaceHolder()) ?>" value="<?php echo $orders->currency_id->EditValue ?>"<?php echo $orders->currency_id->EditAttributes() ?>>
+<select data-table="orders" data-field="x_currency_id" data-value-separator="<?php echo $orders->currency_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_grid->RowIndex ?>_currency_id" name="x<?php echo $orders_grid->RowIndex ?>_currency_id"<?php echo $orders->currency_id->EditAttributes() ?>>
+<?php echo $orders->currency_id->SelectOptionListHtml("x<?php echo $orders_grid->RowIndex ?>_currency_id") ?>
+</select>
 </span>
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_VIEW) { // View record ?>
@@ -646,19 +642,17 @@ $orders_grid->ListOptions->Render("body", "left", $orders_grid->RowCnt);
 		<td data-name="status"<?php echo $orders->status->CellAttributes() ?>>
 <?php if ($orders->RowType == EW_ROWTYPE_ADD) { // Add record ?>
 <span id="el<?php echo $orders_grid->RowCnt ?>_orders_status" class="form-group orders_status">
-<div id="tp_x<?php echo $orders_grid->RowIndex ?>_status" class="ewTemplate"><input type="radio" data-table="orders" data-field="x_status" data-value-separator="<?php echo $orders->status->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $orders_grid->RowIndex ?>_status" id="x<?php echo $orders_grid->RowIndex ?>_status" value="{value}"<?php echo $orders->status->EditAttributes() ?>></div>
-<div id="dsl_x<?php echo $orders_grid->RowIndex ?>_status" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
-<?php echo $orders->status->RadioButtonListHtml(FALSE, "x{$orders_grid->RowIndex}_status") ?>
-</div></div>
+<select data-table="orders" data-field="x_status" data-value-separator="<?php echo $orders->status->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_grid->RowIndex ?>_status" name="x<?php echo $orders_grid->RowIndex ?>_status"<?php echo $orders->status->EditAttributes() ?>>
+<?php echo $orders->status->SelectOptionListHtml("x<?php echo $orders_grid->RowIndex ?>_status") ?>
+</select>
 </span>
 <input type="hidden" data-table="orders" data-field="x_status" name="o<?php echo $orders_grid->RowIndex ?>_status" id="o<?php echo $orders_grid->RowIndex ?>_status" value="<?php echo ew_HtmlEncode($orders->status->OldValue) ?>">
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
 <span id="el<?php echo $orders_grid->RowCnt ?>_orders_status" class="form-group orders_status">
-<div id="tp_x<?php echo $orders_grid->RowIndex ?>_status" class="ewTemplate"><input type="radio" data-table="orders" data-field="x_status" data-value-separator="<?php echo $orders->status->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $orders_grid->RowIndex ?>_status" id="x<?php echo $orders_grid->RowIndex ?>_status" value="{value}"<?php echo $orders->status->EditAttributes() ?>></div>
-<div id="dsl_x<?php echo $orders_grid->RowIndex ?>_status" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
-<?php echo $orders->status->RadioButtonListHtml(FALSE, "x{$orders_grid->RowIndex}_status") ?>
-</div></div>
+<select data-table="orders" data-field="x_status" data-value-separator="<?php echo $orders->status->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_grid->RowIndex ?>_status" name="x<?php echo $orders_grid->RowIndex ?>_status"<?php echo $orders->status->EditAttributes() ?>>
+<?php echo $orders->status->SelectOptionListHtml("x<?php echo $orders_grid->RowIndex ?>_status") ?>
+</select>
 </span>
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_VIEW) { // View record ?>
@@ -680,13 +674,13 @@ $orders_grid->ListOptions->Render("body", "left", $orders_grid->RowCnt);
 		<td data-name="meeting_id"<?php echo $orders->meeting_id->CellAttributes() ?>>
 <?php if ($orders->RowType == EW_ROWTYPE_ADD) { // Add record ?>
 <span id="el<?php echo $orders_grid->RowCnt ?>_orders_meeting_id" class="form-group orders_meeting_id">
-<textarea data-table="orders" data-field="x_meeting_id" name="x<?php echo $orders_grid->RowIndex ?>_meeting_id" id="x<?php echo $orders_grid->RowIndex ?>_meeting_id" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($orders->meeting_id->getPlaceHolder()) ?>"<?php echo $orders->meeting_id->EditAttributes() ?>><?php echo $orders->meeting_id->EditValue ?></textarea>
+<input type="text" data-table="orders" data-field="x_meeting_id" name="x<?php echo $orders_grid->RowIndex ?>_meeting_id" id="x<?php echo $orders_grid->RowIndex ?>_meeting_id" placeholder="<?php echo ew_HtmlEncode($orders->meeting_id->getPlaceHolder()) ?>" value="<?php echo $orders->meeting_id->EditValue ?>"<?php echo $orders->meeting_id->EditAttributes() ?>>
 </span>
 <input type="hidden" data-table="orders" data-field="x_meeting_id" name="o<?php echo $orders_grid->RowIndex ?>_meeting_id" id="o<?php echo $orders_grid->RowIndex ?>_meeting_id" value="<?php echo ew_HtmlEncode($orders->meeting_id->OldValue) ?>">
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
 <span id="el<?php echo $orders_grid->RowCnt ?>_orders_meeting_id" class="form-group orders_meeting_id">
-<textarea data-table="orders" data-field="x_meeting_id" name="x<?php echo $orders_grid->RowIndex ?>_meeting_id" id="x<?php echo $orders_grid->RowIndex ?>_meeting_id" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($orders->meeting_id->getPlaceHolder()) ?>"<?php echo $orders->meeting_id->EditAttributes() ?>><?php echo $orders->meeting_id->EditValue ?></textarea>
+<input type="text" data-table="orders" data-field="x_meeting_id" name="x<?php echo $orders_grid->RowIndex ?>_meeting_id" id="x<?php echo $orders_grid->RowIndex ?>_meeting_id" placeholder="<?php echo ew_HtmlEncode($orders->meeting_id->getPlaceHolder()) ?>" value="<?php echo $orders->meeting_id->EditValue ?>"<?php echo $orders->meeting_id->EditAttributes() ?>>
 </span>
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_VIEW) { // View record ?>
@@ -704,58 +698,30 @@ $orders_grid->ListOptions->Render("body", "left", $orders_grid->RowCnt);
 <?php } ?>
 </td>
 	<?php } ?>
-	<?php if ($orders->created_at->Visible) { // created_at ?>
-		<td data-name="created_at"<?php echo $orders->created_at->CellAttributes() ?>>
+	<?php if ($orders->package_id->Visible) { // package_id ?>
+		<td data-name="package_id"<?php echo $orders->package_id->CellAttributes() ?>>
 <?php if ($orders->RowType == EW_ROWTYPE_ADD) { // Add record ?>
-<span id="el<?php echo $orders_grid->RowCnt ?>_orders_created_at" class="form-group orders_created_at">
-<input type="text" data-table="orders" data-field="x_created_at" name="x<?php echo $orders_grid->RowIndex ?>_created_at" id="x<?php echo $orders_grid->RowIndex ?>_created_at" placeholder="<?php echo ew_HtmlEncode($orders->created_at->getPlaceHolder()) ?>" value="<?php echo $orders->created_at->EditValue ?>"<?php echo $orders->created_at->EditAttributes() ?>>
+<span id="el<?php echo $orders_grid->RowCnt ?>_orders_package_id" class="form-group orders_package_id">
+<input type="text" data-table="orders" data-field="x_package_id" name="x<?php echo $orders_grid->RowIndex ?>_package_id" id="x<?php echo $orders_grid->RowIndex ?>_package_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->package_id->getPlaceHolder()) ?>" value="<?php echo $orders->package_id->EditValue ?>"<?php echo $orders->package_id->EditAttributes() ?>>
 </span>
-<input type="hidden" data-table="orders" data-field="x_created_at" name="o<?php echo $orders_grid->RowIndex ?>_created_at" id="o<?php echo $orders_grid->RowIndex ?>_created_at" value="<?php echo ew_HtmlEncode($orders->created_at->OldValue) ?>">
+<input type="hidden" data-table="orders" data-field="x_package_id" name="o<?php echo $orders_grid->RowIndex ?>_package_id" id="o<?php echo $orders_grid->RowIndex ?>_package_id" value="<?php echo ew_HtmlEncode($orders->package_id->OldValue) ?>">
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
-<span id="el<?php echo $orders_grid->RowCnt ?>_orders_created_at" class="form-group orders_created_at">
-<input type="text" data-table="orders" data-field="x_created_at" name="x<?php echo $orders_grid->RowIndex ?>_created_at" id="x<?php echo $orders_grid->RowIndex ?>_created_at" placeholder="<?php echo ew_HtmlEncode($orders->created_at->getPlaceHolder()) ?>" value="<?php echo $orders->created_at->EditValue ?>"<?php echo $orders->created_at->EditAttributes() ?>>
+<span id="el<?php echo $orders_grid->RowCnt ?>_orders_package_id" class="form-group orders_package_id">
+<input type="text" data-table="orders" data-field="x_package_id" name="x<?php echo $orders_grid->RowIndex ?>_package_id" id="x<?php echo $orders_grid->RowIndex ?>_package_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->package_id->getPlaceHolder()) ?>" value="<?php echo $orders->package_id->EditValue ?>"<?php echo $orders->package_id->EditAttributes() ?>>
 </span>
 <?php } ?>
 <?php if ($orders->RowType == EW_ROWTYPE_VIEW) { // View record ?>
-<span id="el<?php echo $orders_grid->RowCnt ?>_orders_created_at" class="orders_created_at">
-<span<?php echo $orders->created_at->ViewAttributes() ?>>
-<?php echo $orders->created_at->ListViewValue() ?></span>
+<span id="el<?php echo $orders_grid->RowCnt ?>_orders_package_id" class="orders_package_id">
+<span<?php echo $orders->package_id->ViewAttributes() ?>>
+<?php echo $orders->package_id->ListViewValue() ?></span>
 </span>
 <?php if ($orders->CurrentAction <> "F") { ?>
-<input type="hidden" data-table="orders" data-field="x_created_at" name="x<?php echo $orders_grid->RowIndex ?>_created_at" id="x<?php echo $orders_grid->RowIndex ?>_created_at" value="<?php echo ew_HtmlEncode($orders->created_at->FormValue) ?>">
-<input type="hidden" data-table="orders" data-field="x_created_at" name="o<?php echo $orders_grid->RowIndex ?>_created_at" id="o<?php echo $orders_grid->RowIndex ?>_created_at" value="<?php echo ew_HtmlEncode($orders->created_at->OldValue) ?>">
+<input type="hidden" data-table="orders" data-field="x_package_id" name="x<?php echo $orders_grid->RowIndex ?>_package_id" id="x<?php echo $orders_grid->RowIndex ?>_package_id" value="<?php echo ew_HtmlEncode($orders->package_id->FormValue) ?>">
+<input type="hidden" data-table="orders" data-field="x_package_id" name="o<?php echo $orders_grid->RowIndex ?>_package_id" id="o<?php echo $orders_grid->RowIndex ?>_package_id" value="<?php echo ew_HtmlEncode($orders->package_id->OldValue) ?>">
 <?php } else { ?>
-<input type="hidden" data-table="orders" data-field="x_created_at" name="fordersgrid$x<?php echo $orders_grid->RowIndex ?>_created_at" id="fordersgrid$x<?php echo $orders_grid->RowIndex ?>_created_at" value="<?php echo ew_HtmlEncode($orders->created_at->FormValue) ?>">
-<input type="hidden" data-table="orders" data-field="x_created_at" name="fordersgrid$o<?php echo $orders_grid->RowIndex ?>_created_at" id="fordersgrid$o<?php echo $orders_grid->RowIndex ?>_created_at" value="<?php echo ew_HtmlEncode($orders->created_at->OldValue) ?>">
-<?php } ?>
-<?php } ?>
-</td>
-	<?php } ?>
-	<?php if ($orders->updated_at->Visible) { // updated_at ?>
-		<td data-name="updated_at"<?php echo $orders->updated_at->CellAttributes() ?>>
-<?php if ($orders->RowType == EW_ROWTYPE_ADD) { // Add record ?>
-<span id="el<?php echo $orders_grid->RowCnt ?>_orders_updated_at" class="form-group orders_updated_at">
-<input type="text" data-table="orders" data-field="x_updated_at" name="x<?php echo $orders_grid->RowIndex ?>_updated_at" id="x<?php echo $orders_grid->RowIndex ?>_updated_at" placeholder="<?php echo ew_HtmlEncode($orders->updated_at->getPlaceHolder()) ?>" value="<?php echo $orders->updated_at->EditValue ?>"<?php echo $orders->updated_at->EditAttributes() ?>>
-</span>
-<input type="hidden" data-table="orders" data-field="x_updated_at" name="o<?php echo $orders_grid->RowIndex ?>_updated_at" id="o<?php echo $orders_grid->RowIndex ?>_updated_at" value="<?php echo ew_HtmlEncode($orders->updated_at->OldValue) ?>">
-<?php } ?>
-<?php if ($orders->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
-<span id="el<?php echo $orders_grid->RowCnt ?>_orders_updated_at" class="form-group orders_updated_at">
-<input type="text" data-table="orders" data-field="x_updated_at" name="x<?php echo $orders_grid->RowIndex ?>_updated_at" id="x<?php echo $orders_grid->RowIndex ?>_updated_at" placeholder="<?php echo ew_HtmlEncode($orders->updated_at->getPlaceHolder()) ?>" value="<?php echo $orders->updated_at->EditValue ?>"<?php echo $orders->updated_at->EditAttributes() ?>>
-</span>
-<?php } ?>
-<?php if ($orders->RowType == EW_ROWTYPE_VIEW) { // View record ?>
-<span id="el<?php echo $orders_grid->RowCnt ?>_orders_updated_at" class="orders_updated_at">
-<span<?php echo $orders->updated_at->ViewAttributes() ?>>
-<?php echo $orders->updated_at->ListViewValue() ?></span>
-</span>
-<?php if ($orders->CurrentAction <> "F") { ?>
-<input type="hidden" data-table="orders" data-field="x_updated_at" name="x<?php echo $orders_grid->RowIndex ?>_updated_at" id="x<?php echo $orders_grid->RowIndex ?>_updated_at" value="<?php echo ew_HtmlEncode($orders->updated_at->FormValue) ?>">
-<input type="hidden" data-table="orders" data-field="x_updated_at" name="o<?php echo $orders_grid->RowIndex ?>_updated_at" id="o<?php echo $orders_grid->RowIndex ?>_updated_at" value="<?php echo ew_HtmlEncode($orders->updated_at->OldValue) ?>">
-<?php } else { ?>
-<input type="hidden" data-table="orders" data-field="x_updated_at" name="fordersgrid$x<?php echo $orders_grid->RowIndex ?>_updated_at" id="fordersgrid$x<?php echo $orders_grid->RowIndex ?>_updated_at" value="<?php echo ew_HtmlEncode($orders->updated_at->FormValue) ?>">
-<input type="hidden" data-table="orders" data-field="x_updated_at" name="fordersgrid$o<?php echo $orders_grid->RowIndex ?>_updated_at" id="fordersgrid$o<?php echo $orders_grid->RowIndex ?>_updated_at" value="<?php echo ew_HtmlEncode($orders->updated_at->OldValue) ?>">
+<input type="hidden" data-table="orders" data-field="x_package_id" name="fordersgrid$x<?php echo $orders_grid->RowIndex ?>_package_id" id="fordersgrid$x<?php echo $orders_grid->RowIndex ?>_package_id" value="<?php echo ew_HtmlEncode($orders->package_id->FormValue) ?>">
+<input type="hidden" data-table="orders" data-field="x_package_id" name="fordersgrid$o<?php echo $orders_grid->RowIndex ?>_package_id" id="fordersgrid$o<?php echo $orders_grid->RowIndex ?>_package_id" value="<?php echo ew_HtmlEncode($orders->package_id->OldValue) ?>">
 <?php } ?>
 <?php } ?>
 </td>
@@ -819,7 +785,9 @@ $orders_grid->ListOptions->Render("body", "left", $orders_grid->RowIndex);
 		<td data-name="student_id">
 <?php if ($orders->CurrentAction <> "F") { ?>
 <span id="el$rowindex$_orders_student_id" class="form-group orders_student_id">
-<input type="text" data-table="orders" data-field="x_student_id" name="x<?php echo $orders_grid->RowIndex ?>_student_id" id="x<?php echo $orders_grid->RowIndex ?>_student_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->student_id->getPlaceHolder()) ?>" value="<?php echo $orders->student_id->EditValue ?>"<?php echo $orders->student_id->EditAttributes() ?>>
+<select data-table="orders" data-field="x_student_id" data-value-separator="<?php echo $orders->student_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_grid->RowIndex ?>_student_id" name="x<?php echo $orders_grid->RowIndex ?>_student_id"<?php echo $orders->student_id->EditAttributes() ?>>
+<?php echo $orders->student_id->SelectOptionListHtml("x<?php echo $orders_grid->RowIndex ?>_student_id") ?>
+</select>
 </span>
 <?php } else { ?>
 <span id="el$rowindex$_orders_student_id" class="form-group orders_student_id">
@@ -835,7 +803,9 @@ $orders_grid->ListOptions->Render("body", "left", $orders_grid->RowIndex);
 		<td data-name="teacher_id">
 <?php if ($orders->CurrentAction <> "F") { ?>
 <span id="el$rowindex$_orders_teacher_id" class="form-group orders_teacher_id">
-<input type="text" data-table="orders" data-field="x_teacher_id" name="x<?php echo $orders_grid->RowIndex ?>_teacher_id" id="x<?php echo $orders_grid->RowIndex ?>_teacher_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->teacher_id->getPlaceHolder()) ?>" value="<?php echo $orders->teacher_id->EditValue ?>"<?php echo $orders->teacher_id->EditAttributes() ?>>
+<select data-table="orders" data-field="x_teacher_id" data-value-separator="<?php echo $orders->teacher_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_grid->RowIndex ?>_teacher_id" name="x<?php echo $orders_grid->RowIndex ?>_teacher_id"<?php echo $orders->teacher_id->EditAttributes() ?>>
+<?php echo $orders->teacher_id->SelectOptionListHtml("x<?php echo $orders_grid->RowIndex ?>_teacher_id") ?>
+</select>
 </span>
 <?php } else { ?>
 <span id="el$rowindex$_orders_teacher_id" class="form-group orders_teacher_id">
@@ -851,7 +821,9 @@ $orders_grid->ListOptions->Render("body", "left", $orders_grid->RowIndex);
 		<td data-name="topic_id">
 <?php if ($orders->CurrentAction <> "F") { ?>
 <span id="el$rowindex$_orders_topic_id" class="form-group orders_topic_id">
-<input type="text" data-table="orders" data-field="x_topic_id" name="x<?php echo $orders_grid->RowIndex ?>_topic_id" id="x<?php echo $orders_grid->RowIndex ?>_topic_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->topic_id->getPlaceHolder()) ?>" value="<?php echo $orders->topic_id->EditValue ?>"<?php echo $orders->topic_id->EditAttributes() ?>>
+<select data-table="orders" data-field="x_topic_id" data-value-separator="<?php echo $orders->topic_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_grid->RowIndex ?>_topic_id" name="x<?php echo $orders_grid->RowIndex ?>_topic_id"<?php echo $orders->topic_id->EditAttributes() ?>>
+<?php echo $orders->topic_id->SelectOptionListHtml("x<?php echo $orders_grid->RowIndex ?>_topic_id") ?>
+</select>
 </span>
 <?php } else { ?>
 <span id="el$rowindex$_orders_topic_id" class="form-group orders_topic_id">
@@ -883,7 +855,7 @@ $orders_grid->ListOptions->Render("body", "left", $orders_grid->RowIndex);
 		<td data-name="time">
 <?php if ($orders->CurrentAction <> "F") { ?>
 <span id="el$rowindex$_orders_time" class="form-group orders_time">
-<textarea data-table="orders" data-field="x_time" name="x<?php echo $orders_grid->RowIndex ?>_time" id="x<?php echo $orders_grid->RowIndex ?>_time" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($orders->time->getPlaceHolder()) ?>"<?php echo $orders->time->EditAttributes() ?>><?php echo $orders->time->EditValue ?></textarea>
+<input type="text" data-table="orders" data-field="x_time" name="x<?php echo $orders_grid->RowIndex ?>_time" id="x<?php echo $orders_grid->RowIndex ?>_time" placeholder="<?php echo ew_HtmlEncode($orders->time->getPlaceHolder()) ?>" value="<?php echo $orders->time->EditValue ?>"<?php echo $orders->time->EditAttributes() ?>>
 </span>
 <?php } else { ?>
 <span id="el$rowindex$_orders_time" class="form-group orders_time">
@@ -915,7 +887,9 @@ $orders_grid->ListOptions->Render("body", "left", $orders_grid->RowIndex);
 		<td data-name="currency_id">
 <?php if ($orders->CurrentAction <> "F") { ?>
 <span id="el$rowindex$_orders_currency_id" class="form-group orders_currency_id">
-<input type="text" data-table="orders" data-field="x_currency_id" name="x<?php echo $orders_grid->RowIndex ?>_currency_id" id="x<?php echo $orders_grid->RowIndex ?>_currency_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->currency_id->getPlaceHolder()) ?>" value="<?php echo $orders->currency_id->EditValue ?>"<?php echo $orders->currency_id->EditAttributes() ?>>
+<select data-table="orders" data-field="x_currency_id" data-value-separator="<?php echo $orders->currency_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_grid->RowIndex ?>_currency_id" name="x<?php echo $orders_grid->RowIndex ?>_currency_id"<?php echo $orders->currency_id->EditAttributes() ?>>
+<?php echo $orders->currency_id->SelectOptionListHtml("x<?php echo $orders_grid->RowIndex ?>_currency_id") ?>
+</select>
 </span>
 <?php } else { ?>
 <span id="el$rowindex$_orders_currency_id" class="form-group orders_currency_id">
@@ -931,10 +905,9 @@ $orders_grid->ListOptions->Render("body", "left", $orders_grid->RowIndex);
 		<td data-name="status">
 <?php if ($orders->CurrentAction <> "F") { ?>
 <span id="el$rowindex$_orders_status" class="form-group orders_status">
-<div id="tp_x<?php echo $orders_grid->RowIndex ?>_status" class="ewTemplate"><input type="radio" data-table="orders" data-field="x_status" data-value-separator="<?php echo $orders->status->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $orders_grid->RowIndex ?>_status" id="x<?php echo $orders_grid->RowIndex ?>_status" value="{value}"<?php echo $orders->status->EditAttributes() ?>></div>
-<div id="dsl_x<?php echo $orders_grid->RowIndex ?>_status" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
-<?php echo $orders->status->RadioButtonListHtml(FALSE, "x{$orders_grid->RowIndex}_status") ?>
-</div></div>
+<select data-table="orders" data-field="x_status" data-value-separator="<?php echo $orders->status->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $orders_grid->RowIndex ?>_status" name="x<?php echo $orders_grid->RowIndex ?>_status"<?php echo $orders->status->EditAttributes() ?>>
+<?php echo $orders->status->SelectOptionListHtml("x<?php echo $orders_grid->RowIndex ?>_status") ?>
+</select>
 </span>
 <?php } else { ?>
 <span id="el$rowindex$_orders_status" class="form-group orders_status">
@@ -950,7 +923,7 @@ $orders_grid->ListOptions->Render("body", "left", $orders_grid->RowIndex);
 		<td data-name="meeting_id">
 <?php if ($orders->CurrentAction <> "F") { ?>
 <span id="el$rowindex$_orders_meeting_id" class="form-group orders_meeting_id">
-<textarea data-table="orders" data-field="x_meeting_id" name="x<?php echo $orders_grid->RowIndex ?>_meeting_id" id="x<?php echo $orders_grid->RowIndex ?>_meeting_id" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($orders->meeting_id->getPlaceHolder()) ?>"<?php echo $orders->meeting_id->EditAttributes() ?>><?php echo $orders->meeting_id->EditValue ?></textarea>
+<input type="text" data-table="orders" data-field="x_meeting_id" name="x<?php echo $orders_grid->RowIndex ?>_meeting_id" id="x<?php echo $orders_grid->RowIndex ?>_meeting_id" placeholder="<?php echo ew_HtmlEncode($orders->meeting_id->getPlaceHolder()) ?>" value="<?php echo $orders->meeting_id->EditValue ?>"<?php echo $orders->meeting_id->EditAttributes() ?>>
 </span>
 <?php } else { ?>
 <span id="el$rowindex$_orders_meeting_id" class="form-group orders_meeting_id">
@@ -962,36 +935,20 @@ $orders_grid->ListOptions->Render("body", "left", $orders_grid->RowIndex);
 <input type="hidden" data-table="orders" data-field="x_meeting_id" name="o<?php echo $orders_grid->RowIndex ?>_meeting_id" id="o<?php echo $orders_grid->RowIndex ?>_meeting_id" value="<?php echo ew_HtmlEncode($orders->meeting_id->OldValue) ?>">
 </td>
 	<?php } ?>
-	<?php if ($orders->created_at->Visible) { // created_at ?>
-		<td data-name="created_at">
+	<?php if ($orders->package_id->Visible) { // package_id ?>
+		<td data-name="package_id">
 <?php if ($orders->CurrentAction <> "F") { ?>
-<span id="el$rowindex$_orders_created_at" class="form-group orders_created_at">
-<input type="text" data-table="orders" data-field="x_created_at" name="x<?php echo $orders_grid->RowIndex ?>_created_at" id="x<?php echo $orders_grid->RowIndex ?>_created_at" placeholder="<?php echo ew_HtmlEncode($orders->created_at->getPlaceHolder()) ?>" value="<?php echo $orders->created_at->EditValue ?>"<?php echo $orders->created_at->EditAttributes() ?>>
+<span id="el$rowindex$_orders_package_id" class="form-group orders_package_id">
+<input type="text" data-table="orders" data-field="x_package_id" name="x<?php echo $orders_grid->RowIndex ?>_package_id" id="x<?php echo $orders_grid->RowIndex ?>_package_id" size="30" placeholder="<?php echo ew_HtmlEncode($orders->package_id->getPlaceHolder()) ?>" value="<?php echo $orders->package_id->EditValue ?>"<?php echo $orders->package_id->EditAttributes() ?>>
 </span>
 <?php } else { ?>
-<span id="el$rowindex$_orders_created_at" class="form-group orders_created_at">
-<span<?php echo $orders->created_at->ViewAttributes() ?>>
-<p class="form-control-static"><?php echo $orders->created_at->ViewValue ?></p></span>
+<span id="el$rowindex$_orders_package_id" class="form-group orders_package_id">
+<span<?php echo $orders->package_id->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $orders->package_id->ViewValue ?></p></span>
 </span>
-<input type="hidden" data-table="orders" data-field="x_created_at" name="x<?php echo $orders_grid->RowIndex ?>_created_at" id="x<?php echo $orders_grid->RowIndex ?>_created_at" value="<?php echo ew_HtmlEncode($orders->created_at->FormValue) ?>">
+<input type="hidden" data-table="orders" data-field="x_package_id" name="x<?php echo $orders_grid->RowIndex ?>_package_id" id="x<?php echo $orders_grid->RowIndex ?>_package_id" value="<?php echo ew_HtmlEncode($orders->package_id->FormValue) ?>">
 <?php } ?>
-<input type="hidden" data-table="orders" data-field="x_created_at" name="o<?php echo $orders_grid->RowIndex ?>_created_at" id="o<?php echo $orders_grid->RowIndex ?>_created_at" value="<?php echo ew_HtmlEncode($orders->created_at->OldValue) ?>">
-</td>
-	<?php } ?>
-	<?php if ($orders->updated_at->Visible) { // updated_at ?>
-		<td data-name="updated_at">
-<?php if ($orders->CurrentAction <> "F") { ?>
-<span id="el$rowindex$_orders_updated_at" class="form-group orders_updated_at">
-<input type="text" data-table="orders" data-field="x_updated_at" name="x<?php echo $orders_grid->RowIndex ?>_updated_at" id="x<?php echo $orders_grid->RowIndex ?>_updated_at" placeholder="<?php echo ew_HtmlEncode($orders->updated_at->getPlaceHolder()) ?>" value="<?php echo $orders->updated_at->EditValue ?>"<?php echo $orders->updated_at->EditAttributes() ?>>
-</span>
-<?php } else { ?>
-<span id="el$rowindex$_orders_updated_at" class="form-group orders_updated_at">
-<span<?php echo $orders->updated_at->ViewAttributes() ?>>
-<p class="form-control-static"><?php echo $orders->updated_at->ViewValue ?></p></span>
-</span>
-<input type="hidden" data-table="orders" data-field="x_updated_at" name="x<?php echo $orders_grid->RowIndex ?>_updated_at" id="x<?php echo $orders_grid->RowIndex ?>_updated_at" value="<?php echo ew_HtmlEncode($orders->updated_at->FormValue) ?>">
-<?php } ?>
-<input type="hidden" data-table="orders" data-field="x_updated_at" name="o<?php echo $orders_grid->RowIndex ?>_updated_at" id="o<?php echo $orders_grid->RowIndex ?>_updated_at" value="<?php echo ew_HtmlEncode($orders->updated_at->OldValue) ?>">
+<input type="hidden" data-table="orders" data-field="x_package_id" name="o<?php echo $orders_grid->RowIndex ?>_package_id" id="o<?php echo $orders_grid->RowIndex ?>_package_id" value="<?php echo ew_HtmlEncode($orders->package_id->OldValue) ?>">
 </td>
 	<?php } ?>
 <?php

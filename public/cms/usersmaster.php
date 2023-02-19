@@ -3,7 +3,6 @@
 // id
 // name
 // email
-// email_verified_at
 // phone
 // gender
 // birthday
@@ -17,8 +16,6 @@
 // is_blocked
 // otp
 // slug
-// created_at
-// updated_at
 
 ?>
 <?php if ($users->Visible) { ?>
@@ -54,17 +51,6 @@
 <span id="el_users__email">
 <span<?php echo $users->_email->ViewAttributes() ?>>
 <?php echo $users->_email->ListViewValue() ?></span>
-</span>
-</td>
-		</tr>
-<?php } ?>
-<?php if ($users->email_verified_at->Visible) { // email_verified_at ?>
-		<tr id="r_email_verified_at">
-			<td class="col-sm-2"><?php echo $users->email_verified_at->FldCaption() ?></td>
-			<td<?php echo $users->email_verified_at->CellAttributes() ?>>
-<span id="el_users_email_verified_at">
-<span<?php echo $users->email_verified_at->ViewAttributes() ?>>
-<?php echo $users->email_verified_at->ListViewValue() ?></span>
 </span>
 </td>
 		</tr>
@@ -208,28 +194,6 @@
 <span id="el_users_slug">
 <span<?php echo $users->slug->ViewAttributes() ?>>
 <?php echo $users->slug->ListViewValue() ?></span>
-</span>
-</td>
-		</tr>
-<?php } ?>
-<?php if ($users->created_at->Visible) { // created_at ?>
-		<tr id="r_created_at">
-			<td class="col-sm-2"><?php echo $users->created_at->FldCaption() ?></td>
-			<td<?php echo $users->created_at->CellAttributes() ?>>
-<span id="el_users_created_at">
-<span<?php echo $users->created_at->ViewAttributes() ?>>
-<?php echo $users->created_at->ListViewValue() ?></span>
-</span>
-</td>
-		</tr>
-<?php } ?>
-<?php if ($users->updated_at->Visible) { // updated_at ?>
-		<tr id="r_updated_at">
-			<td class="col-sm-2"><?php echo $users->updated_at->FldCaption() ?></td>
-			<td<?php echo $users->updated_at->CellAttributes() ?>>
-<span id="el_users_updated_at">
-<span<?php echo $users->updated_at->ViewAttributes() ?>>
-<?php echo $users->updated_at->ListViewValue() ?></span>
 </span>
 </td>
 		</tr>

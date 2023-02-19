@@ -19,6 +19,7 @@ class corders extends cTable {
 	var $meeting_id;
 	var $created_at;
 	var $updated_at;
+	var $package_id;
 
 	//
 	// Table class constructor
@@ -59,20 +60,26 @@ class corders extends cTable {
 		$this->fields['id'] = &$this->id;
 
 		// student_id
-		$this->student_id = new cField('orders', 'orders', 'x_student_id', 'student_id', '`student_id`', '`student_id`', 19, -1, FALSE, '`student_id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->student_id = new cField('orders', 'orders', 'x_student_id', 'student_id', '`student_id`', '`student_id`', 19, -1, FALSE, '`student_id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
 		$this->student_id->Sortable = TRUE; // Allow sort
+		$this->student_id->UsePleaseSelect = TRUE; // Use PleaseSelect by default
+		$this->student_id->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
 		$this->student_id->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['student_id'] = &$this->student_id;
 
 		// teacher_id
-		$this->teacher_id = new cField('orders', 'orders', 'x_teacher_id', 'teacher_id', '`teacher_id`', '`teacher_id`', 19, -1, FALSE, '`teacher_id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->teacher_id = new cField('orders', 'orders', 'x_teacher_id', 'teacher_id', '`teacher_id`', '`teacher_id`', 19, -1, FALSE, '`teacher_id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
 		$this->teacher_id->Sortable = TRUE; // Allow sort
+		$this->teacher_id->UsePleaseSelect = TRUE; // Use PleaseSelect by default
+		$this->teacher_id->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
 		$this->teacher_id->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['teacher_id'] = &$this->teacher_id;
 
 		// topic_id
-		$this->topic_id = new cField('orders', 'orders', 'x_topic_id', 'topic_id', '`topic_id`', '`topic_id`', 19, -1, FALSE, '`topic_id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->topic_id = new cField('orders', 'orders', 'x_topic_id', 'topic_id', '`topic_id`', '`topic_id`', 19, -1, FALSE, '`topic_id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
 		$this->topic_id->Sortable = TRUE; // Allow sort
+		$this->topic_id->UsePleaseSelect = TRUE; // Use PleaseSelect by default
+		$this->topic_id->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
 		$this->topic_id->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['topic_id'] = &$this->topic_id;
 
@@ -83,7 +90,7 @@ class corders extends cTable {
 		$this->fields['date'] = &$this->date;
 
 		// time
-		$this->time = new cField('orders', 'orders', 'x_time', 'time', '`time`', '`time`', 201, -1, FALSE, '`time`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXTAREA');
+		$this->time = new cField('orders', 'orders', 'x_time', 'time', '`time`', '`time`', 201, -1, FALSE, '`time`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->time->Sortable = TRUE; // Allow sort
 		$this->fields['time'] = &$this->time;
 
@@ -94,33 +101,43 @@ class corders extends cTable {
 		$this->fields['fees'] = &$this->fees;
 
 		// currency_id
-		$this->currency_id = new cField('orders', 'orders', 'x_currency_id', 'currency_id', '`currency_id`', '`currency_id`', 19, -1, FALSE, '`currency_id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->currency_id = new cField('orders', 'orders', 'x_currency_id', 'currency_id', '`currency_id`', '`currency_id`', 19, -1, FALSE, '`currency_id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
 		$this->currency_id->Sortable = TRUE; // Allow sort
+		$this->currency_id->UsePleaseSelect = TRUE; // Use PleaseSelect by default
+		$this->currency_id->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
 		$this->currency_id->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['currency_id'] = &$this->currency_id;
 
 		// status
-		$this->status = new cField('orders', 'orders', 'x_status', 'status', '`status`', '`status`', 202, -1, FALSE, '`status`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'RADIO');
+		$this->status = new cField('orders', 'orders', 'x_status', 'status', '`status`', '`status`', 202, -1, FALSE, '`status`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
 		$this->status->Sortable = TRUE; // Allow sort
+		$this->status->UsePleaseSelect = TRUE; // Use PleaseSelect by default
+		$this->status->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
 		$this->status->OptionCount = 3;
 		$this->fields['status'] = &$this->status;
 
 		// meeting_id
-		$this->meeting_id = new cField('orders', 'orders', 'x_meeting_id', 'meeting_id', '`meeting_id`', '`meeting_id`', 201, -1, FALSE, '`meeting_id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXTAREA');
+		$this->meeting_id = new cField('orders', 'orders', 'x_meeting_id', 'meeting_id', '`meeting_id`', '`meeting_id`', 201, -1, FALSE, '`meeting_id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->meeting_id->Sortable = TRUE; // Allow sort
 		$this->fields['meeting_id'] = &$this->meeting_id;
 
 		// created_at
 		$this->created_at = new cField('orders', 'orders', 'x_created_at', 'created_at', '`created_at`', ew_CastDateFieldForLike('`created_at`', 0, "DB"), 135, 0, FALSE, '`created_at`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->created_at->Sortable = TRUE; // Allow sort
+		$this->created_at->Sortable = FALSE; // Allow sort
 		$this->created_at->FldDefaultErrMsg = str_replace("%s", $GLOBALS["EW_DATE_FORMAT"], $Language->Phrase("IncorrectDate"));
 		$this->fields['created_at'] = &$this->created_at;
 
 		// updated_at
 		$this->updated_at = new cField('orders', 'orders', 'x_updated_at', 'updated_at', '`updated_at`', ew_CastDateFieldForLike('`updated_at`', 0, "DB"), 135, 0, FALSE, '`updated_at`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->updated_at->Sortable = TRUE; // Allow sort
+		$this->updated_at->Sortable = FALSE; // Allow sort
 		$this->updated_at->FldDefaultErrMsg = str_replace("%s", $GLOBALS["EW_DATE_FORMAT"], $Language->Phrase("IncorrectDate"));
 		$this->fields['updated_at'] = &$this->updated_at;
+
+		// package_id
+		$this->package_id = new cField('orders', 'orders', 'x_package_id', 'package_id', '`package_id`', '`package_id`', 19, -1, FALSE, '`package_id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->package_id->Sortable = TRUE; // Allow sort
+		$this->package_id->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
+		$this->fields['package_id'] = &$this->package_id;
 	}
 
 	// Field Visibility
@@ -660,6 +677,7 @@ class corders extends cTable {
 		$this->meeting_id->setDbValue($rs->fields('meeting_id'));
 		$this->created_at->setDbValue($rs->fields('created_at'));
 		$this->updated_at->setDbValue($rs->fields('updated_at'));
+		$this->package_id->setDbValue($rs->fields('package_id'));
 	}
 
 	// Render list row values
@@ -681,22 +699,86 @@ class corders extends cTable {
 		// status
 		// meeting_id
 		// created_at
+
+		$this->created_at->CellCssStyle = "white-space: nowrap;";
+
 		// updated_at
+		$this->updated_at->CellCssStyle = "white-space: nowrap;";
+
+		// package_id
 		// id
 
 		$this->id->ViewValue = $this->id->CurrentValue;
 		$this->id->ViewCustomAttributes = "";
 
 		// student_id
-		$this->student_id->ViewValue = $this->student_id->CurrentValue;
+		if (strval($this->student_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->student_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `users`";
+		$sWhereWrk = "";
+		$this->student_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->student_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->student_id->ViewValue = $this->student_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->student_id->ViewValue = $this->student_id->CurrentValue;
+			}
+		} else {
+			$this->student_id->ViewValue = NULL;
+		}
 		$this->student_id->ViewCustomAttributes = "";
 
 		// teacher_id
-		$this->teacher_id->ViewValue = $this->teacher_id->CurrentValue;
+		if (strval($this->teacher_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->teacher_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `users`";
+		$sWhereWrk = "";
+		$this->teacher_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->teacher_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->teacher_id->ViewValue = $this->teacher_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->teacher_id->ViewValue = $this->teacher_id->CurrentValue;
+			}
+		} else {
+			$this->teacher_id->ViewValue = NULL;
+		}
 		$this->teacher_id->ViewCustomAttributes = "";
 
 		// topic_id
-		$this->topic_id->ViewValue = $this->topic_id->CurrentValue;
+		if (strval($this->topic_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->topic_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `topics`";
+		$sWhereWrk = "";
+		$this->topic_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->topic_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[2] = $rswrk->fields('Disp2Fld');
+				$this->topic_id->ViewValue = $this->topic_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->topic_id->ViewValue = $this->topic_id->CurrentValue;
+			}
+		} else {
+			$this->topic_id->ViewValue = NULL;
+		}
 		$this->topic_id->ViewCustomAttributes = "";
 
 		// date
@@ -713,7 +795,27 @@ class corders extends cTable {
 		$this->fees->ViewCustomAttributes = "";
 
 		// currency_id
-		$this->currency_id->ViewValue = $this->currency_id->CurrentValue;
+		if (strval($this->currency_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->currency_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `currencies`";
+		$sWhereWrk = "";
+		$this->currency_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->currency_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[2] = $rswrk->fields('Disp2Fld');
+				$this->currency_id->ViewValue = $this->currency_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->currency_id->ViewValue = $this->currency_id->CurrentValue;
+			}
+		} else {
+			$this->currency_id->ViewValue = NULL;
+		}
 		$this->currency_id->ViewCustomAttributes = "";
 
 		// status
@@ -737,6 +839,10 @@ class corders extends cTable {
 		$this->updated_at->ViewValue = $this->updated_at->CurrentValue;
 		$this->updated_at->ViewValue = ew_FormatDateTime($this->updated_at->ViewValue, 0);
 		$this->updated_at->ViewCustomAttributes = "";
+
+		// package_id
+		$this->package_id->ViewValue = $this->package_id->CurrentValue;
+		$this->package_id->ViewCustomAttributes = "";
 
 		// id
 		$this->id->LinkCustomAttributes = "";
@@ -798,6 +904,11 @@ class corders extends cTable {
 		$this->updated_at->HrefValue = "";
 		$this->updated_at->TooltipValue = "";
 
+		// package_id
+		$this->package_id->LinkCustomAttributes = "";
+		$this->package_id->HrefValue = "";
+		$this->package_id->TooltipValue = "";
+
 		// Call Row Rendered event
 		$this->Row_Rendered();
 
@@ -821,20 +932,14 @@ class corders extends cTable {
 		// student_id
 		$this->student_id->EditAttrs["class"] = "form-control";
 		$this->student_id->EditCustomAttributes = "";
-		$this->student_id->EditValue = $this->student_id->CurrentValue;
-		$this->student_id->PlaceHolder = ew_RemoveHtml($this->student_id->FldCaption());
 
 		// teacher_id
 		$this->teacher_id->EditAttrs["class"] = "form-control";
 		$this->teacher_id->EditCustomAttributes = "";
-		$this->teacher_id->EditValue = $this->teacher_id->CurrentValue;
-		$this->teacher_id->PlaceHolder = ew_RemoveHtml($this->teacher_id->FldCaption());
 
 		// topic_id
 		$this->topic_id->EditAttrs["class"] = "form-control";
 		$this->topic_id->EditCustomAttributes = "";
-		$this->topic_id->EditValue = $this->topic_id->CurrentValue;
-		$this->topic_id->PlaceHolder = ew_RemoveHtml($this->topic_id->FldCaption());
 
 		// date
 		$this->date->EditAttrs["class"] = "form-control";
@@ -857,12 +962,11 @@ class corders extends cTable {
 		// currency_id
 		$this->currency_id->EditAttrs["class"] = "form-control";
 		$this->currency_id->EditCustomAttributes = "";
-		$this->currency_id->EditValue = $this->currency_id->CurrentValue;
-		$this->currency_id->PlaceHolder = ew_RemoveHtml($this->currency_id->FldCaption());
 
 		// status
+		$this->status->EditAttrs["class"] = "form-control";
 		$this->status->EditCustomAttributes = "";
-		$this->status->EditValue = $this->status->Options(FALSE);
+		$this->status->EditValue = $this->status->Options(TRUE);
 
 		// meeting_id
 		$this->meeting_id->EditAttrs["class"] = "form-control";
@@ -881,6 +985,12 @@ class corders extends cTable {
 		$this->updated_at->EditCustomAttributes = "";
 		$this->updated_at->EditValue = ew_FormatDateTime($this->updated_at->CurrentValue, 8);
 		$this->updated_at->PlaceHolder = ew_RemoveHtml($this->updated_at->FldCaption());
+
+		// package_id
+		$this->package_id->EditAttrs["class"] = "form-control";
+		$this->package_id->EditCustomAttributes = "";
+		$this->package_id->EditValue = $this->package_id->CurrentValue;
+		$this->package_id->PlaceHolder = ew_RemoveHtml($this->package_id->FldCaption());
 
 		// Call Row Rendered event
 		$this->Row_Rendered();
@@ -919,8 +1029,7 @@ class corders extends cTable {
 					if ($this->currency_id->Exportable) $Doc->ExportCaption($this->currency_id);
 					if ($this->status->Exportable) $Doc->ExportCaption($this->status);
 					if ($this->meeting_id->Exportable) $Doc->ExportCaption($this->meeting_id);
-					if ($this->created_at->Exportable) $Doc->ExportCaption($this->created_at);
-					if ($this->updated_at->Exportable) $Doc->ExportCaption($this->updated_at);
+					if ($this->package_id->Exportable) $Doc->ExportCaption($this->package_id);
 				} else {
 					if ($this->id->Exportable) $Doc->ExportCaption($this->id);
 					if ($this->student_id->Exportable) $Doc->ExportCaption($this->student_id);
@@ -930,8 +1039,7 @@ class corders extends cTable {
 					if ($this->fees->Exportable) $Doc->ExportCaption($this->fees);
 					if ($this->currency_id->Exportable) $Doc->ExportCaption($this->currency_id);
 					if ($this->status->Exportable) $Doc->ExportCaption($this->status);
-					if ($this->created_at->Exportable) $Doc->ExportCaption($this->created_at);
-					if ($this->updated_at->Exportable) $Doc->ExportCaption($this->updated_at);
+					if ($this->package_id->Exportable) $Doc->ExportCaption($this->package_id);
 				}
 				$Doc->EndExportRow();
 			}
@@ -973,8 +1081,7 @@ class corders extends cTable {
 						if ($this->currency_id->Exportable) $Doc->ExportField($this->currency_id);
 						if ($this->status->Exportable) $Doc->ExportField($this->status);
 						if ($this->meeting_id->Exportable) $Doc->ExportField($this->meeting_id);
-						if ($this->created_at->Exportable) $Doc->ExportField($this->created_at);
-						if ($this->updated_at->Exportable) $Doc->ExportField($this->updated_at);
+						if ($this->package_id->Exportable) $Doc->ExportField($this->package_id);
 					} else {
 						if ($this->id->Exportable) $Doc->ExportField($this->id);
 						if ($this->student_id->Exportable) $Doc->ExportField($this->student_id);
@@ -984,8 +1091,7 @@ class corders extends cTable {
 						if ($this->fees->Exportable) $Doc->ExportField($this->fees);
 						if ($this->currency_id->Exportable) $Doc->ExportField($this->currency_id);
 						if ($this->status->Exportable) $Doc->ExportField($this->status);
-						if ($this->created_at->Exportable) $Doc->ExportField($this->created_at);
-						if ($this->updated_at->Exportable) $Doc->ExportField($this->updated_at);
+						if ($this->package_id->Exportable) $Doc->ExportField($this->package_id);
 					}
 					$Doc->EndExportRow($RowCnt);
 				}

@@ -5,7 +5,7 @@ ob_start(); // Turn on output buffering
 <?php include_once "ewcfg14.php" ?>
 <?php include_once ((EW_USE_ADODB) ? "adodb5/adodb.inc.php" : "ewmysql14.php") ?>
 <?php include_once "phpfn14.php" ?>
-<?php include_once "topicsinfo.php" ?>
+<?php include_once "curriculumsinfo.php" ?>
 <?php include_once "userfn14.php" ?>
 <?php
 
@@ -13,9 +13,9 @@ ob_start(); // Turn on output buffering
 // Page class
 //
 
-$topics_view = NULL; // Initialize page object first
+$curriculums_view = NULL; // Initialize page object first
 
-class ctopics_view extends ctopics {
+class ccurriculums_view extends ccurriculums {
 
 	// Page ID
 	var $PageID = 'view';
@@ -24,10 +24,10 @@ class ctopics_view extends ctopics {
 	var $ProjectID = '{D43A73A4-5F37-4161-A00D-2E65107145C9}';
 
 	// Table name
-	var $TableName = 'topics';
+	var $TableName = 'curriculums';
 
 	// Page object name
-	var $PageObjName = 'topics_view';
+	var $PageObjName = 'curriculums_view';
 
 	// Page headings
 	var $Heading = '';
@@ -280,10 +280,10 @@ class ctopics_view extends ctopics {
 		// Parent constuctor
 		parent::__construct();
 
-		// Table object (topics)
-		if (!isset($GLOBALS["topics"]) || get_class($GLOBALS["topics"]) == "ctopics") {
-			$GLOBALS["topics"] = &$this;
-			$GLOBALS["Table"] = &$GLOBALS["topics"];
+		// Table object (curriculums)
+		if (!isset($GLOBALS["curriculums"]) || get_class($GLOBALS["curriculums"]) == "ccurriculums") {
+			$GLOBALS["curriculums"] = &$this;
+			$GLOBALS["Table"] = &$GLOBALS["curriculums"];
 		}
 		$KeyUrl = "";
 		if (@$_GET["id"] <> "") {
@@ -304,7 +304,7 @@ class ctopics_view extends ctopics {
 
 		// Table name (for backward compatibility)
 		if (!defined("EW_TABLE_NAME"))
-			define("EW_TABLE_NAME", 'topics', TRUE);
+			define("EW_TABLE_NAME", 'curriculums', TRUE);
 
 		// Start timer
 		if (!isset($GLOBALS["gTimer"]))
@@ -351,7 +351,7 @@ class ctopics_view extends ctopics {
 			$Security->SaveLastUrl();
 			$this->setFailureMessage(ew_DeniedMsg()); // Set no permission
 			if ($Security->CanList())
-				$this->Page_Terminate(ew_GetUrl("topicslist.php"));
+				$this->Page_Terminate(ew_GetUrl("curriculumslist.php"));
 			else
 				$this->Page_Terminate(ew_GetUrl("login.php"));
 		}
@@ -367,8 +367,6 @@ class ctopics_view extends ctopics {
 			$this->id->Visible = FALSE;
 		$this->name_ar->SetVisibility();
 		$this->name_en->SetVisibility();
-		$this->parent_id->SetVisibility();
-		$this->image->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -400,13 +398,13 @@ class ctopics_view extends ctopics {
 		Page_Unloaded();
 
 		// Export
-		global $EW_EXPORT, $topics;
+		global $EW_EXPORT, $curriculums;
 		if ($this->CustomExport <> "" && $this->CustomExport == $this->Export && array_key_exists($this->CustomExport, $EW_EXPORT)) {
 				$sContent = ob_get_contents();
 			if ($gsExportFile == "") $gsExportFile = $this->TableVar;
 			$class = $EW_EXPORT[$this->CustomExport];
 			if (class_exists($class)) {
-				$doc = new $class($topics);
+				$doc = new $class($curriculums);
 				$doc->Text = $sContent;
 				if ($this->Export == "email")
 					echo $this->ExportEmail($doc->Text);
@@ -432,7 +430,7 @@ class ctopics_view extends ctopics {
 				$pageName = ew_GetPageName($url);
 				if ($pageName != $this->GetListUrl()) { // Not List page
 					$row["caption"] = $this->GetModalCaption($pageName);
-					if ($pageName == "topicsview.php")
+					if ($pageName == "curriculumsview.php")
 						$row["view"] = "1";
 				} else { // List page should not be shown as modal => error
 					$row["error"] = $this->getFailureMessage();
@@ -498,7 +496,7 @@ class ctopics_view extends ctopics {
 					if ($this->TotalRecs <= 0) { // No record found
 						if ($this->getSuccessMessage() == "" && $this->getFailureMessage() == "")
 							$this->setFailureMessage($Language->Phrase("NoRecord")); // Set no record message
-						$this->Page_Terminate("topicslist.php"); // Return to list page
+						$this->Page_Terminate("curriculumslist.php"); // Return to list page
 					} elseif ($bLoadCurrentRecord) { // Load current record position
 						$this->SetupStartRec(); // Set up start record position
 
@@ -522,13 +520,13 @@ class ctopics_view extends ctopics {
 					if (!$bMatchRecord) {
 						if ($this->getSuccessMessage() == "" && $this->getFailureMessage() == "")
 							$this->setFailureMessage($Language->Phrase("NoRecord")); // Set no record message
-						$sReturnUrl = "topicslist.php"; // No matching record, return to list
+						$sReturnUrl = "curriculumslist.php"; // No matching record, return to list
 					} else {
 						$this->LoadRowValues($this->Recordset); // Load row values
 					}
 			}
 		} else {
-			$sReturnUrl = "topicslist.php"; // Not page request, return to list
+			$sReturnUrl = "curriculumslist.php"; // Not page request, return to list
 		}
 		if ($sReturnUrl <> "")
 			$this->Page_Terminate($sReturnUrl);
@@ -693,9 +691,6 @@ class ctopics_view extends ctopics {
 		$this->id->setDbValue($row['id']);
 		$this->name_ar->setDbValue($row['name_ar']);
 		$this->name_en->setDbValue($row['name_en']);
-		$this->parent_id->setDbValue($row['parent_id']);
-		$this->image->Upload->DbValue = $row['image'];
-		$this->image->setDbValue($this->image->Upload->DbValue);
 		$this->created_at->setDbValue($row['created_at']);
 		$this->updated_at->setDbValue($row['updated_at']);
 	}
@@ -706,8 +701,6 @@ class ctopics_view extends ctopics {
 		$row['id'] = NULL;
 		$row['name_ar'] = NULL;
 		$row['name_en'] = NULL;
-		$row['parent_id'] = NULL;
-		$row['image'] = NULL;
 		$row['created_at'] = NULL;
 		$row['updated_at'] = NULL;
 		return $row;
@@ -721,8 +714,6 @@ class ctopics_view extends ctopics {
 		$this->id->DbValue = $row['id'];
 		$this->name_ar->DbValue = $row['name_ar'];
 		$this->name_en->DbValue = $row['name_en'];
-		$this->parent_id->DbValue = $row['parent_id'];
-		$this->image->Upload->DbValue = $row['image'];
 		$this->created_at->DbValue = $row['created_at'];
 		$this->updated_at->DbValue = $row['updated_at'];
 	}
@@ -746,8 +737,6 @@ class ctopics_view extends ctopics {
 		// id
 		// name_ar
 		// name_en
-		// parent_id
-		// image
 		// created_at
 		// updated_at
 
@@ -765,41 +754,15 @@ class ctopics_view extends ctopics {
 		$this->name_en->ViewValue = $this->name_en->CurrentValue;
 		$this->name_en->ViewCustomAttributes = "";
 
-		// parent_id
-		if (strval($this->parent_id->CurrentValue) <> "") {
-			$sFilterWrk = "`id`" . ew_SearchString("=", $this->parent_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `topics`";
-		$sWhereWrk = "";
-		$this->parent_id->LookupFilters = array();
-		ew_AddFilter($sWhereWrk, $sFilterWrk);
-		$this->Lookup_Selecting($this->parent_id, $sWhereWrk); // Call Lookup Selecting
-		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			$rswrk = Conn()->Execute($sSqlWrk);
-			if ($rswrk && !$rswrk->EOF) { // Lookup values found
-				$arwrk = array();
-				$arwrk[1] = $rswrk->fields('DispFld');
-				$arwrk[2] = $rswrk->fields('Disp2Fld');
-				$this->parent_id->ViewValue = $this->parent_id->DisplayValue($arwrk);
-				$rswrk->Close();
-			} else {
-				$this->parent_id->ViewValue = $this->parent_id->CurrentValue;
-			}
-		} else {
-			$this->parent_id->ViewValue = NULL;
-		}
-		$this->parent_id->ViewCustomAttributes = "";
+		// created_at
+		$this->created_at->ViewValue = $this->created_at->CurrentValue;
+		$this->created_at->ViewValue = ew_FormatDateTime($this->created_at->ViewValue, 0);
+		$this->created_at->ViewCustomAttributes = "";
 
-		// image
-		$this->image->UploadPath = "../images";
-		if (!ew_Empty($this->image->Upload->DbValue)) {
-			$this->image->ImageWidth = 100;
-			$this->image->ImageHeight = 0;
-			$this->image->ImageAlt = $this->image->FldAlt();
-			$this->image->ViewValue = $this->image->Upload->DbValue;
-		} else {
-			$this->image->ViewValue = "";
-		}
-		$this->image->ViewCustomAttributes = "";
+		// updated_at
+		$this->updated_at->ViewValue = $this->updated_at->CurrentValue;
+		$this->updated_at->ViewValue = ew_FormatDateTime($this->updated_at->ViewValue, 0);
+		$this->updated_at->ViewCustomAttributes = "";
 
 			// id
 			$this->id->LinkCustomAttributes = "";
@@ -815,30 +778,6 @@ class ctopics_view extends ctopics {
 			$this->name_en->LinkCustomAttributes = "";
 			$this->name_en->HrefValue = "";
 			$this->name_en->TooltipValue = "";
-
-			// parent_id
-			$this->parent_id->LinkCustomAttributes = "";
-			$this->parent_id->HrefValue = "";
-			$this->parent_id->TooltipValue = "";
-
-			// image
-			$this->image->LinkCustomAttributes = "";
-			$this->image->UploadPath = "../images";
-			if (!ew_Empty($this->image->Upload->DbValue)) {
-				$this->image->HrefValue = ew_GetFileUploadUrl($this->image, $this->image->Upload->DbValue); // Add prefix/suffix
-				$this->image->LinkAttrs["target"] = ""; // Add target
-				if ($this->Export <> "") $this->image->HrefValue = ew_FullUrl($this->image->HrefValue, "href");
-			} else {
-				$this->image->HrefValue = "";
-			}
-			$this->image->HrefValue2 = $this->image->UploadPath . $this->image->Upload->DbValue;
-			$this->image->TooltipValue = "";
-			if ($this->image->UseColorbox) {
-				if (ew_Empty($this->image->TooltipValue))
-					$this->image->LinkAttrs["title"] = $Language->Phrase("ViewImageGallery");
-				$this->image->LinkAttrs["data-rel"] = "topics_x_image";
-				ew_AppendClass($this->image->LinkAttrs["class"], "ewLightbox");
-			}
 		}
 
 		// Call Row Rendered event
@@ -851,7 +790,7 @@ class ctopics_view extends ctopics {
 		global $Breadcrumb, $Language;
 		$Breadcrumb = new cBreadcrumb();
 		$url = substr(ew_CurrentUrl(), strrpos(ew_CurrentUrl(), "/")+1);
-		$Breadcrumb->Add("list", $this->TableVar, $this->AddMasterUrl("topicslist.php"), "", $this->TableVar, TRUE);
+		$Breadcrumb->Add("list", $this->TableVar, $this->AddMasterUrl("curriculumslist.php"), "", $this->TableVar, TRUE);
 		$PageId = "view";
 		$Breadcrumb->Add("view", $PageId, $url);
 	}
@@ -963,29 +902,29 @@ class ctopics_view extends ctopics {
 <?php
 
 // Create page object
-if (!isset($topics_view)) $topics_view = new ctopics_view();
+if (!isset($curriculums_view)) $curriculums_view = new ccurriculums_view();
 
 // Page init
-$topics_view->Page_Init();
+$curriculums_view->Page_Init();
 
 // Page main
-$topics_view->Page_Main();
+$curriculums_view->Page_Main();
 
 // Global Page Rendering event (in userfn*.php)
 Page_Rendering();
 
 // Page Rendering event
-$topics_view->Page_Render();
+$curriculums_view->Page_Render();
 ?>
 <?php include_once "header.php" ?>
 <script type="text/javascript">
 
 // Form object
 var CurrentPageID = EW_PAGE_ID = "view";
-var CurrentForm = ftopicsview = new ew_Form("ftopicsview", "view");
+var CurrentForm = fcurriculumsview = new ew_Form("fcurriculumsview", "view");
 
 // Form_CustomValidate event
-ftopicsview.Form_CustomValidate = 
+fcurriculumsview.Form_CustomValidate = 
  function(fobj) { // DO NOT CHANGE THIS LINE!
 
  	// Your custom validation code here, return false if invalid.
@@ -993,188 +932,163 @@ ftopicsview.Form_CustomValidate =
  }
 
 // Use JavaScript validation or not
-ftopicsview.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
+fcurriculumsview.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
-ftopicsview.Lists["x_parent_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name_ar","x_name_en","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"topics"};
-ftopicsview.Lists["x_parent_id"].Data = "<?php echo $topics_view->parent_id->LookupFilterQuery(FALSE, "view") ?>";
-
 // Form object for search
+
 </script>
 <script type="text/javascript">
 
 // Write your client script here, no need to add script tags.
 </script>
 <div class="ewToolbar">
-<?php $topics_view->ExportOptions->Render("body") ?>
+<?php $curriculums_view->ExportOptions->Render("body") ?>
 <?php
-	foreach ($topics_view->OtherOptions as &$option)
+	foreach ($curriculums_view->OtherOptions as &$option)
 		$option->Render("body");
 ?>
 <div class="clearfix"></div>
 </div>
-<?php $topics_view->ShowPageHeader(); ?>
+<?php $curriculums_view->ShowPageHeader(); ?>
 <?php
-$topics_view->ShowMessage();
+$curriculums_view->ShowMessage();
 ?>
-<?php if (!$topics_view->IsModal) { ?>
+<?php if (!$curriculums_view->IsModal) { ?>
 <form name="ewPagerForm" class="form-inline ewForm ewPagerForm" action="<?php echo ew_CurrentPage() ?>">
-<?php if (!isset($topics_view->Pager)) $topics_view->Pager = new cPrevNextPager($topics_view->StartRec, $topics_view->DisplayRecs, $topics_view->TotalRecs, $topics_view->AutoHidePager) ?>
-<?php if ($topics_view->Pager->RecordCount > 0 && $topics_view->Pager->Visible) { ?>
+<?php if (!isset($curriculums_view->Pager)) $curriculums_view->Pager = new cPrevNextPager($curriculums_view->StartRec, $curriculums_view->DisplayRecs, $curriculums_view->TotalRecs, $curriculums_view->AutoHidePager) ?>
+<?php if ($curriculums_view->Pager->RecordCount > 0 && $curriculums_view->Pager->Visible) { ?>
 <div class="ewPager">
 <span><?php echo $Language->Phrase("Page") ?>&nbsp;</span>
 <div class="ewPrevNext"><div class="input-group">
 <div class="input-group-btn">
 <!--first page button-->
-	<?php if ($topics_view->Pager->FirstButton->Enabled) { ?>
-	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerFirst") ?>" href="<?php echo $topics_view->PageUrl() ?>start=<?php echo $topics_view->Pager->FirstButton->Start ?>"><span class="icon-first ewIcon"></span></a>
+	<?php if ($curriculums_view->Pager->FirstButton->Enabled) { ?>
+	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerFirst") ?>" href="<?php echo $curriculums_view->PageUrl() ?>start=<?php echo $curriculums_view->Pager->FirstButton->Start ?>"><span class="icon-first ewIcon"></span></a>
 	<?php } else { ?>
 	<a class="btn btn-default btn-sm disabled" title="<?php echo $Language->Phrase("PagerFirst") ?>"><span class="icon-first ewIcon"></span></a>
 	<?php } ?>
 <!--previous page button-->
-	<?php if ($topics_view->Pager->PrevButton->Enabled) { ?>
-	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerPrevious") ?>" href="<?php echo $topics_view->PageUrl() ?>start=<?php echo $topics_view->Pager->PrevButton->Start ?>"><span class="icon-prev ewIcon"></span></a>
+	<?php if ($curriculums_view->Pager->PrevButton->Enabled) { ?>
+	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerPrevious") ?>" href="<?php echo $curriculums_view->PageUrl() ?>start=<?php echo $curriculums_view->Pager->PrevButton->Start ?>"><span class="icon-prev ewIcon"></span></a>
 	<?php } else { ?>
 	<a class="btn btn-default btn-sm disabled" title="<?php echo $Language->Phrase("PagerPrevious") ?>"><span class="icon-prev ewIcon"></span></a>
 	<?php } ?>
 </div>
 <!--current page number-->
-	<input class="form-control input-sm" type="text" name="<?php echo EW_TABLE_PAGE_NO ?>" value="<?php echo $topics_view->Pager->CurrentPage ?>">
+	<input class="form-control input-sm" type="text" name="<?php echo EW_TABLE_PAGE_NO ?>" value="<?php echo $curriculums_view->Pager->CurrentPage ?>">
 <div class="input-group-btn">
 <!--next page button-->
-	<?php if ($topics_view->Pager->NextButton->Enabled) { ?>
-	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerNext") ?>" href="<?php echo $topics_view->PageUrl() ?>start=<?php echo $topics_view->Pager->NextButton->Start ?>"><span class="icon-next ewIcon"></span></a>
+	<?php if ($curriculums_view->Pager->NextButton->Enabled) { ?>
+	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerNext") ?>" href="<?php echo $curriculums_view->PageUrl() ?>start=<?php echo $curriculums_view->Pager->NextButton->Start ?>"><span class="icon-next ewIcon"></span></a>
 	<?php } else { ?>
 	<a class="btn btn-default btn-sm disabled" title="<?php echo $Language->Phrase("PagerNext") ?>"><span class="icon-next ewIcon"></span></a>
 	<?php } ?>
 <!--last page button-->
-	<?php if ($topics_view->Pager->LastButton->Enabled) { ?>
-	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerLast") ?>" href="<?php echo $topics_view->PageUrl() ?>start=<?php echo $topics_view->Pager->LastButton->Start ?>"><span class="icon-last ewIcon"></span></a>
+	<?php if ($curriculums_view->Pager->LastButton->Enabled) { ?>
+	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerLast") ?>" href="<?php echo $curriculums_view->PageUrl() ?>start=<?php echo $curriculums_view->Pager->LastButton->Start ?>"><span class="icon-last ewIcon"></span></a>
 	<?php } else { ?>
 	<a class="btn btn-default btn-sm disabled" title="<?php echo $Language->Phrase("PagerLast") ?>"><span class="icon-last ewIcon"></span></a>
 	<?php } ?>
 </div>
 </div>
 </div>
-<span>&nbsp;<?php echo $Language->Phrase("of") ?>&nbsp;<?php echo $topics_view->Pager->PageCount ?></span>
+<span>&nbsp;<?php echo $Language->Phrase("of") ?>&nbsp;<?php echo $curriculums_view->Pager->PageCount ?></span>
 </div>
 <?php } ?>
 <div class="clearfix"></div>
 </form>
 <?php } ?>
-<form name="ftopicsview" id="ftopicsview" class="form-inline ewForm ewViewForm" action="<?php echo ew_CurrentPage() ?>" method="post">
-<?php if ($topics_view->CheckToken) { ?>
-<input type="hidden" name="<?php echo EW_TOKEN_NAME ?>" value="<?php echo $topics_view->Token ?>">
+<form name="fcurriculumsview" id="fcurriculumsview" class="form-inline ewForm ewViewForm" action="<?php echo ew_CurrentPage() ?>" method="post">
+<?php if ($curriculums_view->CheckToken) { ?>
+<input type="hidden" name="<?php echo EW_TOKEN_NAME ?>" value="<?php echo $curriculums_view->Token ?>">
 <?php } ?>
-<input type="hidden" name="t" value="topics">
-<input type="hidden" name="modal" value="<?php echo intval($topics_view->IsModal) ?>">
+<input type="hidden" name="t" value="curriculums">
+<input type="hidden" name="modal" value="<?php echo intval($curriculums_view->IsModal) ?>">
 <table class="table table-striped table-bordered table-hover table-condensed ewViewTable">
-<?php if ($topics->id->Visible) { // id ?>
+<?php if ($curriculums->id->Visible) { // id ?>
 	<tr id="r_id">
-		<td class="col-sm-2"><span id="elh_topics_id"><?php echo $topics->id->FldCaption() ?></span></td>
-		<td data-name="id"<?php echo $topics->id->CellAttributes() ?>>
-<span id="el_topics_id">
-<span<?php echo $topics->id->ViewAttributes() ?>>
-<?php echo $topics->id->ViewValue ?></span>
+		<td class="col-sm-2"><span id="elh_curriculums_id"><?php echo $curriculums->id->FldCaption() ?></span></td>
+		<td data-name="id"<?php echo $curriculums->id->CellAttributes() ?>>
+<span id="el_curriculums_id">
+<span<?php echo $curriculums->id->ViewAttributes() ?>>
+<?php echo $curriculums->id->ViewValue ?></span>
 </span>
 </td>
 	</tr>
 <?php } ?>
-<?php if ($topics->name_ar->Visible) { // name_ar ?>
+<?php if ($curriculums->name_ar->Visible) { // name_ar ?>
 	<tr id="r_name_ar">
-		<td class="col-sm-2"><span id="elh_topics_name_ar"><?php echo $topics->name_ar->FldCaption() ?></span></td>
-		<td data-name="name_ar"<?php echo $topics->name_ar->CellAttributes() ?>>
-<span id="el_topics_name_ar">
-<span<?php echo $topics->name_ar->ViewAttributes() ?>>
-<?php echo $topics->name_ar->ViewValue ?></span>
+		<td class="col-sm-2"><span id="elh_curriculums_name_ar"><?php echo $curriculums->name_ar->FldCaption() ?></span></td>
+		<td data-name="name_ar"<?php echo $curriculums->name_ar->CellAttributes() ?>>
+<span id="el_curriculums_name_ar">
+<span<?php echo $curriculums->name_ar->ViewAttributes() ?>>
+<?php echo $curriculums->name_ar->ViewValue ?></span>
 </span>
 </td>
 	</tr>
 <?php } ?>
-<?php if ($topics->name_en->Visible) { // name_en ?>
+<?php if ($curriculums->name_en->Visible) { // name_en ?>
 	<tr id="r_name_en">
-		<td class="col-sm-2"><span id="elh_topics_name_en"><?php echo $topics->name_en->FldCaption() ?></span></td>
-		<td data-name="name_en"<?php echo $topics->name_en->CellAttributes() ?>>
-<span id="el_topics_name_en">
-<span<?php echo $topics->name_en->ViewAttributes() ?>>
-<?php echo $topics->name_en->ViewValue ?></span>
-</span>
-</td>
-	</tr>
-<?php } ?>
-<?php if ($topics->parent_id->Visible) { // parent_id ?>
-	<tr id="r_parent_id">
-		<td class="col-sm-2"><span id="elh_topics_parent_id"><?php echo $topics->parent_id->FldCaption() ?></span></td>
-		<td data-name="parent_id"<?php echo $topics->parent_id->CellAttributes() ?>>
-<span id="el_topics_parent_id">
-<span<?php echo $topics->parent_id->ViewAttributes() ?>>
-<?php echo $topics->parent_id->ViewValue ?></span>
-</span>
-</td>
-	</tr>
-<?php } ?>
-<?php if ($topics->image->Visible) { // image ?>
-	<tr id="r_image">
-		<td class="col-sm-2"><span id="elh_topics_image"><?php echo $topics->image->FldCaption() ?></span></td>
-		<td data-name="image"<?php echo $topics->image->CellAttributes() ?>>
-<span id="el_topics_image">
-<span>
-<?php echo ew_GetFileViewTag($topics->image, $topics->image->ViewValue) ?>
-</span>
+		<td class="col-sm-2"><span id="elh_curriculums_name_en"><?php echo $curriculums->name_en->FldCaption() ?></span></td>
+		<td data-name="name_en"<?php echo $curriculums->name_en->CellAttributes() ?>>
+<span id="el_curriculums_name_en">
+<span<?php echo $curriculums->name_en->ViewAttributes() ?>>
+<?php echo $curriculums->name_en->ViewValue ?></span>
 </span>
 </td>
 	</tr>
 <?php } ?>
 </table>
-<?php if (!$topics_view->IsModal) { ?>
-<?php if (!isset($topics_view->Pager)) $topics_view->Pager = new cPrevNextPager($topics_view->StartRec, $topics_view->DisplayRecs, $topics_view->TotalRecs, $topics_view->AutoHidePager) ?>
-<?php if ($topics_view->Pager->RecordCount > 0 && $topics_view->Pager->Visible) { ?>
+<?php if (!$curriculums_view->IsModal) { ?>
+<?php if (!isset($curriculums_view->Pager)) $curriculums_view->Pager = new cPrevNextPager($curriculums_view->StartRec, $curriculums_view->DisplayRecs, $curriculums_view->TotalRecs, $curriculums_view->AutoHidePager) ?>
+<?php if ($curriculums_view->Pager->RecordCount > 0 && $curriculums_view->Pager->Visible) { ?>
 <div class="ewPager">
 <span><?php echo $Language->Phrase("Page") ?>&nbsp;</span>
 <div class="ewPrevNext"><div class="input-group">
 <div class="input-group-btn">
 <!--first page button-->
-	<?php if ($topics_view->Pager->FirstButton->Enabled) { ?>
-	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerFirst") ?>" href="<?php echo $topics_view->PageUrl() ?>start=<?php echo $topics_view->Pager->FirstButton->Start ?>"><span class="icon-first ewIcon"></span></a>
+	<?php if ($curriculums_view->Pager->FirstButton->Enabled) { ?>
+	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerFirst") ?>" href="<?php echo $curriculums_view->PageUrl() ?>start=<?php echo $curriculums_view->Pager->FirstButton->Start ?>"><span class="icon-first ewIcon"></span></a>
 	<?php } else { ?>
 	<a class="btn btn-default btn-sm disabled" title="<?php echo $Language->Phrase("PagerFirst") ?>"><span class="icon-first ewIcon"></span></a>
 	<?php } ?>
 <!--previous page button-->
-	<?php if ($topics_view->Pager->PrevButton->Enabled) { ?>
-	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerPrevious") ?>" href="<?php echo $topics_view->PageUrl() ?>start=<?php echo $topics_view->Pager->PrevButton->Start ?>"><span class="icon-prev ewIcon"></span></a>
+	<?php if ($curriculums_view->Pager->PrevButton->Enabled) { ?>
+	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerPrevious") ?>" href="<?php echo $curriculums_view->PageUrl() ?>start=<?php echo $curriculums_view->Pager->PrevButton->Start ?>"><span class="icon-prev ewIcon"></span></a>
 	<?php } else { ?>
 	<a class="btn btn-default btn-sm disabled" title="<?php echo $Language->Phrase("PagerPrevious") ?>"><span class="icon-prev ewIcon"></span></a>
 	<?php } ?>
 </div>
 <!--current page number-->
-	<input class="form-control input-sm" type="text" name="<?php echo EW_TABLE_PAGE_NO ?>" value="<?php echo $topics_view->Pager->CurrentPage ?>">
+	<input class="form-control input-sm" type="text" name="<?php echo EW_TABLE_PAGE_NO ?>" value="<?php echo $curriculums_view->Pager->CurrentPage ?>">
 <div class="input-group-btn">
 <!--next page button-->
-	<?php if ($topics_view->Pager->NextButton->Enabled) { ?>
-	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerNext") ?>" href="<?php echo $topics_view->PageUrl() ?>start=<?php echo $topics_view->Pager->NextButton->Start ?>"><span class="icon-next ewIcon"></span></a>
+	<?php if ($curriculums_view->Pager->NextButton->Enabled) { ?>
+	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerNext") ?>" href="<?php echo $curriculums_view->PageUrl() ?>start=<?php echo $curriculums_view->Pager->NextButton->Start ?>"><span class="icon-next ewIcon"></span></a>
 	<?php } else { ?>
 	<a class="btn btn-default btn-sm disabled" title="<?php echo $Language->Phrase("PagerNext") ?>"><span class="icon-next ewIcon"></span></a>
 	<?php } ?>
 <!--last page button-->
-	<?php if ($topics_view->Pager->LastButton->Enabled) { ?>
-	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerLast") ?>" href="<?php echo $topics_view->PageUrl() ?>start=<?php echo $topics_view->Pager->LastButton->Start ?>"><span class="icon-last ewIcon"></span></a>
+	<?php if ($curriculums_view->Pager->LastButton->Enabled) { ?>
+	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerLast") ?>" href="<?php echo $curriculums_view->PageUrl() ?>start=<?php echo $curriculums_view->Pager->LastButton->Start ?>"><span class="icon-last ewIcon"></span></a>
 	<?php } else { ?>
 	<a class="btn btn-default btn-sm disabled" title="<?php echo $Language->Phrase("PagerLast") ?>"><span class="icon-last ewIcon"></span></a>
 	<?php } ?>
 </div>
 </div>
 </div>
-<span>&nbsp;<?php echo $Language->Phrase("of") ?>&nbsp;<?php echo $topics_view->Pager->PageCount ?></span>
+<span>&nbsp;<?php echo $Language->Phrase("of") ?>&nbsp;<?php echo $curriculums_view->Pager->PageCount ?></span>
 </div>
 <?php } ?>
 <div class="clearfix"></div>
 <?php } ?>
 </form>
 <script type="text/javascript">
-ftopicsview.Init();
+fcurriculumsview.Init();
 </script>
 <?php
-$topics_view->ShowPageFooter();
+$curriculums_view->ShowPageFooter();
 if (EW_DEBUG_ENABLED)
 	echo ew_DebugMsg();
 ?>
@@ -1186,5 +1100,5 @@ if (EW_DEBUG_ENABLED)
 </script>
 <?php include_once "footer.php" ?>
 <?php
-$topics_view->Page_Terminate();
+$curriculums_view->Page_Terminate();
 ?>

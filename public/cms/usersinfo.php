@@ -79,7 +79,7 @@ class cusers extends cTable {
 
 		// email_verified_at
 		$this->email_verified_at = new cField('users', 'users', 'x_email_verified_at', 'email_verified_at', '`email_verified_at`', ew_CastDateFieldForLike('`email_verified_at`', 0, "DB"), 135, 0, FALSE, '`email_verified_at`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->email_verified_at->Sortable = TRUE; // Allow sort
+		$this->email_verified_at->Sortable = FALSE; // Allow sort
 		$this->email_verified_at->FldDefaultErrMsg = str_replace("%s", $GLOBALS["EW_DATE_FORMAT"], $Language->Phrase("IncorrectDate"));
 		$this->fields['email_verified_at'] = &$this->email_verified_at;
 
@@ -89,13 +89,15 @@ class cusers extends cTable {
 		$this->fields['password'] = &$this->password;
 
 		// phone
-		$this->phone = new cField('users', 'users', 'x_phone', 'phone', '`phone`', '`phone`', 201, -1, FALSE, '`phone`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXTAREA');
+		$this->phone = new cField('users', 'users', 'x_phone', 'phone', '`phone`', '`phone`', 201, -1, FALSE, '`phone`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->phone->Sortable = TRUE; // Allow sort
 		$this->fields['phone'] = &$this->phone;
 
 		// gender
-		$this->gender = new cField('users', 'users', 'x_gender', 'gender', '`gender`', '`gender`', 202, -1, FALSE, '`gender`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'RADIO');
+		$this->gender = new cField('users', 'users', 'x_gender', 'gender', '`gender`', '`gender`', 202, -1, FALSE, '`gender`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
 		$this->gender->Sortable = TRUE; // Allow sort
+		$this->gender->UsePleaseSelect = TRUE; // Use PleaseSelect by default
+		$this->gender->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
 		$this->gender->OptionCount = 2;
 		$this->fields['gender'] = &$this->gender;
 
@@ -106,24 +108,28 @@ class cusers extends cTable {
 		$this->fields['birthday'] = &$this->birthday;
 
 		// image
-		$this->image = new cField('users', 'users', 'x_image', 'image', '`image`', '`image`', 201, -1, FALSE, '`image`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXTAREA');
+		$this->image = new cField('users', 'users', 'x_image', 'image', '`image`', '`image`', 201, -1, FALSE, '`image`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->image->Sortable = TRUE; // Allow sort
 		$this->fields['image'] = &$this->image;
 
 		// country_id
-		$this->country_id = new cField('users', 'users', 'x_country_id', 'country_id', '`country_id`', '`country_id`', 19, -1, FALSE, '`country_id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->country_id = new cField('users', 'users', 'x_country_id', 'country_id', '`country_id`', '`country_id`', 19, -1, FALSE, '`country_id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
 		$this->country_id->Sortable = TRUE; // Allow sort
+		$this->country_id->UsePleaseSelect = TRUE; // Use PleaseSelect by default
+		$this->country_id->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
 		$this->country_id->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['country_id'] = &$this->country_id;
 
 		// city
-		$this->city = new cField('users', 'users', 'x_city', 'city', '`city`', '`city`', 201, -1, FALSE, '`city`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXTAREA');
+		$this->city = new cField('users', 'users', 'x_city', 'city', '`city`', '`city`', 201, -1, FALSE, '`city`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->city->Sortable = TRUE; // Allow sort
 		$this->fields['city'] = &$this->city;
 
 		// currency_id
-		$this->currency_id = new cField('users', 'users', 'x_currency_id', 'currency_id', '`currency_id`', '`currency_id`', 19, -1, FALSE, '`currency_id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->currency_id = new cField('users', 'users', 'x_currency_id', 'currency_id', '`currency_id`', '`currency_id`', 19, -1, FALSE, '`currency_id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
 		$this->currency_id->Sortable = TRUE; // Allow sort
+		$this->currency_id->UsePleaseSelect = TRUE; // Use PleaseSelect by default
+		$this->currency_id->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
 		$this->currency_id->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['currency_id'] = &$this->currency_id;
 
@@ -134,30 +140,33 @@ class cusers extends cTable {
 		$this->fields['type'] = &$this->type;
 
 		// is_verified
-		$this->is_verified = new cField('users', 'users', 'x_is_verified', 'is_verified', '`is_verified`', '`is_verified`', 16, -1, FALSE, '`is_verified`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->is_verified = new cField('users', 'users', 'x_is_verified', 'is_verified', '`is_verified`', '`is_verified`', 16, -1, FALSE, '`is_verified`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'RADIO');
 		$this->is_verified->Sortable = TRUE; // Allow sort
+		$this->is_verified->OptionCount = 2;
 		$this->is_verified->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['is_verified'] = &$this->is_verified;
 
 		// is_approved
-		$this->is_approved = new cField('users', 'users', 'x_is_approved', 'is_approved', '`is_approved`', '`is_approved`', 16, -1, FALSE, '`is_approved`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->is_approved = new cField('users', 'users', 'x_is_approved', 'is_approved', '`is_approved`', '`is_approved`', 16, -1, FALSE, '`is_approved`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'RADIO');
 		$this->is_approved->Sortable = TRUE; // Allow sort
+		$this->is_approved->OptionCount = 2;
 		$this->is_approved->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['is_approved'] = &$this->is_approved;
 
 		// is_blocked
-		$this->is_blocked = new cField('users', 'users', 'x_is_blocked', 'is_blocked', '`is_blocked`', '`is_blocked`', 16, -1, FALSE, '`is_blocked`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->is_blocked = new cField('users', 'users', 'x_is_blocked', 'is_blocked', '`is_blocked`', '`is_blocked`', 16, -1, FALSE, '`is_blocked`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'RADIO');
 		$this->is_blocked->Sortable = TRUE; // Allow sort
+		$this->is_blocked->OptionCount = 2;
 		$this->is_blocked->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['is_blocked'] = &$this->is_blocked;
 
 		// otp
-		$this->otp = new cField('users', 'users', 'x_otp', 'otp', '`otp`', '`otp`', 201, -1, FALSE, '`otp`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXTAREA');
+		$this->otp = new cField('users', 'users', 'x_otp', 'otp', '`otp`', '`otp`', 201, -1, FALSE, '`otp`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->otp->Sortable = TRUE; // Allow sort
 		$this->fields['otp'] = &$this->otp;
 
 		// slug
-		$this->slug = new cField('users', 'users', 'x_slug', 'slug', '`slug`', '`slug`', 201, -1, FALSE, '`slug`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXTAREA');
+		$this->slug = new cField('users', 'users', 'x_slug', 'slug', '`slug`', '`slug`', 201, -1, FALSE, '`slug`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->slug->Sortable = TRUE; // Allow sort
 		$this->fields['slug'] = &$this->slug;
 
@@ -168,13 +177,13 @@ class cusers extends cTable {
 
 		// created_at
 		$this->created_at = new cField('users', 'users', 'x_created_at', 'created_at', '`created_at`', ew_CastDateFieldForLike('`created_at`', 0, "DB"), 135, 0, FALSE, '`created_at`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->created_at->Sortable = TRUE; // Allow sort
+		$this->created_at->Sortable = FALSE; // Allow sort
 		$this->created_at->FldDefaultErrMsg = str_replace("%s", $GLOBALS["EW_DATE_FORMAT"], $Language->Phrase("IncorrectDate"));
 		$this->fields['created_at'] = &$this->created_at;
 
 		// updated_at
 		$this->updated_at = new cField('users', 'users', 'x_updated_at', 'updated_at', '`updated_at`', ew_CastDateFieldForLike('`updated_at`', 0, "DB"), 135, 0, FALSE, '`updated_at`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->updated_at->Sortable = TRUE; // Allow sort
+		$this->updated_at->Sortable = FALSE; // Allow sort
 		$this->updated_at->FldDefaultErrMsg = str_replace("%s", $GLOBALS["EW_DATE_FORMAT"], $Language->Phrase("IncorrectDate"));
 		$this->fields['updated_at'] = &$this->updated_at;
 	}
@@ -769,8 +778,10 @@ class cusers extends cTable {
 		// name
 		// email
 		// email_verified_at
-		// password
 
+		$this->email_verified_at->CellCssStyle = "white-space: nowrap;";
+
+		// password
 		$this->password->CellCssStyle = "white-space: nowrap;";
 
 		// phone
@@ -788,9 +799,13 @@ class cusers extends cTable {
 		// slug
 		// remember_token
 		// created_at
-		// updated_at
-		// id
 
+		$this->created_at->CellCssStyle = "white-space: nowrap;";
+
+		// updated_at
+		$this->updated_at->CellCssStyle = "white-space: nowrap;";
+
+		// id
 		$this->id->ViewValue = $this->id->CurrentValue;
 		$this->id->ViewCustomAttributes = "";
 
@@ -833,7 +848,27 @@ class cusers extends cTable {
 		$this->image->ViewCustomAttributes = "";
 
 		// country_id
-		$this->country_id->ViewValue = $this->country_id->CurrentValue;
+		if (strval($this->country_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->country_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `countries`";
+		$sWhereWrk = "";
+		$this->country_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->country_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[2] = $rswrk->fields('Disp2Fld');
+				$this->country_id->ViewValue = $this->country_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->country_id->ViewValue = $this->country_id->CurrentValue;
+			}
+		} else {
+			$this->country_id->ViewValue = NULL;
+		}
 		$this->country_id->ViewCustomAttributes = "";
 
 		// city
@@ -841,7 +876,27 @@ class cusers extends cTable {
 		$this->city->ViewCustomAttributes = "";
 
 		// currency_id
-		$this->currency_id->ViewValue = $this->currency_id->CurrentValue;
+		if (strval($this->currency_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->currency_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `currencies`";
+		$sWhereWrk = "";
+		$this->currency_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->currency_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[2] = $rswrk->fields('Disp2Fld');
+				$this->currency_id->ViewValue = $this->currency_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->currency_id->ViewValue = $this->currency_id->CurrentValue;
+			}
+		} else {
+			$this->currency_id->ViewValue = NULL;
+		}
 		$this->currency_id->ViewCustomAttributes = "";
 
 		// type
@@ -853,15 +908,27 @@ class cusers extends cTable {
 		$this->type->ViewCustomAttributes = "";
 
 		// is_verified
-		$this->is_verified->ViewValue = $this->is_verified->CurrentValue;
+		if (strval($this->is_verified->CurrentValue) <> "") {
+			$this->is_verified->ViewValue = $this->is_verified->OptionCaption($this->is_verified->CurrentValue);
+		} else {
+			$this->is_verified->ViewValue = NULL;
+		}
 		$this->is_verified->ViewCustomAttributes = "";
 
 		// is_approved
-		$this->is_approved->ViewValue = $this->is_approved->CurrentValue;
+		if (strval($this->is_approved->CurrentValue) <> "") {
+			$this->is_approved->ViewValue = $this->is_approved->OptionCaption($this->is_approved->CurrentValue);
+		} else {
+			$this->is_approved->ViewValue = NULL;
+		}
 		$this->is_approved->ViewCustomAttributes = "";
 
 		// is_blocked
-		$this->is_blocked->ViewValue = $this->is_blocked->CurrentValue;
+		if (strval($this->is_blocked->CurrentValue) <> "") {
+			$this->is_blocked->ViewValue = $this->is_blocked->OptionCaption($this->is_blocked->CurrentValue);
+		} else {
+			$this->is_blocked->ViewValue = NULL;
+		}
 		$this->is_blocked->ViewCustomAttributes = "";
 
 		// otp
@@ -1042,8 +1109,9 @@ class cusers extends cTable {
 		$this->phone->PlaceHolder = ew_RemoveHtml($this->phone->FldCaption());
 
 		// gender
+		$this->gender->EditAttrs["class"] = "form-control";
 		$this->gender->EditCustomAttributes = "";
-		$this->gender->EditValue = $this->gender->Options(FALSE);
+		$this->gender->EditValue = $this->gender->Options(TRUE);
 
 		// birthday
 		$this->birthday->EditAttrs["class"] = "form-control";
@@ -1060,8 +1128,6 @@ class cusers extends cTable {
 		// country_id
 		$this->country_id->EditAttrs["class"] = "form-control";
 		$this->country_id->EditCustomAttributes = "";
-		$this->country_id->EditValue = $this->country_id->CurrentValue;
-		$this->country_id->PlaceHolder = ew_RemoveHtml($this->country_id->FldCaption());
 
 		// city
 		$this->city->EditAttrs["class"] = "form-control";
@@ -1072,30 +1138,22 @@ class cusers extends cTable {
 		// currency_id
 		$this->currency_id->EditAttrs["class"] = "form-control";
 		$this->currency_id->EditCustomAttributes = "";
-		$this->currency_id->EditValue = $this->currency_id->CurrentValue;
-		$this->currency_id->PlaceHolder = ew_RemoveHtml($this->currency_id->FldCaption());
 
 		// type
 		$this->type->EditCustomAttributes = "";
 		$this->type->EditValue = $this->type->Options(FALSE);
 
 		// is_verified
-		$this->is_verified->EditAttrs["class"] = "form-control";
 		$this->is_verified->EditCustomAttributes = "";
-		$this->is_verified->EditValue = $this->is_verified->CurrentValue;
-		$this->is_verified->PlaceHolder = ew_RemoveHtml($this->is_verified->FldCaption());
+		$this->is_verified->EditValue = $this->is_verified->Options(FALSE);
 
 		// is_approved
-		$this->is_approved->EditAttrs["class"] = "form-control";
 		$this->is_approved->EditCustomAttributes = "";
-		$this->is_approved->EditValue = $this->is_approved->CurrentValue;
-		$this->is_approved->PlaceHolder = ew_RemoveHtml($this->is_approved->FldCaption());
+		$this->is_approved->EditValue = $this->is_approved->Options(FALSE);
 
 		// is_blocked
-		$this->is_blocked->EditAttrs["class"] = "form-control";
 		$this->is_blocked->EditCustomAttributes = "";
-		$this->is_blocked->EditValue = $this->is_blocked->CurrentValue;
-		$this->is_blocked->PlaceHolder = ew_RemoveHtml($this->is_blocked->FldCaption());
+		$this->is_blocked->EditValue = $this->is_blocked->Options(FALSE);
 
 		// otp
 		$this->otp->EditAttrs["class"] = "form-control";
@@ -1157,7 +1215,6 @@ class cusers extends cTable {
 					if ($this->id->Exportable) $Doc->ExportCaption($this->id);
 					if ($this->name->Exportable) $Doc->ExportCaption($this->name);
 					if ($this->_email->Exportable) $Doc->ExportCaption($this->_email);
-					if ($this->email_verified_at->Exportable) $Doc->ExportCaption($this->email_verified_at);
 					if ($this->phone->Exportable) $Doc->ExportCaption($this->phone);
 					if ($this->gender->Exportable) $Doc->ExportCaption($this->gender);
 					if ($this->birthday->Exportable) $Doc->ExportCaption($this->birthday);
@@ -1172,13 +1229,10 @@ class cusers extends cTable {
 					if ($this->otp->Exportable) $Doc->ExportCaption($this->otp);
 					if ($this->slug->Exportable) $Doc->ExportCaption($this->slug);
 					if ($this->remember_token->Exportable) $Doc->ExportCaption($this->remember_token);
-					if ($this->created_at->Exportable) $Doc->ExportCaption($this->created_at);
-					if ($this->updated_at->Exportable) $Doc->ExportCaption($this->updated_at);
 				} else {
 					if ($this->id->Exportable) $Doc->ExportCaption($this->id);
 					if ($this->name->Exportable) $Doc->ExportCaption($this->name);
 					if ($this->_email->Exportable) $Doc->ExportCaption($this->_email);
-					if ($this->email_verified_at->Exportable) $Doc->ExportCaption($this->email_verified_at);
 					if ($this->phone->Exportable) $Doc->ExportCaption($this->phone);
 					if ($this->gender->Exportable) $Doc->ExportCaption($this->gender);
 					if ($this->birthday->Exportable) $Doc->ExportCaption($this->birthday);
@@ -1193,8 +1247,6 @@ class cusers extends cTable {
 					if ($this->otp->Exportable) $Doc->ExportCaption($this->otp);
 					if ($this->slug->Exportable) $Doc->ExportCaption($this->slug);
 					if ($this->remember_token->Exportable) $Doc->ExportCaption($this->remember_token);
-					if ($this->created_at->Exportable) $Doc->ExportCaption($this->created_at);
-					if ($this->updated_at->Exportable) $Doc->ExportCaption($this->updated_at);
 				}
 				$Doc->EndExportRow();
 			}
@@ -1229,7 +1281,6 @@ class cusers extends cTable {
 						if ($this->id->Exportable) $Doc->ExportField($this->id);
 						if ($this->name->Exportable) $Doc->ExportField($this->name);
 						if ($this->_email->Exportable) $Doc->ExportField($this->_email);
-						if ($this->email_verified_at->Exportable) $Doc->ExportField($this->email_verified_at);
 						if ($this->phone->Exportable) $Doc->ExportField($this->phone);
 						if ($this->gender->Exportable) $Doc->ExportField($this->gender);
 						if ($this->birthday->Exportable) $Doc->ExportField($this->birthday);
@@ -1244,13 +1295,10 @@ class cusers extends cTable {
 						if ($this->otp->Exportable) $Doc->ExportField($this->otp);
 						if ($this->slug->Exportable) $Doc->ExportField($this->slug);
 						if ($this->remember_token->Exportable) $Doc->ExportField($this->remember_token);
-						if ($this->created_at->Exportable) $Doc->ExportField($this->created_at);
-						if ($this->updated_at->Exportable) $Doc->ExportField($this->updated_at);
 					} else {
 						if ($this->id->Exportable) $Doc->ExportField($this->id);
 						if ($this->name->Exportable) $Doc->ExportField($this->name);
 						if ($this->_email->Exportable) $Doc->ExportField($this->_email);
-						if ($this->email_verified_at->Exportable) $Doc->ExportField($this->email_verified_at);
 						if ($this->phone->Exportable) $Doc->ExportField($this->phone);
 						if ($this->gender->Exportable) $Doc->ExportField($this->gender);
 						if ($this->birthday->Exportable) $Doc->ExportField($this->birthday);
@@ -1265,8 +1313,6 @@ class cusers extends cTable {
 						if ($this->otp->Exportable) $Doc->ExportField($this->otp);
 						if ($this->slug->Exportable) $Doc->ExportField($this->slug);
 						if ($this->remember_token->Exportable) $Doc->ExportField($this->remember_token);
-						if ($this->created_at->Exportable) $Doc->ExportField($this->created_at);
-						if ($this->updated_at->Exportable) $Doc->ExportField($this->updated_at);
 					}
 					$Doc->EndExportRow($RowCnt);
 				}

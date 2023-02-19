@@ -309,8 +309,6 @@ class ctopics_delete extends ctopics {
 		$this->name_en->SetVisibility();
 		$this->parent_id->SetVisibility();
 		$this->image->SetVisibility();
-		$this->created_at->SetVisibility();
-		$this->updated_at->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -494,7 +492,8 @@ class ctopics_delete extends ctopics {
 		$this->name_ar->setDbValue($row['name_ar']);
 		$this->name_en->setDbValue($row['name_en']);
 		$this->parent_id->setDbValue($row['parent_id']);
-		$this->image->setDbValue($row['image']);
+		$this->image->Upload->DbValue = $row['image'];
+		$this->image->setDbValue($this->image->Upload->DbValue);
 		$this->created_at->setDbValue($row['created_at']);
 		$this->updated_at->setDbValue($row['updated_at']);
 	}
@@ -521,7 +520,7 @@ class ctopics_delete extends ctopics {
 		$this->name_ar->DbValue = $row['name_ar'];
 		$this->name_en->DbValue = $row['name_en'];
 		$this->parent_id->DbValue = $row['parent_id'];
-		$this->image->DbValue = $row['image'];
+		$this->image->Upload->DbValue = $row['image'];
 		$this->created_at->DbValue = $row['created_at'];
 		$this->updated_at->DbValue = $row['updated_at'];
 	}
@@ -542,8 +541,11 @@ class ctopics_delete extends ctopics {
 		// parent_id
 		// image
 		// created_at
-		// updated_at
 
+		$this->created_at->CellCssStyle = "white-space: nowrap;";
+
+		// updated_at
+		$this->updated_at->CellCssStyle = "white-space: nowrap;";
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
 		// id
@@ -559,22 +561,40 @@ class ctopics_delete extends ctopics {
 		$this->name_en->ViewCustomAttributes = "";
 
 		// parent_id
-		$this->parent_id->ViewValue = $this->parent_id->CurrentValue;
+		if (strval($this->parent_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->parent_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `topics`";
+		$sWhereWrk = "";
+		$this->parent_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->parent_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[2] = $rswrk->fields('Disp2Fld');
+				$this->parent_id->ViewValue = $this->parent_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->parent_id->ViewValue = $this->parent_id->CurrentValue;
+			}
+		} else {
+			$this->parent_id->ViewValue = NULL;
+		}
 		$this->parent_id->ViewCustomAttributes = "";
 
 		// image
-		$this->image->ViewValue = $this->image->CurrentValue;
+		$this->image->UploadPath = "../images";
+		if (!ew_Empty($this->image->Upload->DbValue)) {
+			$this->image->ImageWidth = 100;
+			$this->image->ImageHeight = 0;
+			$this->image->ImageAlt = $this->image->FldAlt();
+			$this->image->ViewValue = $this->image->Upload->DbValue;
+		} else {
+			$this->image->ViewValue = "";
+		}
 		$this->image->ViewCustomAttributes = "";
-
-		// created_at
-		$this->created_at->ViewValue = $this->created_at->CurrentValue;
-		$this->created_at->ViewValue = ew_FormatDateTime($this->created_at->ViewValue, 0);
-		$this->created_at->ViewCustomAttributes = "";
-
-		// updated_at
-		$this->updated_at->ViewValue = $this->updated_at->CurrentValue;
-		$this->updated_at->ViewValue = ew_FormatDateTime($this->updated_at->ViewValue, 0);
-		$this->updated_at->ViewCustomAttributes = "";
 
 			// id
 			$this->id->LinkCustomAttributes = "";
@@ -598,18 +618,22 @@ class ctopics_delete extends ctopics {
 
 			// image
 			$this->image->LinkCustomAttributes = "";
-			$this->image->HrefValue = "";
+			$this->image->UploadPath = "../images";
+			if (!ew_Empty($this->image->Upload->DbValue)) {
+				$this->image->HrefValue = ew_GetFileUploadUrl($this->image, $this->image->Upload->DbValue); // Add prefix/suffix
+				$this->image->LinkAttrs["target"] = ""; // Add target
+				if ($this->Export <> "") $this->image->HrefValue = ew_FullUrl($this->image->HrefValue, "href");
+			} else {
+				$this->image->HrefValue = "";
+			}
+			$this->image->HrefValue2 = $this->image->UploadPath . $this->image->Upload->DbValue;
 			$this->image->TooltipValue = "";
-
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
-			$this->created_at->TooltipValue = "";
-
-			// updated_at
-			$this->updated_at->LinkCustomAttributes = "";
-			$this->updated_at->HrefValue = "";
-			$this->updated_at->TooltipValue = "";
+			if ($this->image->UseColorbox) {
+				if (ew_Empty($this->image->TooltipValue))
+					$this->image->LinkAttrs["title"] = $Language->Phrase("ViewImageGallery");
+				$this->image->LinkAttrs["data-rel"] = "topics_x_image";
+				ew_AppendClass($this->image->LinkAttrs["class"], "ewLightbox");
+			}
 		}
 
 		// Call Row Rendered event
@@ -659,6 +683,13 @@ class ctopics_delete extends ctopics {
 
 				// Delete old files
 				$this->LoadDbValues($row);
+				$this->image->OldUploadPath = "../images";
+				$OldFiles = ew_Empty($row['image']) ? array() : array($row['image']);
+				$OldFileCount = count($OldFiles);
+				for ($i = 0; $i < $OldFileCount; $i++) {
+					if (file_exists($this->image->OldPhysicalUploadPath() . $OldFiles[$i]))
+						@unlink($this->image->OldPhysicalUploadPath() . $OldFiles[$i]);
+				}
 				$conn->raiseErrorFn = $GLOBALS["EW_ERROR_FN"];
 				$DeleteRows = $this->Delete($row); // Delete
 				$conn->raiseErrorFn = '';
@@ -820,8 +851,10 @@ ftopicsdelete.Form_CustomValidate =
 ftopicsdelete.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
-// Form object for search
+ftopicsdelete.Lists["x_parent_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name_ar","x_name_en","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"topics"};
+ftopicsdelete.Lists["x_parent_id"].Data = "<?php echo $topics_delete->parent_id->LookupFilterQuery(FALSE, "delete") ?>";
 
+// Form object for search
 </script>
 <script type="text/javascript">
 
@@ -860,12 +893,6 @@ $topics_delete->ShowMessage();
 <?php } ?>
 <?php if ($topics->image->Visible) { // image ?>
 		<th class="<?php echo $topics->image->HeaderCellClass() ?>"><span id="elh_topics_image" class="topics_image"><?php echo $topics->image->FldCaption() ?></span></th>
-<?php } ?>
-<?php if ($topics->created_at->Visible) { // created_at ?>
-		<th class="<?php echo $topics->created_at->HeaderCellClass() ?>"><span id="elh_topics_created_at" class="topics_created_at"><?php echo $topics->created_at->FldCaption() ?></span></th>
-<?php } ?>
-<?php if ($topics->updated_at->Visible) { // updated_at ?>
-		<th class="<?php echo $topics->updated_at->HeaderCellClass() ?>"><span id="elh_topics_updated_at" class="topics_updated_at"><?php echo $topics->updated_at->FldCaption() ?></span></th>
 <?php } ?>
 	</tr>
 	</thead>
@@ -923,24 +950,9 @@ while (!$topics_delete->Recordset->EOF) {
 <?php if ($topics->image->Visible) { // image ?>
 		<td<?php echo $topics->image->CellAttributes() ?>>
 <span id="el<?php echo $topics_delete->RowCnt ?>_topics_image" class="topics_image">
-<span<?php echo $topics->image->ViewAttributes() ?>>
-<?php echo $topics->image->ListViewValue() ?></span>
+<span>
+<?php echo ew_GetFileViewTag($topics->image, $topics->image->ListViewValue()) ?>
 </span>
-</td>
-<?php } ?>
-<?php if ($topics->created_at->Visible) { // created_at ?>
-		<td<?php echo $topics->created_at->CellAttributes() ?>>
-<span id="el<?php echo $topics_delete->RowCnt ?>_topics_created_at" class="topics_created_at">
-<span<?php echo $topics->created_at->ViewAttributes() ?>>
-<?php echo $topics->created_at->ListViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
-<?php if ($topics->updated_at->Visible) { // updated_at ?>
-		<td<?php echo $topics->updated_at->CellAttributes() ?>>
-<span id="el<?php echo $topics_delete->RowCnt ?>_topics_updated_at" class="topics_updated_at">
-<span<?php echo $topics->updated_at->ViewAttributes() ?>>
-<?php echo $topics->updated_at->ListViewValue() ?></span>
 </span>
 </td>
 <?php } ?>

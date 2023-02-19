@@ -310,7 +310,6 @@ class cusers_add extends cusers {
 		$this->CurrentAction = (@$_GET["a"] <> "") ? $_GET["a"] : @$_POST["a_list"]; // Set up current action
 		$this->name->SetVisibility();
 		$this->_email->SetVisibility();
-		$this->email_verified_at->SetVisibility();
 		$this->password->SetVisibility();
 		$this->phone->SetVisibility();
 		$this->gender->SetVisibility();
@@ -326,8 +325,6 @@ class cusers_add extends cusers {
 		$this->otp->SetVisibility();
 		$this->slug->SetVisibility();
 		$this->remember_token->SetVisibility();
-		$this->created_at->SetVisibility();
-		$this->updated_at->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -607,10 +604,6 @@ class cusers_add extends cusers {
 		if (!$this->_email->FldIsDetailKey) {
 			$this->_email->setFormValue($objForm->GetValue("x__email"));
 		}
-		if (!$this->email_verified_at->FldIsDetailKey) {
-			$this->email_verified_at->setFormValue($objForm->GetValue("x_email_verified_at"));
-			$this->email_verified_at->CurrentValue = ew_UnFormatDateTime($this->email_verified_at->CurrentValue, 0);
-		}
 		if (!$this->password->FldIsDetailKey) {
 			$this->password->setFormValue($objForm->GetValue("x_password"));
 		}
@@ -657,14 +650,6 @@ class cusers_add extends cusers {
 		if (!$this->remember_token->FldIsDetailKey) {
 			$this->remember_token->setFormValue($objForm->GetValue("x_remember_token"));
 		}
-		if (!$this->created_at->FldIsDetailKey) {
-			$this->created_at->setFormValue($objForm->GetValue("x_created_at"));
-			$this->created_at->CurrentValue = ew_UnFormatDateTime($this->created_at->CurrentValue, 0);
-		}
-		if (!$this->updated_at->FldIsDetailKey) {
-			$this->updated_at->setFormValue($objForm->GetValue("x_updated_at"));
-			$this->updated_at->CurrentValue = ew_UnFormatDateTime($this->updated_at->CurrentValue, 0);
-		}
 	}
 
 	// Restore form values
@@ -672,8 +657,6 @@ class cusers_add extends cusers {
 		global $objForm;
 		$this->name->CurrentValue = $this->name->FormValue;
 		$this->_email->CurrentValue = $this->_email->FormValue;
-		$this->email_verified_at->CurrentValue = $this->email_verified_at->FormValue;
-		$this->email_verified_at->CurrentValue = ew_UnFormatDateTime($this->email_verified_at->CurrentValue, 0);
 		$this->password->CurrentValue = $this->password->FormValue;
 		$this->phone->CurrentValue = $this->phone->FormValue;
 		$this->gender->CurrentValue = $this->gender->FormValue;
@@ -690,10 +673,6 @@ class cusers_add extends cusers {
 		$this->otp->CurrentValue = $this->otp->FormValue;
 		$this->slug->CurrentValue = $this->slug->FormValue;
 		$this->remember_token->CurrentValue = $this->remember_token->FormValue;
-		$this->created_at->CurrentValue = $this->created_at->FormValue;
-		$this->created_at->CurrentValue = ew_UnFormatDateTime($this->created_at->CurrentValue, 0);
-		$this->updated_at->CurrentValue = $this->updated_at->FormValue;
-		$this->updated_at->CurrentValue = ew_UnFormatDateTime($this->updated_at->CurrentValue, 0);
 	}
 
 	// Load row based on key values
@@ -876,11 +855,6 @@ class cusers_add extends cusers {
 		$this->_email->ViewValue = $this->_email->CurrentValue;
 		$this->_email->ViewCustomAttributes = "";
 
-		// email_verified_at
-		$this->email_verified_at->ViewValue = $this->email_verified_at->CurrentValue;
-		$this->email_verified_at->ViewValue = ew_FormatDateTime($this->email_verified_at->ViewValue, 0);
-		$this->email_verified_at->ViewCustomAttributes = "";
-
 		// password
 		$this->password->ViewValue = $this->password->CurrentValue;
 		$this->password->ViewCustomAttributes = "";
@@ -907,7 +881,27 @@ class cusers_add extends cusers {
 		$this->image->ViewCustomAttributes = "";
 
 		// country_id
-		$this->country_id->ViewValue = $this->country_id->CurrentValue;
+		if (strval($this->country_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->country_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `countries`";
+		$sWhereWrk = "";
+		$this->country_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->country_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[2] = $rswrk->fields('Disp2Fld');
+				$this->country_id->ViewValue = $this->country_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->country_id->ViewValue = $this->country_id->CurrentValue;
+			}
+		} else {
+			$this->country_id->ViewValue = NULL;
+		}
 		$this->country_id->ViewCustomAttributes = "";
 
 		// city
@@ -915,7 +909,27 @@ class cusers_add extends cusers {
 		$this->city->ViewCustomAttributes = "";
 
 		// currency_id
-		$this->currency_id->ViewValue = $this->currency_id->CurrentValue;
+		if (strval($this->currency_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->currency_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `currencies`";
+		$sWhereWrk = "";
+		$this->currency_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->currency_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[2] = $rswrk->fields('Disp2Fld');
+				$this->currency_id->ViewValue = $this->currency_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->currency_id->ViewValue = $this->currency_id->CurrentValue;
+			}
+		} else {
+			$this->currency_id->ViewValue = NULL;
+		}
 		$this->currency_id->ViewCustomAttributes = "";
 
 		// type
@@ -927,15 +941,27 @@ class cusers_add extends cusers {
 		$this->type->ViewCustomAttributes = "";
 
 		// is_verified
-		$this->is_verified->ViewValue = $this->is_verified->CurrentValue;
+		if (strval($this->is_verified->CurrentValue) <> "") {
+			$this->is_verified->ViewValue = $this->is_verified->OptionCaption($this->is_verified->CurrentValue);
+		} else {
+			$this->is_verified->ViewValue = NULL;
+		}
 		$this->is_verified->ViewCustomAttributes = "";
 
 		// is_approved
-		$this->is_approved->ViewValue = $this->is_approved->CurrentValue;
+		if (strval($this->is_approved->CurrentValue) <> "") {
+			$this->is_approved->ViewValue = $this->is_approved->OptionCaption($this->is_approved->CurrentValue);
+		} else {
+			$this->is_approved->ViewValue = NULL;
+		}
 		$this->is_approved->ViewCustomAttributes = "";
 
 		// is_blocked
-		$this->is_blocked->ViewValue = $this->is_blocked->CurrentValue;
+		if (strval($this->is_blocked->CurrentValue) <> "") {
+			$this->is_blocked->ViewValue = $this->is_blocked->OptionCaption($this->is_blocked->CurrentValue);
+		} else {
+			$this->is_blocked->ViewValue = NULL;
+		}
 		$this->is_blocked->ViewCustomAttributes = "";
 
 		// otp
@@ -950,16 +976,6 @@ class cusers_add extends cusers {
 		$this->remember_token->ViewValue = $this->remember_token->CurrentValue;
 		$this->remember_token->ViewCustomAttributes = "";
 
-		// created_at
-		$this->created_at->ViewValue = $this->created_at->CurrentValue;
-		$this->created_at->ViewValue = ew_FormatDateTime($this->created_at->ViewValue, 0);
-		$this->created_at->ViewCustomAttributes = "";
-
-		// updated_at
-		$this->updated_at->ViewValue = $this->updated_at->CurrentValue;
-		$this->updated_at->ViewValue = ew_FormatDateTime($this->updated_at->ViewValue, 0);
-		$this->updated_at->ViewCustomAttributes = "";
-
 			// name
 			$this->name->LinkCustomAttributes = "";
 			$this->name->HrefValue = "";
@@ -969,11 +985,6 @@ class cusers_add extends cusers {
 			$this->_email->LinkCustomAttributes = "";
 			$this->_email->HrefValue = "";
 			$this->_email->TooltipValue = "";
-
-			// email_verified_at
-			$this->email_verified_at->LinkCustomAttributes = "";
-			$this->email_verified_at->HrefValue = "";
-			$this->email_verified_at->TooltipValue = "";
 
 			// password
 			$this->password->LinkCustomAttributes = "";
@@ -1049,16 +1060,6 @@ class cusers_add extends cusers {
 			$this->remember_token->LinkCustomAttributes = "";
 			$this->remember_token->HrefValue = "";
 			$this->remember_token->TooltipValue = "";
-
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
-			$this->created_at->TooltipValue = "";
-
-			// updated_at
-			$this->updated_at->LinkCustomAttributes = "";
-			$this->updated_at->HrefValue = "";
-			$this->updated_at->TooltipValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_ADD) { // Add row
 
 			// name
@@ -1073,12 +1074,6 @@ class cusers_add extends cusers {
 			$this->_email->EditValue = ew_HtmlEncode($this->_email->CurrentValue);
 			$this->_email->PlaceHolder = ew_RemoveHtml($this->_email->FldCaption());
 
-			// email_verified_at
-			$this->email_verified_at->EditAttrs["class"] = "form-control";
-			$this->email_verified_at->EditCustomAttributes = "";
-			$this->email_verified_at->EditValue = ew_HtmlEncode(ew_FormatDateTime($this->email_verified_at->CurrentValue, 8));
-			$this->email_verified_at->PlaceHolder = ew_RemoveHtml($this->email_verified_at->FldCaption());
-
 			// password
 			$this->password->EditAttrs["class"] = "form-control";
 			$this->password->EditCustomAttributes = "";
@@ -1092,8 +1087,9 @@ class cusers_add extends cusers {
 			$this->phone->PlaceHolder = ew_RemoveHtml($this->phone->FldCaption());
 
 			// gender
+			$this->gender->EditAttrs["class"] = "form-control";
 			$this->gender->EditCustomAttributes = "";
-			$this->gender->EditValue = $this->gender->Options(FALSE);
+			$this->gender->EditValue = $this->gender->Options(TRUE);
 
 			// birthday
 			$this->birthday->EditAttrs["class"] = "form-control";
@@ -1110,8 +1106,21 @@ class cusers_add extends cusers {
 			// country_id
 			$this->country_id->EditAttrs["class"] = "form-control";
 			$this->country_id->EditCustomAttributes = "";
-			$this->country_id->EditValue = ew_HtmlEncode($this->country_id->CurrentValue);
-			$this->country_id->PlaceHolder = ew_RemoveHtml($this->country_id->FldCaption());
+			if (trim(strval($this->country_id->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->country_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			}
+			$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `countries`";
+			$sWhereWrk = "";
+			$this->country_id->LookupFilters = array();
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->country_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->country_id->EditValue = $arwrk;
 
 			// city
 			$this->city->EditAttrs["class"] = "form-control";
@@ -1122,30 +1131,37 @@ class cusers_add extends cusers {
 			// currency_id
 			$this->currency_id->EditAttrs["class"] = "form-control";
 			$this->currency_id->EditCustomAttributes = "";
-			$this->currency_id->EditValue = ew_HtmlEncode($this->currency_id->CurrentValue);
-			$this->currency_id->PlaceHolder = ew_RemoveHtml($this->currency_id->FldCaption());
+			if (trim(strval($this->currency_id->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->currency_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			}
+			$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `currencies`";
+			$sWhereWrk = "";
+			$this->currency_id->LookupFilters = array();
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->currency_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->currency_id->EditValue = $arwrk;
 
 			// type
 			$this->type->EditCustomAttributes = "";
 			$this->type->EditValue = $this->type->Options(FALSE);
 
 			// is_verified
-			$this->is_verified->EditAttrs["class"] = "form-control";
 			$this->is_verified->EditCustomAttributes = "";
-			$this->is_verified->EditValue = ew_HtmlEncode($this->is_verified->CurrentValue);
-			$this->is_verified->PlaceHolder = ew_RemoveHtml($this->is_verified->FldCaption());
+			$this->is_verified->EditValue = $this->is_verified->Options(FALSE);
 
 			// is_approved
-			$this->is_approved->EditAttrs["class"] = "form-control";
 			$this->is_approved->EditCustomAttributes = "";
-			$this->is_approved->EditValue = ew_HtmlEncode($this->is_approved->CurrentValue);
-			$this->is_approved->PlaceHolder = ew_RemoveHtml($this->is_approved->FldCaption());
+			$this->is_approved->EditValue = $this->is_approved->Options(FALSE);
 
 			// is_blocked
-			$this->is_blocked->EditAttrs["class"] = "form-control";
 			$this->is_blocked->EditCustomAttributes = "";
-			$this->is_blocked->EditValue = ew_HtmlEncode($this->is_blocked->CurrentValue);
-			$this->is_blocked->PlaceHolder = ew_RemoveHtml($this->is_blocked->FldCaption());
+			$this->is_blocked->EditValue = $this->is_blocked->Options(FALSE);
 
 			// otp
 			$this->otp->EditAttrs["class"] = "form-control";
@@ -1165,18 +1181,6 @@ class cusers_add extends cusers {
 			$this->remember_token->EditValue = ew_HtmlEncode($this->remember_token->CurrentValue);
 			$this->remember_token->PlaceHolder = ew_RemoveHtml($this->remember_token->FldCaption());
 
-			// created_at
-			$this->created_at->EditAttrs["class"] = "form-control";
-			$this->created_at->EditCustomAttributes = "";
-			$this->created_at->EditValue = ew_HtmlEncode(ew_FormatDateTime($this->created_at->CurrentValue, 8));
-			$this->created_at->PlaceHolder = ew_RemoveHtml($this->created_at->FldCaption());
-
-			// updated_at
-			$this->updated_at->EditAttrs["class"] = "form-control";
-			$this->updated_at->EditCustomAttributes = "";
-			$this->updated_at->EditValue = ew_HtmlEncode(ew_FormatDateTime($this->updated_at->CurrentValue, 8));
-			$this->updated_at->PlaceHolder = ew_RemoveHtml($this->updated_at->FldCaption());
-
 			// Add refer script
 			// name
 
@@ -1186,10 +1190,6 @@ class cusers_add extends cusers {
 			// email
 			$this->_email->LinkCustomAttributes = "";
 			$this->_email->HrefValue = "";
-
-			// email_verified_at
-			$this->email_verified_at->LinkCustomAttributes = "";
-			$this->email_verified_at->HrefValue = "";
 
 			// password
 			$this->password->LinkCustomAttributes = "";
@@ -1250,14 +1250,6 @@ class cusers_add extends cusers {
 			// remember_token
 			$this->remember_token->LinkCustomAttributes = "";
 			$this->remember_token->HrefValue = "";
-
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
-
-			// updated_at
-			$this->updated_at->LinkCustomAttributes = "";
-			$this->updated_at->HrefValue = "";
 		}
 		if ($this->RowType == EW_ROWTYPE_ADD || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_SEARCH) // Add/Edit/Search row
 			$this->SetupFieldTitles();
@@ -1283,53 +1275,29 @@ class cusers_add extends cusers {
 		if (!$this->_email->FldIsDetailKey && !is_null($this->_email->FormValue) && $this->_email->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->_email->FldCaption(), $this->_email->ReqErrMsg));
 		}
-		if (!ew_CheckDateDef($this->email_verified_at->FormValue)) {
-			ew_AddMessage($gsFormError, $this->email_verified_at->FldErrMsg());
-		}
 		if (!$this->password->FldIsDetailKey && !is_null($this->password->FormValue) && $this->password->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->password->FldCaption(), $this->password->ReqErrMsg));
 		}
-		if ($this->gender->FormValue == "") {
+		if (!$this->gender->FldIsDetailKey && !is_null($this->gender->FormValue) && $this->gender->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->gender->FldCaption(), $this->gender->ReqErrMsg));
 		}
 		if (!ew_CheckDateDef($this->birthday->FormValue)) {
 			ew_AddMessage($gsFormError, $this->birthday->FldErrMsg());
 		}
-		if (!ew_CheckInteger($this->country_id->FormValue)) {
-			ew_AddMessage($gsFormError, $this->country_id->FldErrMsg());
-		}
-		if (!ew_CheckInteger($this->currency_id->FormValue)) {
-			ew_AddMessage($gsFormError, $this->currency_id->FldErrMsg());
-		}
 		if ($this->type->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->type->FldCaption(), $this->type->ReqErrMsg));
 		}
-		if (!$this->is_verified->FldIsDetailKey && !is_null($this->is_verified->FormValue) && $this->is_verified->FormValue == "") {
+		if ($this->is_verified->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->is_verified->FldCaption(), $this->is_verified->ReqErrMsg));
 		}
-		if (!ew_CheckInteger($this->is_verified->FormValue)) {
-			ew_AddMessage($gsFormError, $this->is_verified->FldErrMsg());
-		}
-		if (!$this->is_approved->FldIsDetailKey && !is_null($this->is_approved->FormValue) && $this->is_approved->FormValue == "") {
+		if ($this->is_approved->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->is_approved->FldCaption(), $this->is_approved->ReqErrMsg));
 		}
-		if (!ew_CheckInteger($this->is_approved->FormValue)) {
-			ew_AddMessage($gsFormError, $this->is_approved->FldErrMsg());
-		}
-		if (!$this->is_blocked->FldIsDetailKey && !is_null($this->is_blocked->FormValue) && $this->is_blocked->FormValue == "") {
+		if ($this->is_blocked->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->is_blocked->FldCaption(), $this->is_blocked->ReqErrMsg));
-		}
-		if (!ew_CheckInteger($this->is_blocked->FormValue)) {
-			ew_AddMessage($gsFormError, $this->is_blocked->FldErrMsg());
 		}
 		if (!$this->otp->FldIsDetailKey && !is_null($this->otp->FormValue) && $this->otp->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->otp->FldCaption(), $this->otp->ReqErrMsg));
-		}
-		if (!ew_CheckDateDef($this->created_at->FormValue)) {
-			ew_AddMessage($gsFormError, $this->created_at->FldErrMsg());
-		}
-		if (!ew_CheckDateDef($this->updated_at->FormValue)) {
-			ew_AddMessage($gsFormError, $this->updated_at->FldErrMsg());
 		}
 
 		// Validate detail grid
@@ -1394,9 +1362,6 @@ class cusers_add extends cusers {
 		// email
 		$this->_email->SetDbValueDef($rsnew, $this->_email->CurrentValue, "", FALSE);
 
-		// email_verified_at
-		$this->email_verified_at->SetDbValueDef($rsnew, ew_UnFormatDateTime($this->email_verified_at->CurrentValue, 0), NULL, FALSE);
-
 		// password
 		$this->password->SetDbValueDef($rsnew, $this->password->CurrentValue, "", FALSE);
 
@@ -1441,12 +1406,6 @@ class cusers_add extends cusers {
 
 		// remember_token
 		$this->remember_token->SetDbValueDef($rsnew, $this->remember_token->CurrentValue, NULL, FALSE);
-
-		// created_at
-		$this->created_at->SetDbValueDef($rsnew, ew_UnFormatDateTime($this->created_at->CurrentValue, 0), NULL, FALSE);
-
-		// updated_at
-		$this->updated_at->SetDbValueDef($rsnew, ew_UnFormatDateTime($this->updated_at->CurrentValue, 0), NULL, FALSE);
 
 		// Call Row Inserting event
 		$rs = ($rsold == NULL) ? NULL : $rsold->fields;
@@ -1547,6 +1506,30 @@ class cusers_add extends cusers {
 		global $gsLanguage;
 		$pageId = $pageId ?: $this->PageID;
 		switch ($fld->FldVar) {
+		case "x_country_id":
+			$sSqlWrk = "";
+			$sSqlWrk = "SELECT `id` AS `LinkFld`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `countries`";
+			$sWhereWrk = "";
+			$fld->LookupFilters = array();
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "19", "fn0" => "");
+			$sSqlWrk = "";
+			$this->Lookup_Selecting($this->country_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
+		case "x_currency_id":
+			$sSqlWrk = "";
+			$sSqlWrk = "SELECT `id` AS `LinkFld`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `currencies`";
+			$sWhereWrk = "";
+			$fld->LookupFilters = array();
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "19", "fn0" => "");
+			$sSqlWrk = "";
+			$this->Lookup_Selecting($this->currency_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
 		}
 	}
 
@@ -1672,9 +1655,6 @@ fusersadd.Validate = function() {
 			elm = this.GetElements("x" + infix + "__email");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $users->_email->FldCaption(), $users->_email->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_email_verified_at");
-			if (elm && !ew_CheckDateDef(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($users->email_verified_at->FldErrMsg()) ?>");
 			elm = this.GetElements("x" + infix + "_password");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $users->password->FldCaption(), $users->password->ReqErrMsg)) ?>");
@@ -1684,42 +1664,21 @@ fusersadd.Validate = function() {
 			elm = this.GetElements("x" + infix + "_birthday");
 			if (elm && !ew_CheckDateDef(elm.value))
 				return this.OnError(elm, "<?php echo ew_JsEncode2($users->birthday->FldErrMsg()) ?>");
-			elm = this.GetElements("x" + infix + "_country_id");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($users->country_id->FldErrMsg()) ?>");
-			elm = this.GetElements("x" + infix + "_currency_id");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($users->currency_id->FldErrMsg()) ?>");
 			elm = this.GetElements("x" + infix + "_type");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $users->type->FldCaption(), $users->type->ReqErrMsg)) ?>");
 			elm = this.GetElements("x" + infix + "_is_verified");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $users->is_verified->FldCaption(), $users->is_verified->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_is_verified");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($users->is_verified->FldErrMsg()) ?>");
 			elm = this.GetElements("x" + infix + "_is_approved");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $users->is_approved->FldCaption(), $users->is_approved->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_is_approved");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($users->is_approved->FldErrMsg()) ?>");
 			elm = this.GetElements("x" + infix + "_is_blocked");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $users->is_blocked->FldCaption(), $users->is_blocked->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_is_blocked");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($users->is_blocked->FldErrMsg()) ?>");
 			elm = this.GetElements("x" + infix + "_otp");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $users->otp->FldCaption(), $users->otp->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_created_at");
-			if (elm && !ew_CheckDateDef(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($users->created_at->FldErrMsg()) ?>");
-			elm = this.GetElements("x" + infix + "_updated_at");
-			if (elm && !ew_CheckDateDef(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($users->updated_at->FldErrMsg()) ?>");
 
 			// Fire Form_CustomValidate event
 			if (!this.Form_CustomValidate(fobj))
@@ -1751,8 +1710,18 @@ fusersadd.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 // Dynamic selection lists
 fusersadd.Lists["x_gender"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
 fusersadd.Lists["x_gender"].Options = <?php echo json_encode($users_add->gender->Options()) ?>;
+fusersadd.Lists["x_country_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name_ar","x_name_en","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"countries"};
+fusersadd.Lists["x_country_id"].Data = "<?php echo $users_add->country_id->LookupFilterQuery(FALSE, "add") ?>";
+fusersadd.Lists["x_currency_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name_ar","x_name_en","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"currencies"};
+fusersadd.Lists["x_currency_id"].Data = "<?php echo $users_add->currency_id->LookupFilterQuery(FALSE, "add") ?>";
 fusersadd.Lists["x_type"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
 fusersadd.Lists["x_type"].Options = <?php echo json_encode($users_add->type->Options()) ?>;
+fusersadd.Lists["x_is_verified"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
+fusersadd.Lists["x_is_verified"].Options = <?php echo json_encode($users_add->is_verified->Options()) ?>;
+fusersadd.Lists["x_is_approved"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
+fusersadd.Lists["x_is_approved"].Options = <?php echo json_encode($users_add->is_approved->Options()) ?>;
+fusersadd.Lists["x_is_blocked"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
+fusersadd.Lists["x_is_blocked"].Options = <?php echo json_encode($users_add->is_blocked->Options()) ?>;
 
 // Form object for search
 </script>
@@ -1792,16 +1761,6 @@ $users_add->ShowMessage();
 <?php echo $users->_email->CustomMsg ?></div></div>
 	</div>
 <?php } ?>
-<?php if ($users->email_verified_at->Visible) { // email_verified_at ?>
-	<div id="r_email_verified_at" class="form-group">
-		<label id="elh_users_email_verified_at" for="x_email_verified_at" class="<?php echo $users_add->LeftColumnClass ?>"><?php echo $users->email_verified_at->FldCaption() ?></label>
-		<div class="<?php echo $users_add->RightColumnClass ?>"><div<?php echo $users->email_verified_at->CellAttributes() ?>>
-<span id="el_users_email_verified_at">
-<input type="text" data-table="users" data-field="x_email_verified_at" name="x_email_verified_at" id="x_email_verified_at" placeholder="<?php echo ew_HtmlEncode($users->email_verified_at->getPlaceHolder()) ?>" value="<?php echo $users->email_verified_at->EditValue ?>"<?php echo $users->email_verified_at->EditAttributes() ?>>
-</span>
-<?php echo $users->email_verified_at->CustomMsg ?></div></div>
-	</div>
-<?php } ?>
 <?php if ($users->password->Visible) { // password ?>
 	<div id="r_password" class="form-group">
 		<label id="elh_users_password" for="x_password" class="<?php echo $users_add->LeftColumnClass ?>"><?php echo $users->password->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
@@ -1817,20 +1776,19 @@ $users_add->ShowMessage();
 		<label id="elh_users_phone" for="x_phone" class="<?php echo $users_add->LeftColumnClass ?>"><?php echo $users->phone->FldCaption() ?></label>
 		<div class="<?php echo $users_add->RightColumnClass ?>"><div<?php echo $users->phone->CellAttributes() ?>>
 <span id="el_users_phone">
-<textarea data-table="users" data-field="x_phone" name="x_phone" id="x_phone" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($users->phone->getPlaceHolder()) ?>"<?php echo $users->phone->EditAttributes() ?>><?php echo $users->phone->EditValue ?></textarea>
+<input type="text" data-table="users" data-field="x_phone" name="x_phone" id="x_phone" placeholder="<?php echo ew_HtmlEncode($users->phone->getPlaceHolder()) ?>" value="<?php echo $users->phone->EditValue ?>"<?php echo $users->phone->EditAttributes() ?>>
 </span>
 <?php echo $users->phone->CustomMsg ?></div></div>
 	</div>
 <?php } ?>
 <?php if ($users->gender->Visible) { // gender ?>
 	<div id="r_gender" class="form-group">
-		<label id="elh_users_gender" class="<?php echo $users_add->LeftColumnClass ?>"><?php echo $users->gender->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
+		<label id="elh_users_gender" for="x_gender" class="<?php echo $users_add->LeftColumnClass ?>"><?php echo $users->gender->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
 		<div class="<?php echo $users_add->RightColumnClass ?>"><div<?php echo $users->gender->CellAttributes() ?>>
 <span id="el_users_gender">
-<div id="tp_x_gender" class="ewTemplate"><input type="radio" data-table="users" data-field="x_gender" data-value-separator="<?php echo $users->gender->DisplayValueSeparatorAttribute() ?>" name="x_gender" id="x_gender" value="{value}"<?php echo $users->gender->EditAttributes() ?>></div>
-<div id="dsl_x_gender" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
-<?php echo $users->gender->RadioButtonListHtml(FALSE, "x_gender") ?>
-</div></div>
+<select data-table="users" data-field="x_gender" data-value-separator="<?php echo $users->gender->DisplayValueSeparatorAttribute() ?>" id="x_gender" name="x_gender"<?php echo $users->gender->EditAttributes() ?>>
+<?php echo $users->gender->SelectOptionListHtml("x_gender") ?>
+</select>
 </span>
 <?php echo $users->gender->CustomMsg ?></div></div>
 	</div>
@@ -1850,7 +1808,7 @@ $users_add->ShowMessage();
 		<label id="elh_users_image" for="x_image" class="<?php echo $users_add->LeftColumnClass ?>"><?php echo $users->image->FldCaption() ?></label>
 		<div class="<?php echo $users_add->RightColumnClass ?>"><div<?php echo $users->image->CellAttributes() ?>>
 <span id="el_users_image">
-<textarea data-table="users" data-field="x_image" name="x_image" id="x_image" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($users->image->getPlaceHolder()) ?>"<?php echo $users->image->EditAttributes() ?>><?php echo $users->image->EditValue ?></textarea>
+<input type="text" data-table="users" data-field="x_image" name="x_image" id="x_image" placeholder="<?php echo ew_HtmlEncode($users->image->getPlaceHolder()) ?>" value="<?php echo $users->image->EditValue ?>"<?php echo $users->image->EditAttributes() ?>>
 </span>
 <?php echo $users->image->CustomMsg ?></div></div>
 	</div>
@@ -1860,7 +1818,9 @@ $users_add->ShowMessage();
 		<label id="elh_users_country_id" for="x_country_id" class="<?php echo $users_add->LeftColumnClass ?>"><?php echo $users->country_id->FldCaption() ?></label>
 		<div class="<?php echo $users_add->RightColumnClass ?>"><div<?php echo $users->country_id->CellAttributes() ?>>
 <span id="el_users_country_id">
-<input type="text" data-table="users" data-field="x_country_id" name="x_country_id" id="x_country_id" size="30" placeholder="<?php echo ew_HtmlEncode($users->country_id->getPlaceHolder()) ?>" value="<?php echo $users->country_id->EditValue ?>"<?php echo $users->country_id->EditAttributes() ?>>
+<select data-table="users" data-field="x_country_id" data-value-separator="<?php echo $users->country_id->DisplayValueSeparatorAttribute() ?>" id="x_country_id" name="x_country_id"<?php echo $users->country_id->EditAttributes() ?>>
+<?php echo $users->country_id->SelectOptionListHtml("x_country_id") ?>
+</select>
 </span>
 <?php echo $users->country_id->CustomMsg ?></div></div>
 	</div>
@@ -1870,7 +1830,7 @@ $users_add->ShowMessage();
 		<label id="elh_users_city" for="x_city" class="<?php echo $users_add->LeftColumnClass ?>"><?php echo $users->city->FldCaption() ?></label>
 		<div class="<?php echo $users_add->RightColumnClass ?>"><div<?php echo $users->city->CellAttributes() ?>>
 <span id="el_users_city">
-<textarea data-table="users" data-field="x_city" name="x_city" id="x_city" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($users->city->getPlaceHolder()) ?>"<?php echo $users->city->EditAttributes() ?>><?php echo $users->city->EditValue ?></textarea>
+<input type="text" data-table="users" data-field="x_city" name="x_city" id="x_city" placeholder="<?php echo ew_HtmlEncode($users->city->getPlaceHolder()) ?>" value="<?php echo $users->city->EditValue ?>"<?php echo $users->city->EditAttributes() ?>>
 </span>
 <?php echo $users->city->CustomMsg ?></div></div>
 	</div>
@@ -1880,7 +1840,9 @@ $users_add->ShowMessage();
 		<label id="elh_users_currency_id" for="x_currency_id" class="<?php echo $users_add->LeftColumnClass ?>"><?php echo $users->currency_id->FldCaption() ?></label>
 		<div class="<?php echo $users_add->RightColumnClass ?>"><div<?php echo $users->currency_id->CellAttributes() ?>>
 <span id="el_users_currency_id">
-<input type="text" data-table="users" data-field="x_currency_id" name="x_currency_id" id="x_currency_id" size="30" placeholder="<?php echo ew_HtmlEncode($users->currency_id->getPlaceHolder()) ?>" value="<?php echo $users->currency_id->EditValue ?>"<?php echo $users->currency_id->EditAttributes() ?>>
+<select data-table="users" data-field="x_currency_id" data-value-separator="<?php echo $users->currency_id->DisplayValueSeparatorAttribute() ?>" id="x_currency_id" name="x_currency_id"<?php echo $users->currency_id->EditAttributes() ?>>
+<?php echo $users->currency_id->SelectOptionListHtml("x_currency_id") ?>
+</select>
 </span>
 <?php echo $users->currency_id->CustomMsg ?></div></div>
 	</div>
@@ -1900,30 +1862,39 @@ $users_add->ShowMessage();
 <?php } ?>
 <?php if ($users->is_verified->Visible) { // is_verified ?>
 	<div id="r_is_verified" class="form-group">
-		<label id="elh_users_is_verified" for="x_is_verified" class="<?php echo $users_add->LeftColumnClass ?>"><?php echo $users->is_verified->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
+		<label id="elh_users_is_verified" class="<?php echo $users_add->LeftColumnClass ?>"><?php echo $users->is_verified->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
 		<div class="<?php echo $users_add->RightColumnClass ?>"><div<?php echo $users->is_verified->CellAttributes() ?>>
 <span id="el_users_is_verified">
-<input type="text" data-table="users" data-field="x_is_verified" name="x_is_verified" id="x_is_verified" size="30" placeholder="<?php echo ew_HtmlEncode($users->is_verified->getPlaceHolder()) ?>" value="<?php echo $users->is_verified->EditValue ?>"<?php echo $users->is_verified->EditAttributes() ?>>
+<div id="tp_x_is_verified" class="ewTemplate"><input type="radio" data-table="users" data-field="x_is_verified" data-value-separator="<?php echo $users->is_verified->DisplayValueSeparatorAttribute() ?>" name="x_is_verified" id="x_is_verified" value="{value}"<?php echo $users->is_verified->EditAttributes() ?>></div>
+<div id="dsl_x_is_verified" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
+<?php echo $users->is_verified->RadioButtonListHtml(FALSE, "x_is_verified") ?>
+</div></div>
 </span>
 <?php echo $users->is_verified->CustomMsg ?></div></div>
 	</div>
 <?php } ?>
 <?php if ($users->is_approved->Visible) { // is_approved ?>
 	<div id="r_is_approved" class="form-group">
-		<label id="elh_users_is_approved" for="x_is_approved" class="<?php echo $users_add->LeftColumnClass ?>"><?php echo $users->is_approved->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
+		<label id="elh_users_is_approved" class="<?php echo $users_add->LeftColumnClass ?>"><?php echo $users->is_approved->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
 		<div class="<?php echo $users_add->RightColumnClass ?>"><div<?php echo $users->is_approved->CellAttributes() ?>>
 <span id="el_users_is_approved">
-<input type="text" data-table="users" data-field="x_is_approved" name="x_is_approved" id="x_is_approved" size="30" placeholder="<?php echo ew_HtmlEncode($users->is_approved->getPlaceHolder()) ?>" value="<?php echo $users->is_approved->EditValue ?>"<?php echo $users->is_approved->EditAttributes() ?>>
+<div id="tp_x_is_approved" class="ewTemplate"><input type="radio" data-table="users" data-field="x_is_approved" data-value-separator="<?php echo $users->is_approved->DisplayValueSeparatorAttribute() ?>" name="x_is_approved" id="x_is_approved" value="{value}"<?php echo $users->is_approved->EditAttributes() ?>></div>
+<div id="dsl_x_is_approved" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
+<?php echo $users->is_approved->RadioButtonListHtml(FALSE, "x_is_approved") ?>
+</div></div>
 </span>
 <?php echo $users->is_approved->CustomMsg ?></div></div>
 	</div>
 <?php } ?>
 <?php if ($users->is_blocked->Visible) { // is_blocked ?>
 	<div id="r_is_blocked" class="form-group">
-		<label id="elh_users_is_blocked" for="x_is_blocked" class="<?php echo $users_add->LeftColumnClass ?>"><?php echo $users->is_blocked->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
+		<label id="elh_users_is_blocked" class="<?php echo $users_add->LeftColumnClass ?>"><?php echo $users->is_blocked->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
 		<div class="<?php echo $users_add->RightColumnClass ?>"><div<?php echo $users->is_blocked->CellAttributes() ?>>
 <span id="el_users_is_blocked">
-<input type="text" data-table="users" data-field="x_is_blocked" name="x_is_blocked" id="x_is_blocked" size="30" placeholder="<?php echo ew_HtmlEncode($users->is_blocked->getPlaceHolder()) ?>" value="<?php echo $users->is_blocked->EditValue ?>"<?php echo $users->is_blocked->EditAttributes() ?>>
+<div id="tp_x_is_blocked" class="ewTemplate"><input type="radio" data-table="users" data-field="x_is_blocked" data-value-separator="<?php echo $users->is_blocked->DisplayValueSeparatorAttribute() ?>" name="x_is_blocked" id="x_is_blocked" value="{value}"<?php echo $users->is_blocked->EditAttributes() ?>></div>
+<div id="dsl_x_is_blocked" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
+<?php echo $users->is_blocked->RadioButtonListHtml(FALSE, "x_is_blocked") ?>
+</div></div>
 </span>
 <?php echo $users->is_blocked->CustomMsg ?></div></div>
 	</div>
@@ -1933,7 +1904,7 @@ $users_add->ShowMessage();
 		<label id="elh_users_otp" for="x_otp" class="<?php echo $users_add->LeftColumnClass ?>"><?php echo $users->otp->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
 		<div class="<?php echo $users_add->RightColumnClass ?>"><div<?php echo $users->otp->CellAttributes() ?>>
 <span id="el_users_otp">
-<textarea data-table="users" data-field="x_otp" name="x_otp" id="x_otp" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($users->otp->getPlaceHolder()) ?>"<?php echo $users->otp->EditAttributes() ?>><?php echo $users->otp->EditValue ?></textarea>
+<input type="text" data-table="users" data-field="x_otp" name="x_otp" id="x_otp" placeholder="<?php echo ew_HtmlEncode($users->otp->getPlaceHolder()) ?>" value="<?php echo $users->otp->EditValue ?>"<?php echo $users->otp->EditAttributes() ?>>
 </span>
 <?php echo $users->otp->CustomMsg ?></div></div>
 	</div>
@@ -1943,7 +1914,7 @@ $users_add->ShowMessage();
 		<label id="elh_users_slug" for="x_slug" class="<?php echo $users_add->LeftColumnClass ?>"><?php echo $users->slug->FldCaption() ?></label>
 		<div class="<?php echo $users_add->RightColumnClass ?>"><div<?php echo $users->slug->CellAttributes() ?>>
 <span id="el_users_slug">
-<textarea data-table="users" data-field="x_slug" name="x_slug" id="x_slug" cols="35" rows="4" placeholder="<?php echo ew_HtmlEncode($users->slug->getPlaceHolder()) ?>"<?php echo $users->slug->EditAttributes() ?>><?php echo $users->slug->EditValue ?></textarea>
+<input type="text" data-table="users" data-field="x_slug" name="x_slug" id="x_slug" placeholder="<?php echo ew_HtmlEncode($users->slug->getPlaceHolder()) ?>" value="<?php echo $users->slug->EditValue ?>"<?php echo $users->slug->EditAttributes() ?>>
 </span>
 <?php echo $users->slug->CustomMsg ?></div></div>
 	</div>
@@ -1956,26 +1927,6 @@ $users_add->ShowMessage();
 <input type="text" data-table="users" data-field="x_remember_token" name="x_remember_token" id="x_remember_token" size="30" maxlength="100" placeholder="<?php echo ew_HtmlEncode($users->remember_token->getPlaceHolder()) ?>" value="<?php echo $users->remember_token->EditValue ?>"<?php echo $users->remember_token->EditAttributes() ?>>
 </span>
 <?php echo $users->remember_token->CustomMsg ?></div></div>
-	</div>
-<?php } ?>
-<?php if ($users->created_at->Visible) { // created_at ?>
-	<div id="r_created_at" class="form-group">
-		<label id="elh_users_created_at" for="x_created_at" class="<?php echo $users_add->LeftColumnClass ?>"><?php echo $users->created_at->FldCaption() ?></label>
-		<div class="<?php echo $users_add->RightColumnClass ?>"><div<?php echo $users->created_at->CellAttributes() ?>>
-<span id="el_users_created_at">
-<input type="text" data-table="users" data-field="x_created_at" name="x_created_at" id="x_created_at" placeholder="<?php echo ew_HtmlEncode($users->created_at->getPlaceHolder()) ?>" value="<?php echo $users->created_at->EditValue ?>"<?php echo $users->created_at->EditAttributes() ?>>
-</span>
-<?php echo $users->created_at->CustomMsg ?></div></div>
-	</div>
-<?php } ?>
-<?php if ($users->updated_at->Visible) { // updated_at ?>
-	<div id="r_updated_at" class="form-group">
-		<label id="elh_users_updated_at" for="x_updated_at" class="<?php echo $users_add->LeftColumnClass ?>"><?php echo $users->updated_at->FldCaption() ?></label>
-		<div class="<?php echo $users_add->RightColumnClass ?>"><div<?php echo $users->updated_at->CellAttributes() ?>>
-<span id="el_users_updated_at">
-<input type="text" data-table="users" data-field="x_updated_at" name="x_updated_at" id="x_updated_at" placeholder="<?php echo ew_HtmlEncode($users->updated_at->getPlaceHolder()) ?>" value="<?php echo $users->updated_at->EditValue ?>"<?php echo $users->updated_at->EditAttributes() ?>>
-</span>
-<?php echo $users->updated_at->CustomMsg ?></div></div>
 	</div>
 <?php } ?>
 </div><!-- /page* -->

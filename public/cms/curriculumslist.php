@@ -5,7 +5,7 @@ ob_start(); // Turn on output buffering
 <?php include_once "ewcfg14.php" ?>
 <?php include_once ((EW_USE_ADODB) ? "adodb5/adodb.inc.php" : "ewmysql14.php") ?>
 <?php include_once "phpfn14.php" ?>
-<?php include_once "topicsinfo.php" ?>
+<?php include_once "curriculumsinfo.php" ?>
 <?php include_once "userfn14.php" ?>
 <?php
 
@@ -13,9 +13,9 @@ ob_start(); // Turn on output buffering
 // Page class
 //
 
-$topics_list = NULL; // Initialize page object first
+$curriculums_list = NULL; // Initialize page object first
 
-class ctopics_list extends ctopics {
+class ccurriculums_list extends ccurriculums {
 
 	// Page ID
 	var $PageID = 'list';
@@ -24,13 +24,13 @@ class ctopics_list extends ctopics {
 	var $ProjectID = '{D43A73A4-5F37-4161-A00D-2E65107145C9}';
 
 	// Table name
-	var $TableName = 'topics';
+	var $TableName = 'curriculums';
 
 	// Page object name
-	var $PageObjName = 'topics_list';
+	var $PageObjName = 'curriculums_list';
 
 	// Grid form hidden field names
-	var $FormName = 'ftopicslist';
+	var $FormName = 'fcurriculumslist';
 	var $FormActionName = 'k_action';
 	var $FormKeyName = 'k_key';
 	var $FormOldKeyName = 'k_oldkey';
@@ -288,10 +288,10 @@ class ctopics_list extends ctopics {
 		// Parent constuctor
 		parent::__construct();
 
-		// Table object (topics)
-		if (!isset($GLOBALS["topics"]) || get_class($GLOBALS["topics"]) == "ctopics") {
-			$GLOBALS["topics"] = &$this;
-			$GLOBALS["Table"] = &$GLOBALS["topics"];
+		// Table object (curriculums)
+		if (!isset($GLOBALS["curriculums"]) || get_class($GLOBALS["curriculums"]) == "ccurriculums") {
+			$GLOBALS["curriculums"] = &$this;
+			$GLOBALS["Table"] = &$GLOBALS["curriculums"];
 		}
 
 		// Initialize URLs
@@ -302,12 +302,12 @@ class ctopics_list extends ctopics {
 		$this->ExportXmlUrl = $this->PageUrl() . "export=xml";
 		$this->ExportCsvUrl = $this->PageUrl() . "export=csv";
 		$this->ExportPdfUrl = $this->PageUrl() . "export=pdf";
-		$this->AddUrl = "topicsadd.php";
+		$this->AddUrl = "curriculumsadd.php";
 		$this->InlineAddUrl = $this->PageUrl() . "a=add";
 		$this->GridAddUrl = $this->PageUrl() . "a=gridadd";
 		$this->GridEditUrl = $this->PageUrl() . "a=gridedit";
-		$this->MultiDeleteUrl = "topicsdelete.php";
-		$this->MultiUpdateUrl = "topicsupdate.php";
+		$this->MultiDeleteUrl = "curriculumsdelete.php";
+		$this->MultiUpdateUrl = "curriculumsupdate.php";
 
 		// Page ID
 		if (!defined("EW_PAGE_ID"))
@@ -315,7 +315,7 @@ class ctopics_list extends ctopics {
 
 		// Table name (for backward compatibility)
 		if (!defined("EW_TABLE_NAME"))
-			define("EW_TABLE_NAME", 'topics', TRUE);
+			define("EW_TABLE_NAME", 'curriculums', TRUE);
 
 		// Start timer
 		if (!isset($GLOBALS["gTimer"]))
@@ -351,7 +351,7 @@ class ctopics_list extends ctopics {
 		// Filter options
 		$this->FilterOptions = new cListOptions();
 		$this->FilterOptions->Tag = "div";
-		$this->FilterOptions->TagClassName = "ewFilterOption ftopicslistsrch";
+		$this->FilterOptions->TagClassName = "ewFilterOption fcurriculumslistsrch";
 
 		// List actions
 		$this->ListActions = new cListActions();
@@ -439,8 +439,6 @@ class ctopics_list extends ctopics {
 			$this->id->Visible = FALSE;
 		$this->name_ar->SetVisibility();
 		$this->name_en->SetVisibility();
-		$this->parent_id->SetVisibility();
-		$this->image->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -501,13 +499,13 @@ class ctopics_list extends ctopics {
 		Page_Unloaded();
 
 		// Export
-		global $EW_EXPORT, $topics;
+		global $EW_EXPORT, $curriculums;
 		if ($this->CustomExport <> "" && $this->CustomExport == $this->Export && array_key_exists($this->CustomExport, $EW_EXPORT)) {
 				$sContent = ob_get_contents();
 			if ($gsExportFile == "") $gsExportFile = $this->TableVar;
 			$class = $EW_EXPORT[$this->CustomExport];
 			if (class_exists($class)) {
-				$doc = new $class($topics);
+				$doc = new $class($curriculums);
 				$doc->Text = $sContent;
 				if ($this->Export == "email")
 					echo $this->ExportEmail($doc->Text);
@@ -1034,10 +1032,6 @@ class ctopics_list extends ctopics {
 			return FALSE;
 		if ($objForm->HasValue("x_name_en") && $objForm->HasValue("o_name_en") && $this->name_en->CurrentValue <> $this->name_en->OldValue)
 			return FALSE;
-		if ($objForm->HasValue("x_parent_id") && $objForm->HasValue("o_parent_id") && $this->parent_id->CurrentValue <> $this->parent_id->OldValue)
-			return FALSE;
-		if (!ew_Empty($this->image->Upload->Value))
-			return FALSE;
 		return TRUE;
 	}
 
@@ -1119,8 +1113,8 @@ class ctopics_list extends ctopics {
 		$sFilterList = ew_Concat($sFilterList, $this->id->AdvancedSearch->ToJson(), ","); // Field id
 		$sFilterList = ew_Concat($sFilterList, $this->name_ar->AdvancedSearch->ToJson(), ","); // Field name_ar
 		$sFilterList = ew_Concat($sFilterList, $this->name_en->AdvancedSearch->ToJson(), ","); // Field name_en
-		$sFilterList = ew_Concat($sFilterList, $this->parent_id->AdvancedSearch->ToJson(), ","); // Field parent_id
-		$sFilterList = ew_Concat($sFilterList, $this->image->AdvancedSearch->ToJson(), ","); // Field image
+		$sFilterList = ew_Concat($sFilterList, $this->created_at->AdvancedSearch->ToJson(), ","); // Field created_at
+		$sFilterList = ew_Concat($sFilterList, $this->updated_at->AdvancedSearch->ToJson(), ","); // Field updated_at
 		if ($this->BasicSearch->Keyword <> "") {
 			$sWrk = "\"" . EW_TABLE_BASIC_SEARCH . "\":\"" . ew_JsEncode2($this->BasicSearch->Keyword) . "\",\"" . EW_TABLE_BASIC_SEARCH_TYPE . "\":\"" . ew_JsEncode2($this->BasicSearch->Type) . "\"";
 			$sFilterList = ew_Concat($sFilterList, $sWrk, ",");
@@ -1143,7 +1137,7 @@ class ctopics_list extends ctopics {
 		global $UserProfile;
 		if (@$_POST["ajax"] == "savefilters") { // Save filter request (Ajax)
 			$filters = @$_POST["filters"];
-			$UserProfile->SetSearchFilters(CurrentUserName(), "ftopicslistsrch", $filters);
+			$UserProfile->SetSearchFilters(CurrentUserName(), "fcurriculumslistsrch", $filters);
 
 			// Clean output buffer
 			if (!EW_DEBUG_ENABLED && ob_get_length())
@@ -1189,21 +1183,21 @@ class ctopics_list extends ctopics {
 		$this->name_en->AdvancedSearch->SearchOperator2 = @$filter["w_name_en"];
 		$this->name_en->AdvancedSearch->Save();
 
-		// Field parent_id
-		$this->parent_id->AdvancedSearch->SearchValue = @$filter["x_parent_id"];
-		$this->parent_id->AdvancedSearch->SearchOperator = @$filter["z_parent_id"];
-		$this->parent_id->AdvancedSearch->SearchCondition = @$filter["v_parent_id"];
-		$this->parent_id->AdvancedSearch->SearchValue2 = @$filter["y_parent_id"];
-		$this->parent_id->AdvancedSearch->SearchOperator2 = @$filter["w_parent_id"];
-		$this->parent_id->AdvancedSearch->Save();
+		// Field created_at
+		$this->created_at->AdvancedSearch->SearchValue = @$filter["x_created_at"];
+		$this->created_at->AdvancedSearch->SearchOperator = @$filter["z_created_at"];
+		$this->created_at->AdvancedSearch->SearchCondition = @$filter["v_created_at"];
+		$this->created_at->AdvancedSearch->SearchValue2 = @$filter["y_created_at"];
+		$this->created_at->AdvancedSearch->SearchOperator2 = @$filter["w_created_at"];
+		$this->created_at->AdvancedSearch->Save();
 
-		// Field image
-		$this->image->AdvancedSearch->SearchValue = @$filter["x_image"];
-		$this->image->AdvancedSearch->SearchOperator = @$filter["z_image"];
-		$this->image->AdvancedSearch->SearchCondition = @$filter["v_image"];
-		$this->image->AdvancedSearch->SearchValue2 = @$filter["y_image"];
-		$this->image->AdvancedSearch->SearchOperator2 = @$filter["w_image"];
-		$this->image->AdvancedSearch->Save();
+		// Field updated_at
+		$this->updated_at->AdvancedSearch->SearchValue = @$filter["x_updated_at"];
+		$this->updated_at->AdvancedSearch->SearchOperator = @$filter["z_updated_at"];
+		$this->updated_at->AdvancedSearch->SearchCondition = @$filter["v_updated_at"];
+		$this->updated_at->AdvancedSearch->SearchValue2 = @$filter["y_updated_at"];
+		$this->updated_at->AdvancedSearch->SearchOperator2 = @$filter["w_updated_at"];
+		$this->updated_at->AdvancedSearch->Save();
 		$this->BasicSearch->setKeyword(@$filter[EW_TABLE_BASIC_SEARCH]);
 		$this->BasicSearch->setType(@$filter[EW_TABLE_BASIC_SEARCH_TYPE]);
 	}
@@ -1211,9 +1205,11 @@ class ctopics_list extends ctopics {
 	// Return basic search SQL
 	function BasicSearchSQL($arKeywords, $type) {
 		$sWhere = "";
+		$this->BuildBasicSearchSQL($sWhere, $this->id, $arKeywords, $type);
 		$this->BuildBasicSearchSQL($sWhere, $this->name_ar, $arKeywords, $type);
 		$this->BuildBasicSearchSQL($sWhere, $this->name_en, $arKeywords, $type);
-		$this->BuildBasicSearchSQL($sWhere, $this->image, $arKeywords, $type);
+		$this->BuildBasicSearchSQL($sWhere, $this->created_at, $arKeywords, $type);
+		$this->BuildBasicSearchSQL($sWhere, $this->updated_at, $arKeywords, $type);
 		return $sWhere;
 	}
 
@@ -1362,8 +1358,6 @@ class ctopics_list extends ctopics {
 			$this->UpdateSort($this->id); // id
 			$this->UpdateSort($this->name_ar); // name_ar
 			$this->UpdateSort($this->name_en); // name_en
-			$this->UpdateSort($this->parent_id); // parent_id
-			$this->UpdateSort($this->image); // image
 			$this->setStartRecordNumber(1); // Reset start position
 		}
 	}
@@ -1399,8 +1393,6 @@ class ctopics_list extends ctopics {
 				$this->id->setSort("");
 				$this->name_ar->setSort("");
 				$this->name_en->setSort("");
-				$this->parent_id->setSort("");
-				$this->image->setSort("");
 			}
 
 			// Reset start position
@@ -1606,7 +1598,7 @@ class ctopics_list extends ctopics {
 
 		// Add multi delete
 		$item = &$option->Add("multidelete");
-		$item->Body = "<a class=\"ewAction ewMultiDelete\" title=\"" . ew_HtmlTitle($Language->Phrase("DeleteSelectedLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("DeleteSelectedLink")) . "\" href=\"\" onclick=\"ew_SubmitAction(event,{f:document.ftopicslist,url:'" . $this->MultiDeleteUrl . "'});return false;\">" . $Language->Phrase("DeleteSelectedLink") . "</a>";
+		$item->Body = "<a class=\"ewAction ewMultiDelete\" title=\"" . ew_HtmlTitle($Language->Phrase("DeleteSelectedLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("DeleteSelectedLink")) . "\" href=\"\" onclick=\"ew_SubmitAction(event,{f:document.fcurriculumslist,url:'" . $this->MultiDeleteUrl . "'});return false;\">" . $Language->Phrase("DeleteSelectedLink") . "</a>";
 		$item->Visible = ($Security->IsLoggedIn());
 
 		// Set up options default
@@ -1625,10 +1617,10 @@ class ctopics_list extends ctopics {
 
 		// Filter button
 		$item = &$this->FilterOptions->Add("savecurrentfilter");
-		$item->Body = "<a class=\"ewSaveFilter\" data-form=\"ftopicslistsrch\" href=\"#\">" . $Language->Phrase("SaveCurrentFilter") . "</a>";
+		$item->Body = "<a class=\"ewSaveFilter\" data-form=\"fcurriculumslistsrch\" href=\"#\">" . $Language->Phrase("SaveCurrentFilter") . "</a>";
 		$item->Visible = TRUE;
 		$item = &$this->FilterOptions->Add("deletefilter");
-		$item->Body = "<a class=\"ewDeleteFilter\" data-form=\"ftopicslistsrch\" href=\"#\">" . $Language->Phrase("DeleteFilter") . "</a>";
+		$item->Body = "<a class=\"ewDeleteFilter\" data-form=\"fcurriculumslistsrch\" href=\"#\">" . $Language->Phrase("DeleteFilter") . "</a>";
 		$item->Visible = TRUE;
 		$this->FilterOptions->UseDropDownButton = TRUE;
 		$this->FilterOptions->UseButtonGroup = !$this->FilterOptions->UseDropDownButton;
@@ -1653,7 +1645,7 @@ class ctopics_list extends ctopics {
 					$item = &$option->Add("custom_" . $listaction->Action);
 					$caption = $listaction->Caption;
 					$icon = ($listaction->Icon <> "") ? "<span class=\"" . ew_HtmlEncode($listaction->Icon) . "\" data-caption=\"" . ew_HtmlEncode($caption) . "\"></span> " : $caption;
-					$item->Body = "<a class=\"ewAction ewListAction\" title=\"" . ew_HtmlEncode($caption) . "\" data-caption=\"" . ew_HtmlEncode($caption) . "\" href=\"\" onclick=\"ew_SubmitAction(event,jQuery.extend({f:document.ftopicslist}," . $listaction->ToJson(TRUE) . "));return false;\">" . $icon . "</a>";
+					$item->Body = "<a class=\"ewAction ewListAction\" title=\"" . ew_HtmlEncode($caption) . "\" data-caption=\"" . ew_HtmlEncode($caption) . "\" href=\"\" onclick=\"ew_SubmitAction(event,jQuery.extend({f:document.fcurriculumslist}," . $listaction->ToJson(TRUE) . "));return false;\">" . $icon . "</a>";
 					$item->Visible = $listaction->Allow;
 				}
 			}
@@ -1807,7 +1799,7 @@ class ctopics_list extends ctopics {
 		// Search button
 		$item = &$this->SearchOptions->Add("searchtoggle");
 		$SearchToggleClass = ($this->SearchWhere <> "") ? " active" : " active";
-		$item->Body = "<button type=\"button\" class=\"btn btn-default ewSearchToggle" . $SearchToggleClass . "\" title=\"" . $Language->Phrase("SearchPanel") . "\" data-caption=\"" . $Language->Phrase("SearchPanel") . "\" data-toggle=\"button\" data-form=\"ftopicslistsrch\">" . $Language->Phrase("SearchLink") . "</button>";
+		$item->Body = "<button type=\"button\" class=\"btn btn-default ewSearchToggle" . $SearchToggleClass . "\" title=\"" . $Language->Phrase("SearchPanel") . "\" data-caption=\"" . $Language->Phrase("SearchPanel") . "\" data-toggle=\"button\" data-form=\"fcurriculumslistsrch\">" . $Language->Phrase("SearchLink") . "</button>";
 		$item->Visible = TRUE;
 
 		// Show all button
@@ -1875,16 +1867,6 @@ class ctopics_list extends ctopics {
 		}
 	}
 
-	// Get upload files
-	function GetUploadFiles() {
-		global $objForm, $Language;
-
-		// Get upload data
-		$this->image->Upload->Index = $objForm->Index;
-		$this->image->Upload->UploadFile();
-		$this->image->CurrentValue = $this->image->Upload->FileName;
-	}
-
 	// Load default values
 	function LoadDefaultValues() {
 		$this->id->CurrentValue = NULL;
@@ -1893,10 +1875,6 @@ class ctopics_list extends ctopics {
 		$this->name_ar->OldValue = $this->name_ar->CurrentValue;
 		$this->name_en->CurrentValue = NULL;
 		$this->name_en->OldValue = $this->name_en->CurrentValue;
-		$this->parent_id->CurrentValue = NULL;
-		$this->parent_id->OldValue = $this->parent_id->CurrentValue;
-		$this->image->Upload->DbValue = NULL;
-		$this->image->OldValue = $this->image->Upload->DbValue;
 		$this->created_at->CurrentValue = NULL;
 		$this->created_at->OldValue = $this->created_at->CurrentValue;
 		$this->updated_at->CurrentValue = NULL;
@@ -1915,7 +1893,6 @@ class ctopics_list extends ctopics {
 
 		// Load from form
 		global $objForm;
-		$this->GetUploadFiles(); // Get upload files
 		if (!$this->id->FldIsDetailKey && $this->CurrentAction <> "gridadd" && $this->CurrentAction <> "add")
 			$this->id->setFormValue($objForm->GetValue("x_id"));
 		if (!$this->name_ar->FldIsDetailKey) {
@@ -1926,10 +1903,6 @@ class ctopics_list extends ctopics {
 			$this->name_en->setFormValue($objForm->GetValue("x_name_en"));
 		}
 		$this->name_en->setOldValue($objForm->GetValue("o_name_en"));
-		if (!$this->parent_id->FldIsDetailKey) {
-			$this->parent_id->setFormValue($objForm->GetValue("x_parent_id"));
-		}
-		$this->parent_id->setOldValue($objForm->GetValue("o_parent_id"));
 	}
 
 	// Restore form values
@@ -1939,7 +1912,6 @@ class ctopics_list extends ctopics {
 			$this->id->CurrentValue = $this->id->FormValue;
 		$this->name_ar->CurrentValue = $this->name_ar->FormValue;
 		$this->name_en->CurrentValue = $this->name_en->FormValue;
-		$this->parent_id->CurrentValue = $this->parent_id->FormValue;
 	}
 
 	// Load recordset
@@ -2004,9 +1976,6 @@ class ctopics_list extends ctopics {
 		$this->id->setDbValue($row['id']);
 		$this->name_ar->setDbValue($row['name_ar']);
 		$this->name_en->setDbValue($row['name_en']);
-		$this->parent_id->setDbValue($row['parent_id']);
-		$this->image->Upload->DbValue = $row['image'];
-		$this->image->setDbValue($this->image->Upload->DbValue);
 		$this->created_at->setDbValue($row['created_at']);
 		$this->updated_at->setDbValue($row['updated_at']);
 	}
@@ -2018,8 +1987,6 @@ class ctopics_list extends ctopics {
 		$row['id'] = $this->id->CurrentValue;
 		$row['name_ar'] = $this->name_ar->CurrentValue;
 		$row['name_en'] = $this->name_en->CurrentValue;
-		$row['parent_id'] = $this->parent_id->CurrentValue;
-		$row['image'] = $this->image->Upload->DbValue;
 		$row['created_at'] = $this->created_at->CurrentValue;
 		$row['updated_at'] = $this->updated_at->CurrentValue;
 		return $row;
@@ -2033,8 +2000,6 @@ class ctopics_list extends ctopics {
 		$this->id->DbValue = $row['id'];
 		$this->name_ar->DbValue = $row['name_ar'];
 		$this->name_en->DbValue = $row['name_en'];
-		$this->parent_id->DbValue = $row['parent_id'];
-		$this->image->Upload->DbValue = $row['image'];
 		$this->created_at->DbValue = $row['created_at'];
 		$this->updated_at->DbValue = $row['updated_at'];
 	}
@@ -2080,8 +2045,6 @@ class ctopics_list extends ctopics {
 		// id
 		// name_ar
 		// name_en
-		// parent_id
-		// image
 		// created_at
 
 		$this->created_at->CellCssStyle = "white-space: nowrap;";
@@ -2102,41 +2065,15 @@ class ctopics_list extends ctopics {
 		$this->name_en->ViewValue = $this->name_en->CurrentValue;
 		$this->name_en->ViewCustomAttributes = "";
 
-		// parent_id
-		if (strval($this->parent_id->CurrentValue) <> "") {
-			$sFilterWrk = "`id`" . ew_SearchString("=", $this->parent_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `topics`";
-		$sWhereWrk = "";
-		$this->parent_id->LookupFilters = array();
-		ew_AddFilter($sWhereWrk, $sFilterWrk);
-		$this->Lookup_Selecting($this->parent_id, $sWhereWrk); // Call Lookup Selecting
-		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			$rswrk = Conn()->Execute($sSqlWrk);
-			if ($rswrk && !$rswrk->EOF) { // Lookup values found
-				$arwrk = array();
-				$arwrk[1] = $rswrk->fields('DispFld');
-				$arwrk[2] = $rswrk->fields('Disp2Fld');
-				$this->parent_id->ViewValue = $this->parent_id->DisplayValue($arwrk);
-				$rswrk->Close();
-			} else {
-				$this->parent_id->ViewValue = $this->parent_id->CurrentValue;
-			}
-		} else {
-			$this->parent_id->ViewValue = NULL;
-		}
-		$this->parent_id->ViewCustomAttributes = "";
+		// created_at
+		$this->created_at->ViewValue = $this->created_at->CurrentValue;
+		$this->created_at->ViewValue = ew_FormatDateTime($this->created_at->ViewValue, 0);
+		$this->created_at->ViewCustomAttributes = "";
 
-		// image
-		$this->image->UploadPath = "../images";
-		if (!ew_Empty($this->image->Upload->DbValue)) {
-			$this->image->ImageWidth = 100;
-			$this->image->ImageHeight = 0;
-			$this->image->ImageAlt = $this->image->FldAlt();
-			$this->image->ViewValue = $this->image->Upload->DbValue;
-		} else {
-			$this->image->ViewValue = "";
-		}
-		$this->image->ViewCustomAttributes = "";
+		// updated_at
+		$this->updated_at->ViewValue = $this->updated_at->CurrentValue;
+		$this->updated_at->ViewValue = ew_FormatDateTime($this->updated_at->ViewValue, 0);
+		$this->updated_at->ViewCustomAttributes = "";
 
 			// id
 			$this->id->LinkCustomAttributes = "";
@@ -2152,30 +2089,6 @@ class ctopics_list extends ctopics {
 			$this->name_en->LinkCustomAttributes = "";
 			$this->name_en->HrefValue = "";
 			$this->name_en->TooltipValue = "";
-
-			// parent_id
-			$this->parent_id->LinkCustomAttributes = "";
-			$this->parent_id->HrefValue = "";
-			$this->parent_id->TooltipValue = "";
-
-			// image
-			$this->image->LinkCustomAttributes = "";
-			$this->image->UploadPath = "../images";
-			if (!ew_Empty($this->image->Upload->DbValue)) {
-				$this->image->HrefValue = ew_GetFileUploadUrl($this->image, $this->image->Upload->DbValue); // Add prefix/suffix
-				$this->image->LinkAttrs["target"] = ""; // Add target
-				if ($this->Export <> "") $this->image->HrefValue = ew_FullUrl($this->image->HrefValue, "href");
-			} else {
-				$this->image->HrefValue = "";
-			}
-			$this->image->HrefValue2 = $this->image->UploadPath . $this->image->Upload->DbValue;
-			$this->image->TooltipValue = "";
-			if ($this->image->UseColorbox) {
-				if (ew_Empty($this->image->TooltipValue))
-					$this->image->LinkAttrs["title"] = $Language->Phrase("ViewImageGallery");
-				$this->image->LinkAttrs["data-rel"] = "topics_x" . $this->RowCnt . "_image";
-				ew_AppendClass($this->image->LinkAttrs["class"], "ewLightbox");
-			}
 		} elseif ($this->RowType == EW_ROWTYPE_ADD) { // Add row
 
 			// id
@@ -2192,44 +2105,6 @@ class ctopics_list extends ctopics {
 			$this->name_en->EditValue = ew_HtmlEncode($this->name_en->CurrentValue);
 			$this->name_en->PlaceHolder = ew_RemoveHtml($this->name_en->FldCaption());
 
-			// parent_id
-			$this->parent_id->EditAttrs["class"] = "form-control";
-			$this->parent_id->EditCustomAttributes = "";
-			if (trim(strval($this->parent_id->CurrentValue)) == "") {
-				$sFilterWrk = "0=1";
-			} else {
-				$sFilterWrk = "`id`" . ew_SearchString("=", $this->parent_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-			}
-			$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `topics`";
-			$sWhereWrk = "";
-			$this->parent_id->LookupFilters = array();
-			ew_AddFilter($sWhereWrk, $sFilterWrk);
-			$this->Lookup_Selecting($this->parent_id, $sWhereWrk); // Call Lookup Selecting
-			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			$rswrk = Conn()->Execute($sSqlWrk);
-			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
-			if ($rswrk) $rswrk->Close();
-			$this->parent_id->EditValue = $arwrk;
-
-			// image
-			$this->image->EditAttrs["class"] = "form-control";
-			$this->image->EditCustomAttributes = "";
-			$this->image->UploadPath = "../images";
-			if (!ew_Empty($this->image->Upload->DbValue)) {
-				$this->image->ImageWidth = 100;
-				$this->image->ImageHeight = 0;
-				$this->image->ImageAlt = $this->image->FldAlt();
-				$this->image->EditValue = $this->image->Upload->DbValue;
-			} else {
-				$this->image->EditValue = "";
-			}
-			if (!ew_Empty($this->image->CurrentValue))
-					if ($this->RowIndex == '$rowindex$')
-						$this->image->Upload->FileName = "";
-					else
-						$this->image->Upload->FileName = $this->image->CurrentValue;
-			if (is_numeric($this->RowIndex) && !$this->EventCancelled) ew_RenderUploadField($this->image, $this->RowIndex);
-
 			// Add refer script
 			// id
 
@@ -2243,22 +2118,6 @@ class ctopics_list extends ctopics {
 			// name_en
 			$this->name_en->LinkCustomAttributes = "";
 			$this->name_en->HrefValue = "";
-
-			// parent_id
-			$this->parent_id->LinkCustomAttributes = "";
-			$this->parent_id->HrefValue = "";
-
-			// image
-			$this->image->LinkCustomAttributes = "";
-			$this->image->UploadPath = "../images";
-			if (!ew_Empty($this->image->Upload->DbValue)) {
-				$this->image->HrefValue = ew_GetFileUploadUrl($this->image, $this->image->Upload->DbValue); // Add prefix/suffix
-				$this->image->LinkAttrs["target"] = ""; // Add target
-				if ($this->Export <> "") $this->image->HrefValue = ew_FullUrl($this->image->HrefValue, "href");
-			} else {
-				$this->image->HrefValue = "";
-			}
-			$this->image->HrefValue2 = $this->image->UploadPath . $this->image->Upload->DbValue;
 		} elseif ($this->RowType == EW_ROWTYPE_EDIT) { // Edit row
 
 			// id
@@ -2279,44 +2138,6 @@ class ctopics_list extends ctopics {
 			$this->name_en->EditValue = ew_HtmlEncode($this->name_en->CurrentValue);
 			$this->name_en->PlaceHolder = ew_RemoveHtml($this->name_en->FldCaption());
 
-			// parent_id
-			$this->parent_id->EditAttrs["class"] = "form-control";
-			$this->parent_id->EditCustomAttributes = "";
-			if (trim(strval($this->parent_id->CurrentValue)) == "") {
-				$sFilterWrk = "0=1";
-			} else {
-				$sFilterWrk = "`id`" . ew_SearchString("=", $this->parent_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-			}
-			$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `topics`";
-			$sWhereWrk = "";
-			$this->parent_id->LookupFilters = array();
-			ew_AddFilter($sWhereWrk, $sFilterWrk);
-			$this->Lookup_Selecting($this->parent_id, $sWhereWrk); // Call Lookup Selecting
-			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			$rswrk = Conn()->Execute($sSqlWrk);
-			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
-			if ($rswrk) $rswrk->Close();
-			$this->parent_id->EditValue = $arwrk;
-
-			// image
-			$this->image->EditAttrs["class"] = "form-control";
-			$this->image->EditCustomAttributes = "";
-			$this->image->UploadPath = "../images";
-			if (!ew_Empty($this->image->Upload->DbValue)) {
-				$this->image->ImageWidth = 100;
-				$this->image->ImageHeight = 0;
-				$this->image->ImageAlt = $this->image->FldAlt();
-				$this->image->EditValue = $this->image->Upload->DbValue;
-			} else {
-				$this->image->EditValue = "";
-			}
-			if (!ew_Empty($this->image->CurrentValue))
-					if ($this->RowIndex == '$rowindex$')
-						$this->image->Upload->FileName = "";
-					else
-						$this->image->Upload->FileName = $this->image->CurrentValue;
-			if (is_numeric($this->RowIndex) && !$this->EventCancelled) ew_RenderUploadField($this->image, $this->RowIndex);
-
 			// Edit refer script
 			// id
 
@@ -2330,22 +2151,6 @@ class ctopics_list extends ctopics {
 			// name_en
 			$this->name_en->LinkCustomAttributes = "";
 			$this->name_en->HrefValue = "";
-
-			// parent_id
-			$this->parent_id->LinkCustomAttributes = "";
-			$this->parent_id->HrefValue = "";
-
-			// image
-			$this->image->LinkCustomAttributes = "";
-			$this->image->UploadPath = "../images";
-			if (!ew_Empty($this->image->Upload->DbValue)) {
-				$this->image->HrefValue = ew_GetFileUploadUrl($this->image, $this->image->Upload->DbValue); // Add prefix/suffix
-				$this->image->LinkAttrs["target"] = ""; // Add target
-				if ($this->Export <> "") $this->image->HrefValue = ew_FullUrl($this->image->HrefValue, "href");
-			} else {
-				$this->image->HrefValue = "";
-			}
-			$this->image->HrefValue2 = $this->image->UploadPath . $this->image->Upload->DbValue;
 		}
 		if ($this->RowType == EW_ROWTYPE_ADD || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_SEARCH) // Add/Edit/Search row
 			$this->SetupFieldTitles();
@@ -2425,13 +2230,6 @@ class ctopics_list extends ctopics {
 
 				// Delete old files
 				$this->LoadDbValues($row);
-				$this->image->OldUploadPath = "../images";
-				$OldFiles = ew_Empty($row['image']) ? array() : array($row['image']);
-				$OldFileCount = count($OldFiles);
-				for ($i = 0; $i < $OldFileCount; $i++) {
-					if (file_exists($this->image->OldPhysicalUploadPath() . $OldFiles[$i]))
-						@unlink($this->image->OldPhysicalUploadPath() . $OldFiles[$i]);
-				}
 				$conn->raiseErrorFn = $GLOBALS["EW_ERROR_FN"];
 				$DeleteRows = $this->Delete($row); // Delete
 				$conn->raiseErrorFn = '';
@@ -2488,8 +2286,6 @@ class ctopics_list extends ctopics {
 			// Save old values
 			$rsold = &$rs->fields;
 			$this->LoadDbValues($rsold);
-			$this->image->OldUploadPath = "../images";
-			$this->image->UploadPath = $this->image->OldUploadPath;
 			$rsnew = array();
 
 			// name_ar
@@ -2497,57 +2293,6 @@ class ctopics_list extends ctopics {
 
 			// name_en
 			$this->name_en->SetDbValueDef($rsnew, $this->name_en->CurrentValue, "", $this->name_en->ReadOnly);
-
-			// parent_id
-			$this->parent_id->SetDbValueDef($rsnew, $this->parent_id->CurrentValue, NULL, $this->parent_id->ReadOnly);
-
-			// image
-			if ($this->image->Visible && !$this->image->ReadOnly && !$this->image->Upload->KeepFile) {
-				$this->image->Upload->DbValue = $rsold['image']; // Get original value
-				if ($this->image->Upload->FileName == "") {
-					$rsnew['image'] = NULL;
-				} else {
-					$rsnew['image'] = $this->image->Upload->FileName;
-				}
-			}
-			if ($this->image->Visible && !$this->image->Upload->KeepFile) {
-				$this->image->UploadPath = "../images";
-				$OldFiles = ew_Empty($this->image->Upload->DbValue) ? array() : array($this->image->Upload->DbValue);
-				if (!ew_Empty($this->image->Upload->FileName)) {
-					$NewFiles = array($this->image->Upload->FileName);
-					$NewFileCount = count($NewFiles);
-					for ($i = 0; $i < $NewFileCount; $i++) {
-						$fldvar = ($this->image->Upload->Index < 0) ? $this->image->FldVar : substr($this->image->FldVar, 0, 1) . $this->image->Upload->Index . substr($this->image->FldVar, 1);
-						if ($NewFiles[$i] <> "") {
-							$file = $NewFiles[$i];
-							if (file_exists(ew_UploadTempPath($fldvar, $this->image->TblVar) . $file)) {
-								$OldFileFound = FALSE;
-								$OldFileCount = count($OldFiles);
-								for ($j = 0; $j < $OldFileCount; $j++) {
-									$file1 = $OldFiles[$j];
-									if ($file1 == $file) { // Old file found, no need to delete anymore
-										unset($OldFiles[$j]);
-										$OldFileFound = TRUE;
-										break;
-									}
-								}
-								if ($OldFileFound) // No need to check if file exists further
-									continue;
-								$file1 = ew_UploadFileNameEx($this->image->PhysicalUploadPath(), $file); // Get new file name
-								if ($file1 <> $file) { // Rename temp file
-									while (file_exists(ew_UploadTempPath($fldvar, $this->image->TblVar) . $file1) || file_exists($this->image->PhysicalUploadPath() . $file1)) // Make sure no file name clash
-										$file1 = ew_UniqueFilename($this->image->PhysicalUploadPath(), $file1, TRUE); // Use indexed name
-									rename(ew_UploadTempPath($fldvar, $this->image->TblVar) . $file, ew_UploadTempPath($fldvar, $this->image->TblVar) . $file1);
-									$NewFiles[$i] = $file1;
-								}
-							}
-						}
-					}
-					$this->image->Upload->DbValue = empty($OldFiles) ? "" : implode(EW_MULTIPLE_UPLOAD_SEPARATOR, $OldFiles);
-					$this->image->Upload->FileName = implode(EW_MULTIPLE_UPLOAD_SEPARATOR, $NewFiles);
-					$this->image->SetDbValueDef($rsnew, $this->image->Upload->FileName, NULL, $this->image->ReadOnly);
-				}
-			}
 
 			// Call Row Updating event
 			$bUpdateRow = $this->Row_Updating($rsold, $rsnew);
@@ -2559,35 +2304,6 @@ class ctopics_list extends ctopics {
 					$EditRow = TRUE; // No field to update
 				$conn->raiseErrorFn = '';
 				if ($EditRow) {
-					if ($this->image->Visible && !$this->image->Upload->KeepFile) {
-						$OldFiles = ew_Empty($this->image->Upload->DbValue) ? array() : array($this->image->Upload->DbValue);
-						if (!ew_Empty($this->image->Upload->FileName)) {
-							$NewFiles = array($this->image->Upload->FileName);
-							$NewFiles2 = array($rsnew['image']);
-							$NewFileCount = count($NewFiles);
-							for ($i = 0; $i < $NewFileCount; $i++) {
-								$fldvar = ($this->image->Upload->Index < 0) ? $this->image->FldVar : substr($this->image->FldVar, 0, 1) . $this->image->Upload->Index . substr($this->image->FldVar, 1);
-								if ($NewFiles[$i] <> "") {
-									$file = ew_UploadTempPath($fldvar, $this->image->TblVar) . $NewFiles[$i];
-									if (file_exists($file)) {
-										if (@$NewFiles2[$i] <> "") // Use correct file name
-											$NewFiles[$i] = $NewFiles2[$i];
-										if (!$this->image->Upload->SaveToFile($NewFiles[$i], TRUE, $i)) { // Just replace
-											$this->setFailureMessage($Language->Phrase("UploadErrMsg7"));
-											return FALSE;
-										}
-									}
-								}
-							}
-						} else {
-							$NewFiles = array();
-						}
-						$OldFileCount = count($OldFiles);
-						for ($i = 0; $i < $OldFileCount; $i++) {
-							if ($OldFiles[$i] <> "" && !in_array($OldFiles[$i], $NewFiles))
-								@unlink($this->image->OldPhysicalUploadPath() . $OldFiles[$i]);
-						}
-					}
 				}
 			} else {
 				if ($this->getSuccessMessage() <> "" || $this->getFailureMessage() <> "") {
@@ -2607,9 +2323,6 @@ class ctopics_list extends ctopics {
 		if ($EditRow)
 			$this->Row_Updated($rsold, $rsnew);
 		$rs->Close();
-
-		// image
-		ew_CleanUploadTempPath($this->image, $this->image->Upload->Index);
 		return $EditRow;
 	}
 
@@ -2621,8 +2334,6 @@ class ctopics_list extends ctopics {
 		// Load db values from rsold
 		$this->LoadDbValues($rsold);
 		if ($rsold) {
-			$this->image->OldUploadPath = "../images";
-			$this->image->UploadPath = $this->image->OldUploadPath;
 		}
 		$rsnew = array();
 
@@ -2632,57 +2343,6 @@ class ctopics_list extends ctopics {
 		// name_en
 		$this->name_en->SetDbValueDef($rsnew, $this->name_en->CurrentValue, "", FALSE);
 
-		// parent_id
-		$this->parent_id->SetDbValueDef($rsnew, $this->parent_id->CurrentValue, NULL, FALSE);
-
-		// image
-		if ($this->image->Visible && !$this->image->Upload->KeepFile) {
-			$this->image->Upload->DbValue = ""; // No need to delete old file
-			if ($this->image->Upload->FileName == "") {
-				$rsnew['image'] = NULL;
-			} else {
-				$rsnew['image'] = $this->image->Upload->FileName;
-			}
-		}
-		if ($this->image->Visible && !$this->image->Upload->KeepFile) {
-			$this->image->UploadPath = "../images";
-			$OldFiles = ew_Empty($this->image->Upload->DbValue) ? array() : array($this->image->Upload->DbValue);
-			if (!ew_Empty($this->image->Upload->FileName)) {
-				$NewFiles = array($this->image->Upload->FileName);
-				$NewFileCount = count($NewFiles);
-				for ($i = 0; $i < $NewFileCount; $i++) {
-					$fldvar = ($this->image->Upload->Index < 0) ? $this->image->FldVar : substr($this->image->FldVar, 0, 1) . $this->image->Upload->Index . substr($this->image->FldVar, 1);
-					if ($NewFiles[$i] <> "") {
-						$file = $NewFiles[$i];
-						if (file_exists(ew_UploadTempPath($fldvar, $this->image->TblVar) . $file)) {
-							$OldFileFound = FALSE;
-							$OldFileCount = count($OldFiles);
-							for ($j = 0; $j < $OldFileCount; $j++) {
-								$file1 = $OldFiles[$j];
-								if ($file1 == $file) { // Old file found, no need to delete anymore
-									unset($OldFiles[$j]);
-									$OldFileFound = TRUE;
-									break;
-								}
-							}
-							if ($OldFileFound) // No need to check if file exists further
-								continue;
-							$file1 = ew_UploadFileNameEx($this->image->PhysicalUploadPath(), $file); // Get new file name
-							if ($file1 <> $file) { // Rename temp file
-								while (file_exists(ew_UploadTempPath($fldvar, $this->image->TblVar) . $file1) || file_exists($this->image->PhysicalUploadPath() . $file1)) // Make sure no file name clash
-									$file1 = ew_UniqueFilename($this->image->PhysicalUploadPath(), $file1, TRUE); // Use indexed name
-								rename(ew_UploadTempPath($fldvar, $this->image->TblVar) . $file, ew_UploadTempPath($fldvar, $this->image->TblVar) . $file1);
-								$NewFiles[$i] = $file1;
-							}
-						}
-					}
-				}
-				$this->image->Upload->DbValue = empty($OldFiles) ? "" : implode(EW_MULTIPLE_UPLOAD_SEPARATOR, $OldFiles);
-				$this->image->Upload->FileName = implode(EW_MULTIPLE_UPLOAD_SEPARATOR, $NewFiles);
-				$this->image->SetDbValueDef($rsnew, $this->image->Upload->FileName, NULL, FALSE);
-			}
-		}
-
 		// Call Row Inserting event
 		$rs = ($rsold == NULL) ? NULL : $rsold->fields;
 		$bInsertRow = $this->Row_Inserting($rs, $rsnew);
@@ -2691,35 +2351,6 @@ class ctopics_list extends ctopics {
 			$AddRow = $this->Insert($rsnew);
 			$conn->raiseErrorFn = '';
 			if ($AddRow) {
-				if ($this->image->Visible && !$this->image->Upload->KeepFile) {
-					$OldFiles = ew_Empty($this->image->Upload->DbValue) ? array() : array($this->image->Upload->DbValue);
-					if (!ew_Empty($this->image->Upload->FileName)) {
-						$NewFiles = array($this->image->Upload->FileName);
-						$NewFiles2 = array($rsnew['image']);
-						$NewFileCount = count($NewFiles);
-						for ($i = 0; $i < $NewFileCount; $i++) {
-							$fldvar = ($this->image->Upload->Index < 0) ? $this->image->FldVar : substr($this->image->FldVar, 0, 1) . $this->image->Upload->Index . substr($this->image->FldVar, 1);
-							if ($NewFiles[$i] <> "") {
-								$file = ew_UploadTempPath($fldvar, $this->image->TblVar) . $NewFiles[$i];
-								if (file_exists($file)) {
-									if (@$NewFiles2[$i] <> "") // Use correct file name
-										$NewFiles[$i] = $NewFiles2[$i];
-									if (!$this->image->Upload->SaveToFile($NewFiles[$i], TRUE, $i)) { // Just replace
-										$this->setFailureMessage($Language->Phrase("UploadErrMsg7"));
-										return FALSE;
-									}
-								}
-							}
-						}
-					} else {
-						$NewFiles = array();
-					}
-					$OldFileCount = count($OldFiles);
-					for ($i = 0; $i < $OldFileCount; $i++) {
-						if ($OldFiles[$i] <> "" && !in_array($OldFiles[$i], $NewFiles))
-							@unlink($this->image->OldPhysicalUploadPath() . $OldFiles[$i]);
-					}
-				}
 			}
 		} else {
 			if ($this->getSuccessMessage() <> "" || $this->getFailureMessage() <> "") {
@@ -2739,9 +2370,6 @@ class ctopics_list extends ctopics {
 			$rs = ($rsold == NULL) ? NULL : $rsold->fields;
 			$this->Row_Inserted($rs, $rsnew);
 		}
-
-		// image
-		ew_CleanUploadTempPath($this->image, $this->image->Upload->Index);
 		return $AddRow;
 	}
 
@@ -2787,7 +2415,7 @@ class ctopics_list extends ctopics {
 		// Export to Email
 		$item = &$this->ExportOptions->Add("email");
 		$url = "";
-		$item->Body = "<button id=\"emf_topics\" class=\"ewExportLink ewEmail\" title=\"" . $Language->Phrase("ExportToEmailText") . "\" data-caption=\"" . $Language->Phrase("ExportToEmailText") . "\" onclick=\"ew_EmailDialogShow({lnk:'emf_topics',hdr:ewLanguage.Phrase('ExportToEmailText'),f:document.ftopicslist,sel:false" . $url . "});\">" . $Language->Phrase("ExportToEmail") . "</button>";
+		$item->Body = "<button id=\"emf_curriculums\" class=\"ewExportLink ewEmail\" title=\"" . $Language->Phrase("ExportToEmailText") . "\" data-caption=\"" . $Language->Phrase("ExportToEmailText") . "\" onclick=\"ew_EmailDialogShow({lnk:'emf_curriculums',hdr:ewLanguage.Phrase('ExportToEmailText'),f:document.fcurriculumslist,sel:false" . $url . "});\">" . $Language->Phrase("ExportToEmail") . "</button>";
 		$item->Visible = FALSE;
 
 		// Drop down button for export
@@ -2902,18 +2530,6 @@ class ctopics_list extends ctopics {
 		global $gsLanguage;
 		$pageId = $pageId ?: $this->PageID;
 		switch ($fld->FldVar) {
-		case "x_parent_id":
-			$sSqlWrk = "";
-			$sSqlWrk = "SELECT `id` AS `LinkFld`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `topics`";
-			$sWhereWrk = "";
-			$fld->LookupFilters = array();
-			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "19", "fn0" => "");
-			$sSqlWrk = "";
-			$this->Lookup_Selecting($this->parent_id, $sWhereWrk); // Call Lookup Selecting
-			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			if ($sSqlWrk <> "")
-				$fld->LookupFilters["s"] .= $sSqlWrk;
-			break;
 		}
 	}
 
@@ -3058,31 +2674,31 @@ class ctopics_list extends ctopics {
 <?php
 
 // Create page object
-if (!isset($topics_list)) $topics_list = new ctopics_list();
+if (!isset($curriculums_list)) $curriculums_list = new ccurriculums_list();
 
 // Page init
-$topics_list->Page_Init();
+$curriculums_list->Page_Init();
 
 // Page main
-$topics_list->Page_Main();
+$curriculums_list->Page_Main();
 
 // Global Page Rendering event (in userfn*.php)
 Page_Rendering();
 
 // Page Rendering event
-$topics_list->Page_Render();
+$curriculums_list->Page_Render();
 ?>
 <?php include_once "header.php" ?>
-<?php if ($topics->Export == "") { ?>
+<?php if ($curriculums->Export == "") { ?>
 <script type="text/javascript">
 
 // Form object
 var CurrentPageID = EW_PAGE_ID = "list";
-var CurrentForm = ftopicslist = new ew_Form("ftopicslist", "list");
-ftopicslist.FormKeyCountName = '<?php echo $topics_list->FormKeyCountName ?>';
+var CurrentForm = fcurriculumslist = new ew_Form("fcurriculumslist", "list");
+fcurriculumslist.FormKeyCountName = '<?php echo $curriculums_list->FormKeyCountName ?>';
 
 // Validate form
-ftopicslist.Validate = function() {
+fcurriculumslist.Validate = function() {
 	if (!this.ValidateRequired)
 		return true; // Ignore validation
 	var $ = jQuery, fobj = this.GetForm(), $fobj = $(fobj);
@@ -3101,10 +2717,10 @@ ftopicslist.Validate = function() {
 			addcnt++;
 			elm = this.GetElements("x" + infix + "_name_ar");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
-				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $topics->name_ar->FldCaption(), $topics->name_ar->ReqErrMsg)) ?>");
+				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $curriculums->name_ar->FldCaption(), $curriculums->name_ar->ReqErrMsg)) ?>");
 			elm = this.GetElements("x" + infix + "_name_en");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
-				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $topics->name_en->FldCaption(), $topics->name_en->ReqErrMsg)) ?>");
+				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $curriculums->name_en->FldCaption(), $curriculums->name_en->ReqErrMsg)) ?>");
 
 			// Fire Form_CustomValidate event
 			if (!this.Form_CustomValidate(fobj))
@@ -3119,17 +2735,15 @@ ftopicslist.Validate = function() {
 }
 
 // Check empty row
-ftopicslist.EmptyRow = function(infix) {
+fcurriculumslist.EmptyRow = function(infix) {
 	var fobj = this.Form;
 	if (ew_ValueChanged(fobj, infix, "name_ar", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "name_en", false)) return false;
-	if (ew_ValueChanged(fobj, infix, "parent_id", false)) return false;
-	if (ew_ValueChanged(fobj, infix, "image", false)) return false;
 	return true;
 }
 
 // Form_CustomValidate event
-ftopicslist.Form_CustomValidate = 
+fcurriculumslist.Form_CustomValidate = 
  function(fobj) { // DO NOT CHANGE THIS LINE!
 
  	// Your custom validation code here, return false if invalid.
@@ -3137,87 +2751,85 @@ ftopicslist.Form_CustomValidate =
  }
 
 // Use JavaScript validation or not
-ftopicslist.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
+fcurriculumslist.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
-ftopicslist.Lists["x_parent_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name_ar","x_name_en","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"topics"};
-ftopicslist.Lists["x_parent_id"].Data = "<?php echo $topics_list->parent_id->LookupFilterQuery(FALSE, "list") ?>";
-
 // Form object for search
-var CurrentSearchForm = ftopicslistsrch = new ew_Form("ftopicslistsrch");
+
+var CurrentSearchForm = fcurriculumslistsrch = new ew_Form("fcurriculumslistsrch");
 </script>
 <script type="text/javascript">
 
 // Write your client script here, no need to add script tags.
 </script>
 <?php } ?>
-<?php if ($topics->Export == "") { ?>
+<?php if ($curriculums->Export == "") { ?>
 <div class="ewToolbar">
-<?php if ($topics_list->TotalRecs > 0 && $topics_list->ExportOptions->Visible()) { ?>
-<?php $topics_list->ExportOptions->Render("body") ?>
+<?php if ($curriculums_list->TotalRecs > 0 && $curriculums_list->ExportOptions->Visible()) { ?>
+<?php $curriculums_list->ExportOptions->Render("body") ?>
 <?php } ?>
-<?php if ($topics_list->SearchOptions->Visible()) { ?>
-<?php $topics_list->SearchOptions->Render("body") ?>
+<?php if ($curriculums_list->SearchOptions->Visible()) { ?>
+<?php $curriculums_list->SearchOptions->Render("body") ?>
 <?php } ?>
-<?php if ($topics_list->FilterOptions->Visible()) { ?>
-<?php $topics_list->FilterOptions->Render("body") ?>
+<?php if ($curriculums_list->FilterOptions->Visible()) { ?>
+<?php $curriculums_list->FilterOptions->Render("body") ?>
 <?php } ?>
 <div class="clearfix"></div>
 </div>
 <?php } ?>
 <?php
-if ($topics->CurrentAction == "gridadd") {
-	$topics->CurrentFilter = "0=1";
-	$topics_list->StartRec = 1;
-	$topics_list->DisplayRecs = $topics->GridAddRowCount;
-	$topics_list->TotalRecs = $topics_list->DisplayRecs;
-	$topics_list->StopRec = $topics_list->DisplayRecs;
+if ($curriculums->CurrentAction == "gridadd") {
+	$curriculums->CurrentFilter = "0=1";
+	$curriculums_list->StartRec = 1;
+	$curriculums_list->DisplayRecs = $curriculums->GridAddRowCount;
+	$curriculums_list->TotalRecs = $curriculums_list->DisplayRecs;
+	$curriculums_list->StopRec = $curriculums_list->DisplayRecs;
 } else {
-	$bSelectLimit = $topics_list->UseSelectLimit;
+	$bSelectLimit = $curriculums_list->UseSelectLimit;
 	if ($bSelectLimit) {
-		if ($topics_list->TotalRecs <= 0)
-			$topics_list->TotalRecs = $topics->ListRecordCount();
+		if ($curriculums_list->TotalRecs <= 0)
+			$curriculums_list->TotalRecs = $curriculums->ListRecordCount();
 	} else {
-		if (!$topics_list->Recordset && ($topics_list->Recordset = $topics_list->LoadRecordset()))
-			$topics_list->TotalRecs = $topics_list->Recordset->RecordCount();
+		if (!$curriculums_list->Recordset && ($curriculums_list->Recordset = $curriculums_list->LoadRecordset()))
+			$curriculums_list->TotalRecs = $curriculums_list->Recordset->RecordCount();
 	}
-	$topics_list->StartRec = 1;
-	if ($topics_list->DisplayRecs <= 0 || ($topics->Export <> "" && $topics->ExportAll)) // Display all records
-		$topics_list->DisplayRecs = $topics_list->TotalRecs;
-	if (!($topics->Export <> "" && $topics->ExportAll))
-		$topics_list->SetupStartRec(); // Set up start record position
+	$curriculums_list->StartRec = 1;
+	if ($curriculums_list->DisplayRecs <= 0 || ($curriculums->Export <> "" && $curriculums->ExportAll)) // Display all records
+		$curriculums_list->DisplayRecs = $curriculums_list->TotalRecs;
+	if (!($curriculums->Export <> "" && $curriculums->ExportAll))
+		$curriculums_list->SetupStartRec(); // Set up start record position
 	if ($bSelectLimit)
-		$topics_list->Recordset = $topics_list->LoadRecordset($topics_list->StartRec-1, $topics_list->DisplayRecs);
+		$curriculums_list->Recordset = $curriculums_list->LoadRecordset($curriculums_list->StartRec-1, $curriculums_list->DisplayRecs);
 
 	// Set no record found message
-	if ($topics->CurrentAction == "" && $topics_list->TotalRecs == 0) {
-		if ($topics_list->SearchWhere == "0=101")
-			$topics_list->setWarningMessage($Language->Phrase("EnterSearchCriteria"));
+	if ($curriculums->CurrentAction == "" && $curriculums_list->TotalRecs == 0) {
+		if ($curriculums_list->SearchWhere == "0=101")
+			$curriculums_list->setWarningMessage($Language->Phrase("EnterSearchCriteria"));
 		else
-			$topics_list->setWarningMessage($Language->Phrase("NoRecord"));
+			$curriculums_list->setWarningMessage($Language->Phrase("NoRecord"));
 	}
 }
-$topics_list->RenderOtherOptions();
+$curriculums_list->RenderOtherOptions();
 ?>
 <?php if ($Security->CanSearch()) { ?>
-<?php if ($topics->Export == "" && $topics->CurrentAction == "") { ?>
-<form name="ftopicslistsrch" id="ftopicslistsrch" class="form-inline ewForm ewExtSearchForm" action="<?php echo ew_CurrentPage() ?>">
-<?php $SearchPanelClass = ($topics_list->SearchWhere <> "") ? " in" : " in"; ?>
-<div id="ftopicslistsrch_SearchPanel" class="ewSearchPanel collapse<?php echo $SearchPanelClass ?>">
+<?php if ($curriculums->Export == "" && $curriculums->CurrentAction == "") { ?>
+<form name="fcurriculumslistsrch" id="fcurriculumslistsrch" class="form-inline ewForm ewExtSearchForm" action="<?php echo ew_CurrentPage() ?>">
+<?php $SearchPanelClass = ($curriculums_list->SearchWhere <> "") ? " in" : " in"; ?>
+<div id="fcurriculumslistsrch_SearchPanel" class="ewSearchPanel collapse<?php echo $SearchPanelClass ?>">
 <input type="hidden" name="cmd" value="search">
-<input type="hidden" name="t" value="topics">
+<input type="hidden" name="t" value="curriculums">
 	<div class="ewBasicSearch">
 <div id="xsr_1" class="ewRow">
 	<div class="ewQuickSearch input-group">
-	<input type="text" name="<?php echo EW_TABLE_BASIC_SEARCH ?>" id="<?php echo EW_TABLE_BASIC_SEARCH ?>" class="form-control" value="<?php echo ew_HtmlEncode($topics_list->BasicSearch->getKeyword()) ?>" placeholder="<?php echo ew_HtmlEncode($Language->Phrase("Search")) ?>">
-	<input type="hidden" name="<?php echo EW_TABLE_BASIC_SEARCH_TYPE ?>" id="<?php echo EW_TABLE_BASIC_SEARCH_TYPE ?>" value="<?php echo ew_HtmlEncode($topics_list->BasicSearch->getType()) ?>">
+	<input type="text" name="<?php echo EW_TABLE_BASIC_SEARCH ?>" id="<?php echo EW_TABLE_BASIC_SEARCH ?>" class="form-control" value="<?php echo ew_HtmlEncode($curriculums_list->BasicSearch->getKeyword()) ?>" placeholder="<?php echo ew_HtmlEncode($Language->Phrase("Search")) ?>">
+	<input type="hidden" name="<?php echo EW_TABLE_BASIC_SEARCH_TYPE ?>" id="<?php echo EW_TABLE_BASIC_SEARCH_TYPE ?>" value="<?php echo ew_HtmlEncode($curriculums_list->BasicSearch->getType()) ?>">
 	<div class="input-group-btn">
-		<button type="button" data-toggle="dropdown" class="btn btn-default"><span id="searchtype"><?php echo $topics_list->BasicSearch->getTypeNameShort() ?></span><span class="caret"></span></button>
+		<button type="button" data-toggle="dropdown" class="btn btn-default"><span id="searchtype"><?php echo $curriculums_list->BasicSearch->getTypeNameShort() ?></span><span class="caret"></span></button>
 		<ul class="dropdown-menu pull-right" role="menu">
-			<li<?php if ($topics_list->BasicSearch->getType() == "") echo " class=\"active\""; ?>><a href="javascript:void(0);" onclick="ew_SetSearchType(this)"><?php echo $Language->Phrase("QuickSearchAuto") ?></a></li>
-			<li<?php if ($topics_list->BasicSearch->getType() == "=") echo " class=\"active\""; ?>><a href="javascript:void(0);" onclick="ew_SetSearchType(this,'=')"><?php echo $Language->Phrase("QuickSearchExact") ?></a></li>
-			<li<?php if ($topics_list->BasicSearch->getType() == "AND") echo " class=\"active\""; ?>><a href="javascript:void(0);" onclick="ew_SetSearchType(this,'AND')"><?php echo $Language->Phrase("QuickSearchAll") ?></a></li>
-			<li<?php if ($topics_list->BasicSearch->getType() == "OR") echo " class=\"active\""; ?>><a href="javascript:void(0);" onclick="ew_SetSearchType(this,'OR')"><?php echo $Language->Phrase("QuickSearchAny") ?></a></li>
+			<li<?php if ($curriculums_list->BasicSearch->getType() == "") echo " class=\"active\""; ?>><a href="javascript:void(0);" onclick="ew_SetSearchType(this)"><?php echo $Language->Phrase("QuickSearchAuto") ?></a></li>
+			<li<?php if ($curriculums_list->BasicSearch->getType() == "=") echo " class=\"active\""; ?>><a href="javascript:void(0);" onclick="ew_SetSearchType(this,'=')"><?php echo $Language->Phrase("QuickSearchExact") ?></a></li>
+			<li<?php if ($curriculums_list->BasicSearch->getType() == "AND") echo " class=\"active\""; ?>><a href="javascript:void(0);" onclick="ew_SetSearchType(this,'AND')"><?php echo $Language->Phrase("QuickSearchAll") ?></a></li>
+			<li<?php if ($curriculums_list->BasicSearch->getType() == "OR") echo " class=\"active\""; ?>><a href="javascript:void(0);" onclick="ew_SetSearchType(this,'OR')"><?php echo $Language->Phrase("QuickSearchAny") ?></a></li>
 		</ul>
 	<button class="btn btn-primary ewButton" name="btnsubmit" id="btnsubmit" type="submit"><?php echo $Language->Phrase("SearchBtn") ?></button>
 	</div>
@@ -3228,378 +2840,287 @@ $topics_list->RenderOtherOptions();
 </form>
 <?php } ?>
 <?php } ?>
-<?php $topics_list->ShowPageHeader(); ?>
+<?php $curriculums_list->ShowPageHeader(); ?>
 <?php
-$topics_list->ShowMessage();
+$curriculums_list->ShowMessage();
 ?>
-<?php if ($topics_list->TotalRecs > 0 || $topics->CurrentAction <> "") { ?>
-<div class="box ewBox ewGrid<?php if ($topics_list->IsAddOrEdit()) { ?> ewGridAddEdit<?php } ?> topics">
-<?php if ($topics->Export == "") { ?>
+<?php if ($curriculums_list->TotalRecs > 0 || $curriculums->CurrentAction <> "") { ?>
+<div class="box ewBox ewGrid<?php if ($curriculums_list->IsAddOrEdit()) { ?> ewGridAddEdit<?php } ?> curriculums">
+<?php if ($curriculums->Export == "") { ?>
 <div class="box-header ewGridUpperPanel">
-<?php if ($topics->CurrentAction <> "gridadd" && $topics->CurrentAction <> "gridedit") { ?>
+<?php if ($curriculums->CurrentAction <> "gridadd" && $curriculums->CurrentAction <> "gridedit") { ?>
 <form name="ewPagerForm" class="form-inline ewForm ewPagerForm" action="<?php echo ew_CurrentPage() ?>">
-<?php if (!isset($topics_list->Pager)) $topics_list->Pager = new cPrevNextPager($topics_list->StartRec, $topics_list->DisplayRecs, $topics_list->TotalRecs, $topics_list->AutoHidePager) ?>
-<?php if ($topics_list->Pager->RecordCount > 0 && $topics_list->Pager->Visible) { ?>
+<?php if (!isset($curriculums_list->Pager)) $curriculums_list->Pager = new cPrevNextPager($curriculums_list->StartRec, $curriculums_list->DisplayRecs, $curriculums_list->TotalRecs, $curriculums_list->AutoHidePager) ?>
+<?php if ($curriculums_list->Pager->RecordCount > 0 && $curriculums_list->Pager->Visible) { ?>
 <div class="ewPager">
 <span><?php echo $Language->Phrase("Page") ?>&nbsp;</span>
 <div class="ewPrevNext"><div class="input-group">
 <div class="input-group-btn">
 <!--first page button-->
-	<?php if ($topics_list->Pager->FirstButton->Enabled) { ?>
-	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerFirst") ?>" href="<?php echo $topics_list->PageUrl() ?>start=<?php echo $topics_list->Pager->FirstButton->Start ?>"><span class="icon-first ewIcon"></span></a>
+	<?php if ($curriculums_list->Pager->FirstButton->Enabled) { ?>
+	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerFirst") ?>" href="<?php echo $curriculums_list->PageUrl() ?>start=<?php echo $curriculums_list->Pager->FirstButton->Start ?>"><span class="icon-first ewIcon"></span></a>
 	<?php } else { ?>
 	<a class="btn btn-default btn-sm disabled" title="<?php echo $Language->Phrase("PagerFirst") ?>"><span class="icon-first ewIcon"></span></a>
 	<?php } ?>
 <!--previous page button-->
-	<?php if ($topics_list->Pager->PrevButton->Enabled) { ?>
-	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerPrevious") ?>" href="<?php echo $topics_list->PageUrl() ?>start=<?php echo $topics_list->Pager->PrevButton->Start ?>"><span class="icon-prev ewIcon"></span></a>
+	<?php if ($curriculums_list->Pager->PrevButton->Enabled) { ?>
+	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerPrevious") ?>" href="<?php echo $curriculums_list->PageUrl() ?>start=<?php echo $curriculums_list->Pager->PrevButton->Start ?>"><span class="icon-prev ewIcon"></span></a>
 	<?php } else { ?>
 	<a class="btn btn-default btn-sm disabled" title="<?php echo $Language->Phrase("PagerPrevious") ?>"><span class="icon-prev ewIcon"></span></a>
 	<?php } ?>
 </div>
 <!--current page number-->
-	<input class="form-control input-sm" type="text" name="<?php echo EW_TABLE_PAGE_NO ?>" value="<?php echo $topics_list->Pager->CurrentPage ?>">
+	<input class="form-control input-sm" type="text" name="<?php echo EW_TABLE_PAGE_NO ?>" value="<?php echo $curriculums_list->Pager->CurrentPage ?>">
 <div class="input-group-btn">
 <!--next page button-->
-	<?php if ($topics_list->Pager->NextButton->Enabled) { ?>
-	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerNext") ?>" href="<?php echo $topics_list->PageUrl() ?>start=<?php echo $topics_list->Pager->NextButton->Start ?>"><span class="icon-next ewIcon"></span></a>
+	<?php if ($curriculums_list->Pager->NextButton->Enabled) { ?>
+	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerNext") ?>" href="<?php echo $curriculums_list->PageUrl() ?>start=<?php echo $curriculums_list->Pager->NextButton->Start ?>"><span class="icon-next ewIcon"></span></a>
 	<?php } else { ?>
 	<a class="btn btn-default btn-sm disabled" title="<?php echo $Language->Phrase("PagerNext") ?>"><span class="icon-next ewIcon"></span></a>
 	<?php } ?>
 <!--last page button-->
-	<?php if ($topics_list->Pager->LastButton->Enabled) { ?>
-	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerLast") ?>" href="<?php echo $topics_list->PageUrl() ?>start=<?php echo $topics_list->Pager->LastButton->Start ?>"><span class="icon-last ewIcon"></span></a>
+	<?php if ($curriculums_list->Pager->LastButton->Enabled) { ?>
+	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerLast") ?>" href="<?php echo $curriculums_list->PageUrl() ?>start=<?php echo $curriculums_list->Pager->LastButton->Start ?>"><span class="icon-last ewIcon"></span></a>
 	<?php } else { ?>
 	<a class="btn btn-default btn-sm disabled" title="<?php echo $Language->Phrase("PagerLast") ?>"><span class="icon-last ewIcon"></span></a>
 	<?php } ?>
 </div>
 </div>
 </div>
-<span>&nbsp;<?php echo $Language->Phrase("of") ?>&nbsp;<?php echo $topics_list->Pager->PageCount ?></span>
+<span>&nbsp;<?php echo $Language->Phrase("of") ?>&nbsp;<?php echo $curriculums_list->Pager->PageCount ?></span>
 </div>
 <?php } ?>
-<?php if ($topics_list->Pager->RecordCount > 0) { ?>
+<?php if ($curriculums_list->Pager->RecordCount > 0) { ?>
 <div class="ewPager ewRec">
-	<span><?php echo $Language->Phrase("Record") ?>&nbsp;<?php echo $topics_list->Pager->FromIndex ?>&nbsp;<?php echo $Language->Phrase("To") ?>&nbsp;<?php echo $topics_list->Pager->ToIndex ?>&nbsp;<?php echo $Language->Phrase("Of") ?>&nbsp;<?php echo $topics_list->Pager->RecordCount ?></span>
+	<span><?php echo $Language->Phrase("Record") ?>&nbsp;<?php echo $curriculums_list->Pager->FromIndex ?>&nbsp;<?php echo $Language->Phrase("To") ?>&nbsp;<?php echo $curriculums_list->Pager->ToIndex ?>&nbsp;<?php echo $Language->Phrase("Of") ?>&nbsp;<?php echo $curriculums_list->Pager->RecordCount ?></span>
 </div>
 <?php } ?>
 </form>
 <?php } ?>
 <div class="ewListOtherOptions">
 <?php
-	foreach ($topics_list->OtherOptions as &$option)
+	foreach ($curriculums_list->OtherOptions as &$option)
 		$option->Render("body");
 ?>
 </div>
 <div class="clearfix"></div>
 </div>
 <?php } ?>
-<form name="ftopicslist" id="ftopicslist" class="form-inline ewForm ewListForm" action="<?php echo ew_CurrentPage() ?>" method="post">
-<?php if ($topics_list->CheckToken) { ?>
-<input type="hidden" name="<?php echo EW_TOKEN_NAME ?>" value="<?php echo $topics_list->Token ?>">
+<form name="fcurriculumslist" id="fcurriculumslist" class="form-inline ewForm ewListForm" action="<?php echo ew_CurrentPage() ?>" method="post">
+<?php if ($curriculums_list->CheckToken) { ?>
+<input type="hidden" name="<?php echo EW_TOKEN_NAME ?>" value="<?php echo $curriculums_list->Token ?>">
 <?php } ?>
-<input type="hidden" name="t" value="topics">
-<div id="gmp_topics" class="<?php if (ew_IsResponsiveLayout()) { ?>table-responsive <?php } ?>ewGridMiddlePanel">
-<?php if ($topics_list->TotalRecs > 0 || $topics->CurrentAction == "gridedit") { ?>
-<table id="tbl_topicslist" class="table ewTable">
+<input type="hidden" name="t" value="curriculums">
+<div id="gmp_curriculums" class="<?php if (ew_IsResponsiveLayout()) { ?>table-responsive <?php } ?>ewGridMiddlePanel">
+<?php if ($curriculums_list->TotalRecs > 0 || $curriculums->CurrentAction == "gridedit") { ?>
+<table id="tbl_curriculumslist" class="table ewTable">
 <thead>
 	<tr class="ewTableHeader">
 <?php
 
 // Header row
-$topics_list->RowType = EW_ROWTYPE_HEADER;
+$curriculums_list->RowType = EW_ROWTYPE_HEADER;
 
 // Render list options
-$topics_list->RenderListOptions();
+$curriculums_list->RenderListOptions();
 
 // Render list options (header, left)
-$topics_list->ListOptions->Render("header", "left");
+$curriculums_list->ListOptions->Render("header", "left");
 ?>
-<?php if ($topics->id->Visible) { // id ?>
-	<?php if ($topics->SortUrl($topics->id) == "") { ?>
-		<th data-name="id" class="<?php echo $topics->id->HeaderCellClass() ?>"><div id="elh_topics_id" class="topics_id"><div class="ewTableHeaderCaption"><?php echo $topics->id->FldCaption() ?></div></div></th>
+<?php if ($curriculums->id->Visible) { // id ?>
+	<?php if ($curriculums->SortUrl($curriculums->id) == "") { ?>
+		<th data-name="id" class="<?php echo $curriculums->id->HeaderCellClass() ?>"><div id="elh_curriculums_id" class="curriculums_id"><div class="ewTableHeaderCaption"><?php echo $curriculums->id->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="id" class="<?php echo $topics->id->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $topics->SortUrl($topics->id) ?>',1);"><div id="elh_topics_id" class="topics_id">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $topics->id->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($topics->id->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($topics->id->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		<th data-name="id" class="<?php echo $curriculums->id->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $curriculums->SortUrl($curriculums->id) ?>',1);"><div id="elh_curriculums_id" class="curriculums_id">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $curriculums->id->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($curriculums->id->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($curriculums->id->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
-<?php if ($topics->name_ar->Visible) { // name_ar ?>
-	<?php if ($topics->SortUrl($topics->name_ar) == "") { ?>
-		<th data-name="name_ar" class="<?php echo $topics->name_ar->HeaderCellClass() ?>"><div id="elh_topics_name_ar" class="topics_name_ar"><div class="ewTableHeaderCaption"><?php echo $topics->name_ar->FldCaption() ?></div></div></th>
+<?php if ($curriculums->name_ar->Visible) { // name_ar ?>
+	<?php if ($curriculums->SortUrl($curriculums->name_ar) == "") { ?>
+		<th data-name="name_ar" class="<?php echo $curriculums->name_ar->HeaderCellClass() ?>"><div id="elh_curriculums_name_ar" class="curriculums_name_ar"><div class="ewTableHeaderCaption"><?php echo $curriculums->name_ar->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="name_ar" class="<?php echo $topics->name_ar->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $topics->SortUrl($topics->name_ar) ?>',1);"><div id="elh_topics_name_ar" class="topics_name_ar">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $topics->name_ar->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($topics->name_ar->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($topics->name_ar->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		<th data-name="name_ar" class="<?php echo $curriculums->name_ar->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $curriculums->SortUrl($curriculums->name_ar) ?>',1);"><div id="elh_curriculums_name_ar" class="curriculums_name_ar">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $curriculums->name_ar->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($curriculums->name_ar->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($curriculums->name_ar->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
-<?php if ($topics->name_en->Visible) { // name_en ?>
-	<?php if ($topics->SortUrl($topics->name_en) == "") { ?>
-		<th data-name="name_en" class="<?php echo $topics->name_en->HeaderCellClass() ?>"><div id="elh_topics_name_en" class="topics_name_en"><div class="ewTableHeaderCaption"><?php echo $topics->name_en->FldCaption() ?></div></div></th>
+<?php if ($curriculums->name_en->Visible) { // name_en ?>
+	<?php if ($curriculums->SortUrl($curriculums->name_en) == "") { ?>
+		<th data-name="name_en" class="<?php echo $curriculums->name_en->HeaderCellClass() ?>"><div id="elh_curriculums_name_en" class="curriculums_name_en"><div class="ewTableHeaderCaption"><?php echo $curriculums->name_en->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="name_en" class="<?php echo $topics->name_en->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $topics->SortUrl($topics->name_en) ?>',1);"><div id="elh_topics_name_en" class="topics_name_en">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $topics->name_en->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($topics->name_en->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($topics->name_en->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
-<?php if ($topics->parent_id->Visible) { // parent_id ?>
-	<?php if ($topics->SortUrl($topics->parent_id) == "") { ?>
-		<th data-name="parent_id" class="<?php echo $topics->parent_id->HeaderCellClass() ?>"><div id="elh_topics_parent_id" class="topics_parent_id"><div class="ewTableHeaderCaption"><?php echo $topics->parent_id->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="parent_id" class="<?php echo $topics->parent_id->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $topics->SortUrl($topics->parent_id) ?>',1);"><div id="elh_topics_parent_id" class="topics_parent_id">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $topics->parent_id->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($topics->parent_id->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($topics->parent_id->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
-		</div></div></th>
-	<?php } ?>
-<?php } ?>
-<?php if ($topics->image->Visible) { // image ?>
-	<?php if ($topics->SortUrl($topics->image) == "") { ?>
-		<th data-name="image" class="<?php echo $topics->image->HeaderCellClass() ?>"><div id="elh_topics_image" class="topics_image"><div class="ewTableHeaderCaption"><?php echo $topics->image->FldCaption() ?></div></div></th>
-	<?php } else { ?>
-		<th data-name="image" class="<?php echo $topics->image->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $topics->SortUrl($topics->image) ?>',1);"><div id="elh_topics_image" class="topics_image">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $topics->image->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($topics->image->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($topics->image->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		<th data-name="name_en" class="<?php echo $curriculums->name_en->HeaderCellClass() ?>"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $curriculums->SortUrl($curriculums->name_en) ?>',1);"><div id="elh_curriculums_name_en" class="curriculums_name_en">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $curriculums->name_en->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($curriculums->name_en->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($curriculums->name_en->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
 		</div></div></th>
 	<?php } ?>
 <?php } ?>
 <?php
 
 // Render list options (header, right)
-$topics_list->ListOptions->Render("header", "right");
+$curriculums_list->ListOptions->Render("header", "right");
 ?>
 	</tr>
 </thead>
 <tbody>
 <?php
-if ($topics->ExportAll && $topics->Export <> "") {
-	$topics_list->StopRec = $topics_list->TotalRecs;
+if ($curriculums->ExportAll && $curriculums->Export <> "") {
+	$curriculums_list->StopRec = $curriculums_list->TotalRecs;
 } else {
 
 	// Set the last record to display
-	if ($topics_list->TotalRecs > $topics_list->StartRec + $topics_list->DisplayRecs - 1)
-		$topics_list->StopRec = $topics_list->StartRec + $topics_list->DisplayRecs - 1;
+	if ($curriculums_list->TotalRecs > $curriculums_list->StartRec + $curriculums_list->DisplayRecs - 1)
+		$curriculums_list->StopRec = $curriculums_list->StartRec + $curriculums_list->DisplayRecs - 1;
 	else
-		$topics_list->StopRec = $topics_list->TotalRecs;
+		$curriculums_list->StopRec = $curriculums_list->TotalRecs;
 }
 
 // Restore number of post back records
 if ($objForm) {
 	$objForm->Index = -1;
-	if ($objForm->HasValue($topics_list->FormKeyCountName) && ($topics->CurrentAction == "gridadd" || $topics->CurrentAction == "gridedit" || $topics->CurrentAction == "F")) {
-		$topics_list->KeyCount = $objForm->GetValue($topics_list->FormKeyCountName);
-		$topics_list->StopRec = $topics_list->StartRec + $topics_list->KeyCount - 1;
+	if ($objForm->HasValue($curriculums_list->FormKeyCountName) && ($curriculums->CurrentAction == "gridadd" || $curriculums->CurrentAction == "gridedit" || $curriculums->CurrentAction == "F")) {
+		$curriculums_list->KeyCount = $objForm->GetValue($curriculums_list->FormKeyCountName);
+		$curriculums_list->StopRec = $curriculums_list->StartRec + $curriculums_list->KeyCount - 1;
 	}
 }
-$topics_list->RecCnt = $topics_list->StartRec - 1;
-if ($topics_list->Recordset && !$topics_list->Recordset->EOF) {
-	$topics_list->Recordset->MoveFirst();
-	$bSelectLimit = $topics_list->UseSelectLimit;
-	if (!$bSelectLimit && $topics_list->StartRec > 1)
-		$topics_list->Recordset->Move($topics_list->StartRec - 1);
-} elseif (!$topics->AllowAddDeleteRow && $topics_list->StopRec == 0) {
-	$topics_list->StopRec = $topics->GridAddRowCount;
+$curriculums_list->RecCnt = $curriculums_list->StartRec - 1;
+if ($curriculums_list->Recordset && !$curriculums_list->Recordset->EOF) {
+	$curriculums_list->Recordset->MoveFirst();
+	$bSelectLimit = $curriculums_list->UseSelectLimit;
+	if (!$bSelectLimit && $curriculums_list->StartRec > 1)
+		$curriculums_list->Recordset->Move($curriculums_list->StartRec - 1);
+} elseif (!$curriculums->AllowAddDeleteRow && $curriculums_list->StopRec == 0) {
+	$curriculums_list->StopRec = $curriculums->GridAddRowCount;
 }
 
 // Initialize aggregate
-$topics->RowType = EW_ROWTYPE_AGGREGATEINIT;
-$topics->ResetAttrs();
-$topics_list->RenderRow();
-if ($topics->CurrentAction == "gridadd")
-	$topics_list->RowIndex = 0;
-if ($topics->CurrentAction == "gridedit")
-	$topics_list->RowIndex = 0;
-while ($topics_list->RecCnt < $topics_list->StopRec) {
-	$topics_list->RecCnt++;
-	if (intval($topics_list->RecCnt) >= intval($topics_list->StartRec)) {
-		$topics_list->RowCnt++;
-		if ($topics->CurrentAction == "gridadd" || $topics->CurrentAction == "gridedit" || $topics->CurrentAction == "F") {
-			$topics_list->RowIndex++;
-			$objForm->Index = $topics_list->RowIndex;
-			if ($objForm->HasValue($topics_list->FormActionName))
-				$topics_list->RowAction = strval($objForm->GetValue($topics_list->FormActionName));
-			elseif ($topics->CurrentAction == "gridadd")
-				$topics_list->RowAction = "insert";
+$curriculums->RowType = EW_ROWTYPE_AGGREGATEINIT;
+$curriculums->ResetAttrs();
+$curriculums_list->RenderRow();
+if ($curriculums->CurrentAction == "gridadd")
+	$curriculums_list->RowIndex = 0;
+if ($curriculums->CurrentAction == "gridedit")
+	$curriculums_list->RowIndex = 0;
+while ($curriculums_list->RecCnt < $curriculums_list->StopRec) {
+	$curriculums_list->RecCnt++;
+	if (intval($curriculums_list->RecCnt) >= intval($curriculums_list->StartRec)) {
+		$curriculums_list->RowCnt++;
+		if ($curriculums->CurrentAction == "gridadd" || $curriculums->CurrentAction == "gridedit" || $curriculums->CurrentAction == "F") {
+			$curriculums_list->RowIndex++;
+			$objForm->Index = $curriculums_list->RowIndex;
+			if ($objForm->HasValue($curriculums_list->FormActionName))
+				$curriculums_list->RowAction = strval($objForm->GetValue($curriculums_list->FormActionName));
+			elseif ($curriculums->CurrentAction == "gridadd")
+				$curriculums_list->RowAction = "insert";
 			else
-				$topics_list->RowAction = "";
+				$curriculums_list->RowAction = "";
 		}
 
 		// Set up key count
-		$topics_list->KeyCount = $topics_list->RowIndex;
+		$curriculums_list->KeyCount = $curriculums_list->RowIndex;
 
 		// Init row class and style
-		$topics->ResetAttrs();
-		$topics->CssClass = "";
-		if ($topics->CurrentAction == "gridadd") {
-			$topics_list->LoadRowValues(); // Load default values
+		$curriculums->ResetAttrs();
+		$curriculums->CssClass = "";
+		if ($curriculums->CurrentAction == "gridadd") {
+			$curriculums_list->LoadRowValues(); // Load default values
 		} else {
-			$topics_list->LoadRowValues($topics_list->Recordset); // Load row values
+			$curriculums_list->LoadRowValues($curriculums_list->Recordset); // Load row values
 		}
-		$topics->RowType = EW_ROWTYPE_VIEW; // Render view
-		if ($topics->CurrentAction == "gridadd") // Grid add
-			$topics->RowType = EW_ROWTYPE_ADD; // Render add
-		if ($topics->CurrentAction == "gridadd" && $topics->EventCancelled && !$objForm->HasValue("k_blankrow")) // Insert failed
-			$topics_list->RestoreCurrentRowFormValues($topics_list->RowIndex); // Restore form values
-		if ($topics->CurrentAction == "gridedit") { // Grid edit
-			if ($topics->EventCancelled) {
-				$topics_list->RestoreCurrentRowFormValues($topics_list->RowIndex); // Restore form values
+		$curriculums->RowType = EW_ROWTYPE_VIEW; // Render view
+		if ($curriculums->CurrentAction == "gridadd") // Grid add
+			$curriculums->RowType = EW_ROWTYPE_ADD; // Render add
+		if ($curriculums->CurrentAction == "gridadd" && $curriculums->EventCancelled && !$objForm->HasValue("k_blankrow")) // Insert failed
+			$curriculums_list->RestoreCurrentRowFormValues($curriculums_list->RowIndex); // Restore form values
+		if ($curriculums->CurrentAction == "gridedit") { // Grid edit
+			if ($curriculums->EventCancelled) {
+				$curriculums_list->RestoreCurrentRowFormValues($curriculums_list->RowIndex); // Restore form values
 			}
-			if ($topics_list->RowAction == "insert")
-				$topics->RowType = EW_ROWTYPE_ADD; // Render add
+			if ($curriculums_list->RowAction == "insert")
+				$curriculums->RowType = EW_ROWTYPE_ADD; // Render add
 			else
-				$topics->RowType = EW_ROWTYPE_EDIT; // Render edit
+				$curriculums->RowType = EW_ROWTYPE_EDIT; // Render edit
 		}
-		if ($topics->CurrentAction == "gridedit" && ($topics->RowType == EW_ROWTYPE_EDIT || $topics->RowType == EW_ROWTYPE_ADD) && $topics->EventCancelled) // Update failed
-			$topics_list->RestoreCurrentRowFormValues($topics_list->RowIndex); // Restore form values
-		if ($topics->RowType == EW_ROWTYPE_EDIT) // Edit row
-			$topics_list->EditRowCnt++;
+		if ($curriculums->CurrentAction == "gridedit" && ($curriculums->RowType == EW_ROWTYPE_EDIT || $curriculums->RowType == EW_ROWTYPE_ADD) && $curriculums->EventCancelled) // Update failed
+			$curriculums_list->RestoreCurrentRowFormValues($curriculums_list->RowIndex); // Restore form values
+		if ($curriculums->RowType == EW_ROWTYPE_EDIT) // Edit row
+			$curriculums_list->EditRowCnt++;
 
 		// Set up row id / data-rowindex
-		$topics->RowAttrs = array_merge($topics->RowAttrs, array('data-rowindex'=>$topics_list->RowCnt, 'id'=>'r' . $topics_list->RowCnt . '_topics', 'data-rowtype'=>$topics->RowType));
+		$curriculums->RowAttrs = array_merge($curriculums->RowAttrs, array('data-rowindex'=>$curriculums_list->RowCnt, 'id'=>'r' . $curriculums_list->RowCnt . '_curriculums', 'data-rowtype'=>$curriculums->RowType));
 
 		// Render row
-		$topics_list->RenderRow();
+		$curriculums_list->RenderRow();
 
 		// Render list options
-		$topics_list->RenderListOptions();
+		$curriculums_list->RenderListOptions();
 
 		// Skip delete row / empty row for confirm page
-		if ($topics_list->RowAction <> "delete" && $topics_list->RowAction <> "insertdelete" && !($topics_list->RowAction == "insert" && $topics->CurrentAction == "F" && $topics_list->EmptyRow())) {
+		if ($curriculums_list->RowAction <> "delete" && $curriculums_list->RowAction <> "insertdelete" && !($curriculums_list->RowAction == "insert" && $curriculums->CurrentAction == "F" && $curriculums_list->EmptyRow())) {
 ?>
-	<tr<?php echo $topics->RowAttributes() ?>>
+	<tr<?php echo $curriculums->RowAttributes() ?>>
 <?php
 
 // Render list options (body, left)
-$topics_list->ListOptions->Render("body", "left", $topics_list->RowCnt);
+$curriculums_list->ListOptions->Render("body", "left", $curriculums_list->RowCnt);
 ?>
-	<?php if ($topics->id->Visible) { // id ?>
-		<td data-name="id"<?php echo $topics->id->CellAttributes() ?>>
-<?php if ($topics->RowType == EW_ROWTYPE_ADD) { // Add record ?>
-<input type="hidden" data-table="topics" data-field="x_id" name="o<?php echo $topics_list->RowIndex ?>_id" id="o<?php echo $topics_list->RowIndex ?>_id" value="<?php echo ew_HtmlEncode($topics->id->OldValue) ?>">
+	<?php if ($curriculums->id->Visible) { // id ?>
+		<td data-name="id"<?php echo $curriculums->id->CellAttributes() ?>>
+<?php if ($curriculums->RowType == EW_ROWTYPE_ADD) { // Add record ?>
+<input type="hidden" data-table="curriculums" data-field="x_id" name="o<?php echo $curriculums_list->RowIndex ?>_id" id="o<?php echo $curriculums_list->RowIndex ?>_id" value="<?php echo ew_HtmlEncode($curriculums->id->OldValue) ?>">
 <?php } ?>
-<?php if ($topics->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
-<span id="el<?php echo $topics_list->RowCnt ?>_topics_id" class="form-group topics_id">
-<span<?php echo $topics->id->ViewAttributes() ?>>
-<p class="form-control-static"><?php echo $topics->id->EditValue ?></p></span>
+<?php if ($curriculums->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $curriculums_list->RowCnt ?>_curriculums_id" class="form-group curriculums_id">
+<span<?php echo $curriculums->id->ViewAttributes() ?>>
+<p class="form-control-static"><?php echo $curriculums->id->EditValue ?></p></span>
 </span>
-<input type="hidden" data-table="topics" data-field="x_id" name="x<?php echo $topics_list->RowIndex ?>_id" id="x<?php echo $topics_list->RowIndex ?>_id" value="<?php echo ew_HtmlEncode($topics->id->CurrentValue) ?>">
+<input type="hidden" data-table="curriculums" data-field="x_id" name="x<?php echo $curriculums_list->RowIndex ?>_id" id="x<?php echo $curriculums_list->RowIndex ?>_id" value="<?php echo ew_HtmlEncode($curriculums->id->CurrentValue) ?>">
 <?php } ?>
-<?php if ($topics->RowType == EW_ROWTYPE_VIEW) { // View record ?>
-<span id="el<?php echo $topics_list->RowCnt ?>_topics_id" class="topics_id">
-<span<?php echo $topics->id->ViewAttributes() ?>>
-<?php echo $topics->id->ListViewValue() ?></span>
-</span>
-<?php } ?>
-</td>
-	<?php } ?>
-	<?php if ($topics->name_ar->Visible) { // name_ar ?>
-		<td data-name="name_ar"<?php echo $topics->name_ar->CellAttributes() ?>>
-<?php if ($topics->RowType == EW_ROWTYPE_ADD) { // Add record ?>
-<span id="el<?php echo $topics_list->RowCnt ?>_topics_name_ar" class="form-group topics_name_ar">
-<input type="text" data-table="topics" data-field="x_name_ar" name="x<?php echo $topics_list->RowIndex ?>_name_ar" id="x<?php echo $topics_list->RowIndex ?>_name_ar" placeholder="<?php echo ew_HtmlEncode($topics->name_ar->getPlaceHolder()) ?>" value="<?php echo $topics->name_ar->EditValue ?>"<?php echo $topics->name_ar->EditAttributes() ?>>
-</span>
-<input type="hidden" data-table="topics" data-field="x_name_ar" name="o<?php echo $topics_list->RowIndex ?>_name_ar" id="o<?php echo $topics_list->RowIndex ?>_name_ar" value="<?php echo ew_HtmlEncode($topics->name_ar->OldValue) ?>">
-<?php } ?>
-<?php if ($topics->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
-<span id="el<?php echo $topics_list->RowCnt ?>_topics_name_ar" class="form-group topics_name_ar">
-<input type="text" data-table="topics" data-field="x_name_ar" name="x<?php echo $topics_list->RowIndex ?>_name_ar" id="x<?php echo $topics_list->RowIndex ?>_name_ar" placeholder="<?php echo ew_HtmlEncode($topics->name_ar->getPlaceHolder()) ?>" value="<?php echo $topics->name_ar->EditValue ?>"<?php echo $topics->name_ar->EditAttributes() ?>>
-</span>
-<?php } ?>
-<?php if ($topics->RowType == EW_ROWTYPE_VIEW) { // View record ?>
-<span id="el<?php echo $topics_list->RowCnt ?>_topics_name_ar" class="topics_name_ar">
-<span<?php echo $topics->name_ar->ViewAttributes() ?>>
-<?php echo $topics->name_ar->ListViewValue() ?></span>
+<?php if ($curriculums->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+<span id="el<?php echo $curriculums_list->RowCnt ?>_curriculums_id" class="curriculums_id">
+<span<?php echo $curriculums->id->ViewAttributes() ?>>
+<?php echo $curriculums->id->ListViewValue() ?></span>
 </span>
 <?php } ?>
 </td>
 	<?php } ?>
-	<?php if ($topics->name_en->Visible) { // name_en ?>
-		<td data-name="name_en"<?php echo $topics->name_en->CellAttributes() ?>>
-<?php if ($topics->RowType == EW_ROWTYPE_ADD) { // Add record ?>
-<span id="el<?php echo $topics_list->RowCnt ?>_topics_name_en" class="form-group topics_name_en">
-<input type="text" data-table="topics" data-field="x_name_en" name="x<?php echo $topics_list->RowIndex ?>_name_en" id="x<?php echo $topics_list->RowIndex ?>_name_en" placeholder="<?php echo ew_HtmlEncode($topics->name_en->getPlaceHolder()) ?>" value="<?php echo $topics->name_en->EditValue ?>"<?php echo $topics->name_en->EditAttributes() ?>>
+	<?php if ($curriculums->name_ar->Visible) { // name_ar ?>
+		<td data-name="name_ar"<?php echo $curriculums->name_ar->CellAttributes() ?>>
+<?php if ($curriculums->RowType == EW_ROWTYPE_ADD) { // Add record ?>
+<span id="el<?php echo $curriculums_list->RowCnt ?>_curriculums_name_ar" class="form-group curriculums_name_ar">
+<input type="text" data-table="curriculums" data-field="x_name_ar" name="x<?php echo $curriculums_list->RowIndex ?>_name_ar" id="x<?php echo $curriculums_list->RowIndex ?>_name_ar" placeholder="<?php echo ew_HtmlEncode($curriculums->name_ar->getPlaceHolder()) ?>" value="<?php echo $curriculums->name_ar->EditValue ?>"<?php echo $curriculums->name_ar->EditAttributes() ?>>
 </span>
-<input type="hidden" data-table="topics" data-field="x_name_en" name="o<?php echo $topics_list->RowIndex ?>_name_en" id="o<?php echo $topics_list->RowIndex ?>_name_en" value="<?php echo ew_HtmlEncode($topics->name_en->OldValue) ?>">
+<input type="hidden" data-table="curriculums" data-field="x_name_ar" name="o<?php echo $curriculums_list->RowIndex ?>_name_ar" id="o<?php echo $curriculums_list->RowIndex ?>_name_ar" value="<?php echo ew_HtmlEncode($curriculums->name_ar->OldValue) ?>">
 <?php } ?>
-<?php if ($topics->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
-<span id="el<?php echo $topics_list->RowCnt ?>_topics_name_en" class="form-group topics_name_en">
-<input type="text" data-table="topics" data-field="x_name_en" name="x<?php echo $topics_list->RowIndex ?>_name_en" id="x<?php echo $topics_list->RowIndex ?>_name_en" placeholder="<?php echo ew_HtmlEncode($topics->name_en->getPlaceHolder()) ?>" value="<?php echo $topics->name_en->EditValue ?>"<?php echo $topics->name_en->EditAttributes() ?>>
-</span>
-<?php } ?>
-<?php if ($topics->RowType == EW_ROWTYPE_VIEW) { // View record ?>
-<span id="el<?php echo $topics_list->RowCnt ?>_topics_name_en" class="topics_name_en">
-<span<?php echo $topics->name_en->ViewAttributes() ?>>
-<?php echo $topics->name_en->ListViewValue() ?></span>
+<?php if ($curriculums->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $curriculums_list->RowCnt ?>_curriculums_name_ar" class="form-group curriculums_name_ar">
+<input type="text" data-table="curriculums" data-field="x_name_ar" name="x<?php echo $curriculums_list->RowIndex ?>_name_ar" id="x<?php echo $curriculums_list->RowIndex ?>_name_ar" placeholder="<?php echo ew_HtmlEncode($curriculums->name_ar->getPlaceHolder()) ?>" value="<?php echo $curriculums->name_ar->EditValue ?>"<?php echo $curriculums->name_ar->EditAttributes() ?>>
 </span>
 <?php } ?>
-</td>
-	<?php } ?>
-	<?php if ($topics->parent_id->Visible) { // parent_id ?>
-		<td data-name="parent_id"<?php echo $topics->parent_id->CellAttributes() ?>>
-<?php if ($topics->RowType == EW_ROWTYPE_ADD) { // Add record ?>
-<span id="el<?php echo $topics_list->RowCnt ?>_topics_parent_id" class="form-group topics_parent_id">
-<select data-table="topics" data-field="x_parent_id" data-value-separator="<?php echo $topics->parent_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $topics_list->RowIndex ?>_parent_id" name="x<?php echo $topics_list->RowIndex ?>_parent_id"<?php echo $topics->parent_id->EditAttributes() ?>>
-<?php echo $topics->parent_id->SelectOptionListHtml("x<?php echo $topics_list->RowIndex ?>_parent_id") ?>
-</select>
-</span>
-<input type="hidden" data-table="topics" data-field="x_parent_id" name="o<?php echo $topics_list->RowIndex ?>_parent_id" id="o<?php echo $topics_list->RowIndex ?>_parent_id" value="<?php echo ew_HtmlEncode($topics->parent_id->OldValue) ?>">
-<?php } ?>
-<?php if ($topics->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
-<span id="el<?php echo $topics_list->RowCnt ?>_topics_parent_id" class="form-group topics_parent_id">
-<select data-table="topics" data-field="x_parent_id" data-value-separator="<?php echo $topics->parent_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $topics_list->RowIndex ?>_parent_id" name="x<?php echo $topics_list->RowIndex ?>_parent_id"<?php echo $topics->parent_id->EditAttributes() ?>>
-<?php echo $topics->parent_id->SelectOptionListHtml("x<?php echo $topics_list->RowIndex ?>_parent_id") ?>
-</select>
-</span>
-<?php } ?>
-<?php if ($topics->RowType == EW_ROWTYPE_VIEW) { // View record ?>
-<span id="el<?php echo $topics_list->RowCnt ?>_topics_parent_id" class="topics_parent_id">
-<span<?php echo $topics->parent_id->ViewAttributes() ?>>
-<?php echo $topics->parent_id->ListViewValue() ?></span>
+<?php if ($curriculums->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+<span id="el<?php echo $curriculums_list->RowCnt ?>_curriculums_name_ar" class="curriculums_name_ar">
+<span<?php echo $curriculums->name_ar->ViewAttributes() ?>>
+<?php echo $curriculums->name_ar->ListViewValue() ?></span>
 </span>
 <?php } ?>
 </td>
 	<?php } ?>
-	<?php if ($topics->image->Visible) { // image ?>
-		<td data-name="image"<?php echo $topics->image->CellAttributes() ?>>
-<?php if ($topics->RowType == EW_ROWTYPE_ADD) { // Add record ?>
-<span id="el<?php echo $topics_list->RowCnt ?>_topics_image" class="form-group topics_image">
-<div id="fd_x<?php echo $topics_list->RowIndex ?>_image">
-<span title="<?php echo $topics->image->FldTitle() ? $topics->image->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($topics->image->ReadOnly || $topics->image->Disabled) echo " hide"; ?>" data-trigger="hover">
-	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
-	<input type="file" title=" " data-table="topics" data-field="x_image" name="x<?php echo $topics_list->RowIndex ?>_image" id="x<?php echo $topics_list->RowIndex ?>_image"<?php echo $topics->image->EditAttributes() ?>>
+	<?php if ($curriculums->name_en->Visible) { // name_en ?>
+		<td data-name="name_en"<?php echo $curriculums->name_en->CellAttributes() ?>>
+<?php if ($curriculums->RowType == EW_ROWTYPE_ADD) { // Add record ?>
+<span id="el<?php echo $curriculums_list->RowCnt ?>_curriculums_name_en" class="form-group curriculums_name_en">
+<input type="text" data-table="curriculums" data-field="x_name_en" name="x<?php echo $curriculums_list->RowIndex ?>_name_en" id="x<?php echo $curriculums_list->RowIndex ?>_name_en" placeholder="<?php echo ew_HtmlEncode($curriculums->name_en->getPlaceHolder()) ?>" value="<?php echo $curriculums->name_en->EditValue ?>"<?php echo $curriculums->name_en->EditAttributes() ?>>
 </span>
-<input type="hidden" name="fn_x<?php echo $topics_list->RowIndex ?>_image" id= "fn_x<?php echo $topics_list->RowIndex ?>_image" value="<?php echo $topics->image->Upload->FileName ?>">
-<input type="hidden" name="fa_x<?php echo $topics_list->RowIndex ?>_image" id= "fa_x<?php echo $topics_list->RowIndex ?>_image" value="0">
-<input type="hidden" name="fs_x<?php echo $topics_list->RowIndex ?>_image" id= "fs_x<?php echo $topics_list->RowIndex ?>_image" value="65535">
-<input type="hidden" name="fx_x<?php echo $topics_list->RowIndex ?>_image" id= "fx_x<?php echo $topics_list->RowIndex ?>_image" value="<?php echo $topics->image->UploadAllowedFileExt ?>">
-<input type="hidden" name="fm_x<?php echo $topics_list->RowIndex ?>_image" id= "fm_x<?php echo $topics_list->RowIndex ?>_image" value="<?php echo $topics->image->UploadMaxFileSize ?>">
-</div>
-<table id="ft_x<?php echo $topics_list->RowIndex ?>_image" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
-</span>
-<input type="hidden" data-table="topics" data-field="x_image" name="o<?php echo $topics_list->RowIndex ?>_image" id="o<?php echo $topics_list->RowIndex ?>_image" value="<?php echo ew_HtmlEncode($topics->image->OldValue) ?>">
+<input type="hidden" data-table="curriculums" data-field="x_name_en" name="o<?php echo $curriculums_list->RowIndex ?>_name_en" id="o<?php echo $curriculums_list->RowIndex ?>_name_en" value="<?php echo ew_HtmlEncode($curriculums->name_en->OldValue) ?>">
 <?php } ?>
-<?php if ($topics->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
-<span id="el<?php echo $topics_list->RowCnt ?>_topics_image" class="form-group topics_image">
-<div id="fd_x<?php echo $topics_list->RowIndex ?>_image">
-<span title="<?php echo $topics->image->FldTitle() ? $topics->image->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($topics->image->ReadOnly || $topics->image->Disabled) echo " hide"; ?>" data-trigger="hover">
-	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
-	<input type="file" title=" " data-table="topics" data-field="x_image" name="x<?php echo $topics_list->RowIndex ?>_image" id="x<?php echo $topics_list->RowIndex ?>_image"<?php echo $topics->image->EditAttributes() ?>>
-</span>
-<input type="hidden" name="fn_x<?php echo $topics_list->RowIndex ?>_image" id= "fn_x<?php echo $topics_list->RowIndex ?>_image" value="<?php echo $topics->image->Upload->FileName ?>">
-<?php if (@$_POST["fa_x<?php echo $topics_list->RowIndex ?>_image"] == "0") { ?>
-<input type="hidden" name="fa_x<?php echo $topics_list->RowIndex ?>_image" id= "fa_x<?php echo $topics_list->RowIndex ?>_image" value="0">
-<?php } else { ?>
-<input type="hidden" name="fa_x<?php echo $topics_list->RowIndex ?>_image" id= "fa_x<?php echo $topics_list->RowIndex ?>_image" value="1">
-<?php } ?>
-<input type="hidden" name="fs_x<?php echo $topics_list->RowIndex ?>_image" id= "fs_x<?php echo $topics_list->RowIndex ?>_image" value="65535">
-<input type="hidden" name="fx_x<?php echo $topics_list->RowIndex ?>_image" id= "fx_x<?php echo $topics_list->RowIndex ?>_image" value="<?php echo $topics->image->UploadAllowedFileExt ?>">
-<input type="hidden" name="fm_x<?php echo $topics_list->RowIndex ?>_image" id= "fm_x<?php echo $topics_list->RowIndex ?>_image" value="<?php echo $topics->image->UploadMaxFileSize ?>">
-</div>
-<table id="ft_x<?php echo $topics_list->RowIndex ?>_image" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
+<?php if ($curriculums->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $curriculums_list->RowCnt ?>_curriculums_name_en" class="form-group curriculums_name_en">
+<input type="text" data-table="curriculums" data-field="x_name_en" name="x<?php echo $curriculums_list->RowIndex ?>_name_en" id="x<?php echo $curriculums_list->RowIndex ?>_name_en" placeholder="<?php echo ew_HtmlEncode($curriculums->name_en->getPlaceHolder()) ?>" value="<?php echo $curriculums->name_en->EditValue ?>"<?php echo $curriculums->name_en->EditAttributes() ?>>
 </span>
 <?php } ?>
-<?php if ($topics->RowType == EW_ROWTYPE_VIEW) { // View record ?>
-<span id="el<?php echo $topics_list->RowCnt ?>_topics_image" class="topics_image">
-<span>
-<?php echo ew_GetFileViewTag($topics->image, $topics->image->ListViewValue()) ?>
-</span>
+<?php if ($curriculums->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+<span id="el<?php echo $curriculums_list->RowCnt ?>_curriculums_name_en" class="curriculums_name_en">
+<span<?php echo $curriculums->name_en->ViewAttributes() ?>>
+<?php echo $curriculums->name_en->ListViewValue() ?></span>
 </span>
 <?php } ?>
 </td>
@@ -3607,102 +3128,73 @@ $topics_list->ListOptions->Render("body", "left", $topics_list->RowCnt);
 <?php
 
 // Render list options (body, right)
-$topics_list->ListOptions->Render("body", "right", $topics_list->RowCnt);
+$curriculums_list->ListOptions->Render("body", "right", $curriculums_list->RowCnt);
 ?>
 	</tr>
-<?php if ($topics->RowType == EW_ROWTYPE_ADD || $topics->RowType == EW_ROWTYPE_EDIT) { ?>
+<?php if ($curriculums->RowType == EW_ROWTYPE_ADD || $curriculums->RowType == EW_ROWTYPE_EDIT) { ?>
 <script type="text/javascript">
-ftopicslist.UpdateOpts(<?php echo $topics_list->RowIndex ?>);
+fcurriculumslist.UpdateOpts(<?php echo $curriculums_list->RowIndex ?>);
 </script>
 <?php } ?>
 <?php
 	}
 	} // End delete row checking
-	if ($topics->CurrentAction <> "gridadd")
-		if (!$topics_list->Recordset->EOF) $topics_list->Recordset->MoveNext();
+	if ($curriculums->CurrentAction <> "gridadd")
+		if (!$curriculums_list->Recordset->EOF) $curriculums_list->Recordset->MoveNext();
 }
 ?>
 <?php
-	if ($topics->CurrentAction == "gridadd" || $topics->CurrentAction == "gridedit") {
-		$topics_list->RowIndex = '$rowindex$';
-		$topics_list->LoadRowValues();
+	if ($curriculums->CurrentAction == "gridadd" || $curriculums->CurrentAction == "gridedit") {
+		$curriculums_list->RowIndex = '$rowindex$';
+		$curriculums_list->LoadRowValues();
 
 		// Set row properties
-		$topics->ResetAttrs();
-		$topics->RowAttrs = array_merge($topics->RowAttrs, array('data-rowindex'=>$topics_list->RowIndex, 'id'=>'r0_topics', 'data-rowtype'=>EW_ROWTYPE_ADD));
-		ew_AppendClass($topics->RowAttrs["class"], "ewTemplate");
-		$topics->RowType = EW_ROWTYPE_ADD;
+		$curriculums->ResetAttrs();
+		$curriculums->RowAttrs = array_merge($curriculums->RowAttrs, array('data-rowindex'=>$curriculums_list->RowIndex, 'id'=>'r0_curriculums', 'data-rowtype'=>EW_ROWTYPE_ADD));
+		ew_AppendClass($curriculums->RowAttrs["class"], "ewTemplate");
+		$curriculums->RowType = EW_ROWTYPE_ADD;
 
 		// Render row
-		$topics_list->RenderRow();
+		$curriculums_list->RenderRow();
 
 		// Render list options
-		$topics_list->RenderListOptions();
-		$topics_list->StartRowCnt = 0;
+		$curriculums_list->RenderListOptions();
+		$curriculums_list->StartRowCnt = 0;
 ?>
-	<tr<?php echo $topics->RowAttributes() ?>>
+	<tr<?php echo $curriculums->RowAttributes() ?>>
 <?php
 
 // Render list options (body, left)
-$topics_list->ListOptions->Render("body", "left", $topics_list->RowIndex);
+$curriculums_list->ListOptions->Render("body", "left", $curriculums_list->RowIndex);
 ?>
-	<?php if ($topics->id->Visible) { // id ?>
+	<?php if ($curriculums->id->Visible) { // id ?>
 		<td data-name="id">
-<input type="hidden" data-table="topics" data-field="x_id" name="o<?php echo $topics_list->RowIndex ?>_id" id="o<?php echo $topics_list->RowIndex ?>_id" value="<?php echo ew_HtmlEncode($topics->id->OldValue) ?>">
+<input type="hidden" data-table="curriculums" data-field="x_id" name="o<?php echo $curriculums_list->RowIndex ?>_id" id="o<?php echo $curriculums_list->RowIndex ?>_id" value="<?php echo ew_HtmlEncode($curriculums->id->OldValue) ?>">
 </td>
 	<?php } ?>
-	<?php if ($topics->name_ar->Visible) { // name_ar ?>
+	<?php if ($curriculums->name_ar->Visible) { // name_ar ?>
 		<td data-name="name_ar">
-<span id="el$rowindex$_topics_name_ar" class="form-group topics_name_ar">
-<input type="text" data-table="topics" data-field="x_name_ar" name="x<?php echo $topics_list->RowIndex ?>_name_ar" id="x<?php echo $topics_list->RowIndex ?>_name_ar" placeholder="<?php echo ew_HtmlEncode($topics->name_ar->getPlaceHolder()) ?>" value="<?php echo $topics->name_ar->EditValue ?>"<?php echo $topics->name_ar->EditAttributes() ?>>
+<span id="el$rowindex$_curriculums_name_ar" class="form-group curriculums_name_ar">
+<input type="text" data-table="curriculums" data-field="x_name_ar" name="x<?php echo $curriculums_list->RowIndex ?>_name_ar" id="x<?php echo $curriculums_list->RowIndex ?>_name_ar" placeholder="<?php echo ew_HtmlEncode($curriculums->name_ar->getPlaceHolder()) ?>" value="<?php echo $curriculums->name_ar->EditValue ?>"<?php echo $curriculums->name_ar->EditAttributes() ?>>
 </span>
-<input type="hidden" data-table="topics" data-field="x_name_ar" name="o<?php echo $topics_list->RowIndex ?>_name_ar" id="o<?php echo $topics_list->RowIndex ?>_name_ar" value="<?php echo ew_HtmlEncode($topics->name_ar->OldValue) ?>">
+<input type="hidden" data-table="curriculums" data-field="x_name_ar" name="o<?php echo $curriculums_list->RowIndex ?>_name_ar" id="o<?php echo $curriculums_list->RowIndex ?>_name_ar" value="<?php echo ew_HtmlEncode($curriculums->name_ar->OldValue) ?>">
 </td>
 	<?php } ?>
-	<?php if ($topics->name_en->Visible) { // name_en ?>
+	<?php if ($curriculums->name_en->Visible) { // name_en ?>
 		<td data-name="name_en">
-<span id="el$rowindex$_topics_name_en" class="form-group topics_name_en">
-<input type="text" data-table="topics" data-field="x_name_en" name="x<?php echo $topics_list->RowIndex ?>_name_en" id="x<?php echo $topics_list->RowIndex ?>_name_en" placeholder="<?php echo ew_HtmlEncode($topics->name_en->getPlaceHolder()) ?>" value="<?php echo $topics->name_en->EditValue ?>"<?php echo $topics->name_en->EditAttributes() ?>>
+<span id="el$rowindex$_curriculums_name_en" class="form-group curriculums_name_en">
+<input type="text" data-table="curriculums" data-field="x_name_en" name="x<?php echo $curriculums_list->RowIndex ?>_name_en" id="x<?php echo $curriculums_list->RowIndex ?>_name_en" placeholder="<?php echo ew_HtmlEncode($curriculums->name_en->getPlaceHolder()) ?>" value="<?php echo $curriculums->name_en->EditValue ?>"<?php echo $curriculums->name_en->EditAttributes() ?>>
 </span>
-<input type="hidden" data-table="topics" data-field="x_name_en" name="o<?php echo $topics_list->RowIndex ?>_name_en" id="o<?php echo $topics_list->RowIndex ?>_name_en" value="<?php echo ew_HtmlEncode($topics->name_en->OldValue) ?>">
-</td>
-	<?php } ?>
-	<?php if ($topics->parent_id->Visible) { // parent_id ?>
-		<td data-name="parent_id">
-<span id="el$rowindex$_topics_parent_id" class="form-group topics_parent_id">
-<select data-table="topics" data-field="x_parent_id" data-value-separator="<?php echo $topics->parent_id->DisplayValueSeparatorAttribute() ?>" id="x<?php echo $topics_list->RowIndex ?>_parent_id" name="x<?php echo $topics_list->RowIndex ?>_parent_id"<?php echo $topics->parent_id->EditAttributes() ?>>
-<?php echo $topics->parent_id->SelectOptionListHtml("x<?php echo $topics_list->RowIndex ?>_parent_id") ?>
-</select>
-</span>
-<input type="hidden" data-table="topics" data-field="x_parent_id" name="o<?php echo $topics_list->RowIndex ?>_parent_id" id="o<?php echo $topics_list->RowIndex ?>_parent_id" value="<?php echo ew_HtmlEncode($topics->parent_id->OldValue) ?>">
-</td>
-	<?php } ?>
-	<?php if ($topics->image->Visible) { // image ?>
-		<td data-name="image">
-<span id="el$rowindex$_topics_image" class="form-group topics_image">
-<div id="fd_x<?php echo $topics_list->RowIndex ?>_image">
-<span title="<?php echo $topics->image->FldTitle() ? $topics->image->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($topics->image->ReadOnly || $topics->image->Disabled) echo " hide"; ?>" data-trigger="hover">
-	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
-	<input type="file" title=" " data-table="topics" data-field="x_image" name="x<?php echo $topics_list->RowIndex ?>_image" id="x<?php echo $topics_list->RowIndex ?>_image"<?php echo $topics->image->EditAttributes() ?>>
-</span>
-<input type="hidden" name="fn_x<?php echo $topics_list->RowIndex ?>_image" id= "fn_x<?php echo $topics_list->RowIndex ?>_image" value="<?php echo $topics->image->Upload->FileName ?>">
-<input type="hidden" name="fa_x<?php echo $topics_list->RowIndex ?>_image" id= "fa_x<?php echo $topics_list->RowIndex ?>_image" value="0">
-<input type="hidden" name="fs_x<?php echo $topics_list->RowIndex ?>_image" id= "fs_x<?php echo $topics_list->RowIndex ?>_image" value="65535">
-<input type="hidden" name="fx_x<?php echo $topics_list->RowIndex ?>_image" id= "fx_x<?php echo $topics_list->RowIndex ?>_image" value="<?php echo $topics->image->UploadAllowedFileExt ?>">
-<input type="hidden" name="fm_x<?php echo $topics_list->RowIndex ?>_image" id= "fm_x<?php echo $topics_list->RowIndex ?>_image" value="<?php echo $topics->image->UploadMaxFileSize ?>">
-</div>
-<table id="ft_x<?php echo $topics_list->RowIndex ?>_image" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
-</span>
-<input type="hidden" data-table="topics" data-field="x_image" name="o<?php echo $topics_list->RowIndex ?>_image" id="o<?php echo $topics_list->RowIndex ?>_image" value="<?php echo ew_HtmlEncode($topics->image->OldValue) ?>">
+<input type="hidden" data-table="curriculums" data-field="x_name_en" name="o<?php echo $curriculums_list->RowIndex ?>_name_en" id="o<?php echo $curriculums_list->RowIndex ?>_name_en" value="<?php echo ew_HtmlEncode($curriculums->name_en->OldValue) ?>">
 </td>
 	<?php } ?>
 <?php
 
 // Render list options (body, right)
-$topics_list->ListOptions->Render("body", "right", $topics_list->RowIndex);
+$curriculums_list->ListOptions->Render("body", "right", $curriculums_list->RowIndex);
 ?>
 <script type="text/javascript">
-ftopicslist.UpdateOpts(<?php echo $topics_list->RowIndex ?>);
+fcurriculumslist.UpdateOpts(<?php echo $curriculums_list->RowIndex ?>);
 </script>
 	</tr>
 <?php
@@ -3711,17 +3203,17 @@ ftopicslist.UpdateOpts(<?php echo $topics_list->RowIndex ?>);
 </tbody>
 </table>
 <?php } ?>
-<?php if ($topics->CurrentAction == "gridadd") { ?>
+<?php if ($curriculums->CurrentAction == "gridadd") { ?>
 <input type="hidden" name="a_list" id="a_list" value="gridinsert">
-<input type="hidden" name="<?php echo $topics_list->FormKeyCountName ?>" id="<?php echo $topics_list->FormKeyCountName ?>" value="<?php echo $topics_list->KeyCount ?>">
-<?php echo $topics_list->MultiSelectKey ?>
+<input type="hidden" name="<?php echo $curriculums_list->FormKeyCountName ?>" id="<?php echo $curriculums_list->FormKeyCountName ?>" value="<?php echo $curriculums_list->KeyCount ?>">
+<?php echo $curriculums_list->MultiSelectKey ?>
 <?php } ?>
-<?php if ($topics->CurrentAction == "gridedit") { ?>
+<?php if ($curriculums->CurrentAction == "gridedit") { ?>
 <input type="hidden" name="a_list" id="a_list" value="gridupdate">
-<input type="hidden" name="<?php echo $topics_list->FormKeyCountName ?>" id="<?php echo $topics_list->FormKeyCountName ?>" value="<?php echo $topics_list->KeyCount ?>">
-<?php echo $topics_list->MultiSelectKey ?>
+<input type="hidden" name="<?php echo $curriculums_list->FormKeyCountName ?>" id="<?php echo $curriculums_list->FormKeyCountName ?>" value="<?php echo $curriculums_list->KeyCount ?>">
+<?php echo $curriculums_list->MultiSelectKey ?>
 <?php } ?>
-<?php if ($topics->CurrentAction == "") { ?>
+<?php if ($curriculums->CurrentAction == "") { ?>
 <input type="hidden" name="a_list" id="a_list" value="">
 <?php } ?>
 </div>
@@ -3729,63 +3221,63 @@ ftopicslist.UpdateOpts(<?php echo $topics_list->RowIndex ?>);
 <?php
 
 // Close recordset
-if ($topics_list->Recordset)
-	$topics_list->Recordset->Close();
+if ($curriculums_list->Recordset)
+	$curriculums_list->Recordset->Close();
 ?>
-<?php if ($topics->Export == "") { ?>
+<?php if ($curriculums->Export == "") { ?>
 <div class="box-footer ewGridLowerPanel">
-<?php if ($topics->CurrentAction <> "gridadd" && $topics->CurrentAction <> "gridedit") { ?>
+<?php if ($curriculums->CurrentAction <> "gridadd" && $curriculums->CurrentAction <> "gridedit") { ?>
 <form name="ewPagerForm" class="ewForm form-inline ewPagerForm" action="<?php echo ew_CurrentPage() ?>">
-<?php if (!isset($topics_list->Pager)) $topics_list->Pager = new cPrevNextPager($topics_list->StartRec, $topics_list->DisplayRecs, $topics_list->TotalRecs, $topics_list->AutoHidePager) ?>
-<?php if ($topics_list->Pager->RecordCount > 0 && $topics_list->Pager->Visible) { ?>
+<?php if (!isset($curriculums_list->Pager)) $curriculums_list->Pager = new cPrevNextPager($curriculums_list->StartRec, $curriculums_list->DisplayRecs, $curriculums_list->TotalRecs, $curriculums_list->AutoHidePager) ?>
+<?php if ($curriculums_list->Pager->RecordCount > 0 && $curriculums_list->Pager->Visible) { ?>
 <div class="ewPager">
 <span><?php echo $Language->Phrase("Page") ?>&nbsp;</span>
 <div class="ewPrevNext"><div class="input-group">
 <div class="input-group-btn">
 <!--first page button-->
-	<?php if ($topics_list->Pager->FirstButton->Enabled) { ?>
-	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerFirst") ?>" href="<?php echo $topics_list->PageUrl() ?>start=<?php echo $topics_list->Pager->FirstButton->Start ?>"><span class="icon-first ewIcon"></span></a>
+	<?php if ($curriculums_list->Pager->FirstButton->Enabled) { ?>
+	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerFirst") ?>" href="<?php echo $curriculums_list->PageUrl() ?>start=<?php echo $curriculums_list->Pager->FirstButton->Start ?>"><span class="icon-first ewIcon"></span></a>
 	<?php } else { ?>
 	<a class="btn btn-default btn-sm disabled" title="<?php echo $Language->Phrase("PagerFirst") ?>"><span class="icon-first ewIcon"></span></a>
 	<?php } ?>
 <!--previous page button-->
-	<?php if ($topics_list->Pager->PrevButton->Enabled) { ?>
-	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerPrevious") ?>" href="<?php echo $topics_list->PageUrl() ?>start=<?php echo $topics_list->Pager->PrevButton->Start ?>"><span class="icon-prev ewIcon"></span></a>
+	<?php if ($curriculums_list->Pager->PrevButton->Enabled) { ?>
+	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerPrevious") ?>" href="<?php echo $curriculums_list->PageUrl() ?>start=<?php echo $curriculums_list->Pager->PrevButton->Start ?>"><span class="icon-prev ewIcon"></span></a>
 	<?php } else { ?>
 	<a class="btn btn-default btn-sm disabled" title="<?php echo $Language->Phrase("PagerPrevious") ?>"><span class="icon-prev ewIcon"></span></a>
 	<?php } ?>
 </div>
 <!--current page number-->
-	<input class="form-control input-sm" type="text" name="<?php echo EW_TABLE_PAGE_NO ?>" value="<?php echo $topics_list->Pager->CurrentPage ?>">
+	<input class="form-control input-sm" type="text" name="<?php echo EW_TABLE_PAGE_NO ?>" value="<?php echo $curriculums_list->Pager->CurrentPage ?>">
 <div class="input-group-btn">
 <!--next page button-->
-	<?php if ($topics_list->Pager->NextButton->Enabled) { ?>
-	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerNext") ?>" href="<?php echo $topics_list->PageUrl() ?>start=<?php echo $topics_list->Pager->NextButton->Start ?>"><span class="icon-next ewIcon"></span></a>
+	<?php if ($curriculums_list->Pager->NextButton->Enabled) { ?>
+	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerNext") ?>" href="<?php echo $curriculums_list->PageUrl() ?>start=<?php echo $curriculums_list->Pager->NextButton->Start ?>"><span class="icon-next ewIcon"></span></a>
 	<?php } else { ?>
 	<a class="btn btn-default btn-sm disabled" title="<?php echo $Language->Phrase("PagerNext") ?>"><span class="icon-next ewIcon"></span></a>
 	<?php } ?>
 <!--last page button-->
-	<?php if ($topics_list->Pager->LastButton->Enabled) { ?>
-	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerLast") ?>" href="<?php echo $topics_list->PageUrl() ?>start=<?php echo $topics_list->Pager->LastButton->Start ?>"><span class="icon-last ewIcon"></span></a>
+	<?php if ($curriculums_list->Pager->LastButton->Enabled) { ?>
+	<a class="btn btn-default btn-sm" title="<?php echo $Language->Phrase("PagerLast") ?>" href="<?php echo $curriculums_list->PageUrl() ?>start=<?php echo $curriculums_list->Pager->LastButton->Start ?>"><span class="icon-last ewIcon"></span></a>
 	<?php } else { ?>
 	<a class="btn btn-default btn-sm disabled" title="<?php echo $Language->Phrase("PagerLast") ?>"><span class="icon-last ewIcon"></span></a>
 	<?php } ?>
 </div>
 </div>
 </div>
-<span>&nbsp;<?php echo $Language->Phrase("of") ?>&nbsp;<?php echo $topics_list->Pager->PageCount ?></span>
+<span>&nbsp;<?php echo $Language->Phrase("of") ?>&nbsp;<?php echo $curriculums_list->Pager->PageCount ?></span>
 </div>
 <?php } ?>
-<?php if ($topics_list->Pager->RecordCount > 0) { ?>
+<?php if ($curriculums_list->Pager->RecordCount > 0) { ?>
 <div class="ewPager ewRec">
-	<span><?php echo $Language->Phrase("Record") ?>&nbsp;<?php echo $topics_list->Pager->FromIndex ?>&nbsp;<?php echo $Language->Phrase("To") ?>&nbsp;<?php echo $topics_list->Pager->ToIndex ?>&nbsp;<?php echo $Language->Phrase("Of") ?>&nbsp;<?php echo $topics_list->Pager->RecordCount ?></span>
+	<span><?php echo $Language->Phrase("Record") ?>&nbsp;<?php echo $curriculums_list->Pager->FromIndex ?>&nbsp;<?php echo $Language->Phrase("To") ?>&nbsp;<?php echo $curriculums_list->Pager->ToIndex ?>&nbsp;<?php echo $Language->Phrase("Of") ?>&nbsp;<?php echo $curriculums_list->Pager->RecordCount ?></span>
 </div>
 <?php } ?>
 </form>
 <?php } ?>
 <div class="ewListOtherOptions">
 <?php
-	foreach ($topics_list->OtherOptions as &$option)
+	foreach ($curriculums_list->OtherOptions as &$option)
 		$option->Render("body", "bottom");
 ?>
 </div>
@@ -3794,10 +3286,10 @@ if ($topics_list->Recordset)
 <?php } ?>
 </div>
 <?php } ?>
-<?php if ($topics_list->TotalRecs == 0 && $topics->CurrentAction == "") { // Show other options ?>
+<?php if ($curriculums_list->TotalRecs == 0 && $curriculums->CurrentAction == "") { // Show other options ?>
 <div class="ewListOtherOptions">
 <?php
-	foreach ($topics_list->OtherOptions as &$option) {
+	foreach ($curriculums_list->OtherOptions as &$option) {
 		$option->ButtonClass = "";
 		$option->Render("body", "");
 	}
@@ -3805,19 +3297,19 @@ if ($topics_list->Recordset)
 </div>
 <div class="clearfix"></div>
 <?php } ?>
-<?php if ($topics->Export == "") { ?>
+<?php if ($curriculums->Export == "") { ?>
 <script type="text/javascript">
-ftopicslistsrch.FilterList = <?php echo $topics_list->GetFilterList() ?>;
-ftopicslistsrch.Init();
-ftopicslist.Init();
+fcurriculumslistsrch.FilterList = <?php echo $curriculums_list->GetFilterList() ?>;
+fcurriculumslistsrch.Init();
+fcurriculumslist.Init();
 </script>
 <?php } ?>
 <?php
-$topics_list->ShowPageFooter();
+$curriculums_list->ShowPageFooter();
 if (EW_DEBUG_ENABLED)
 	echo ew_DebugMsg();
 ?>
-<?php if ($topics->Export == "") { ?>
+<?php if ($curriculums->Export == "") { ?>
 <script type="text/javascript">
 
 // Write your table-specific startup script here
@@ -3827,5 +3319,5 @@ if (EW_DEBUG_ENABLED)
 <?php } ?>
 <?php include_once "footer.php" ?>
 <?php
-$topics_list->Page_Terminate();
+$curriculums_list->Page_Terminate();
 ?>

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<ew-language date="2023/2/17" version="14.0.0" id="en" name="English" desc="English" author="e.World Technology Ltd.">
+<ew-language date="2023/2/19" version="14.0.0" id="en" name="English" desc="English" author="e.World Technology Ltd.">
   <!-- 
 	*** Important Notes:
 	1. Language ID should follow: https://developers.google.com/recaptcha/docs/language,
@@ -616,6 +616,9 @@
     <!-- v2017 -->
   </global>
   <project>
+    <menu id="25">
+      <phrase id="menutext" value="oauth refresh tokens" />
+    </menu>
     <menu id="1">
       <phrase id="menutext" value="conversations" />
     </menu>
@@ -727,7 +730,7 @@
         <phrase id="fldcaption" value="updated at" />
       </field>
     </table>
-    <table id="courses">
+    <table id="curriculums">
       <phrase id="tblcaption" value="Curriculums" />
       <field id="id">
         <phrase id="fldcaption" value="id" />
@@ -889,6 +892,21 @@
         <phrase id="fldcaption" value="batch" />
       </field>
     </table>
+    <table id="oauth_refresh_tokens">
+      <phrase id="tblcaption" value="oauth refresh tokens" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="access_token_id">
+        <phrase id="fldcaption" value="access token id" />
+      </field>
+      <field id="revoked">
+        <phrase id="fldcaption" value="revoked" />
+      </field>
+      <field id="expires_at">
+        <phrase id="fldcaption" value="expires at" />
+      </field>
+    </table>
     <table id="orders">
       <phrase id="tblcaption" value="Orders" />
       <field id="id">
@@ -932,6 +950,9 @@
       </field>
       <field id="updated_at">
         <phrase id="fldcaption" value="updated at" />
+      </field>
+      <field id="package_id">
+        <phrase id="fldcaption" value="package id" />
       </field>
     </table>
     <table id="students">
@@ -1055,7 +1076,7 @@
         <phrase id="fldcaption" value="to date" />
       </field>
     </table>
-    <table id="teachers_courses">
+    <table id="teachers_curriculums">
       <phrase id="tblcaption" value="Courses" />
       <field id="teacher_id">
         <phrase id="fldcaption" value="teacher id" />
@@ -1210,6 +1231,10 @@
       </field>
       <field id="approved">
         <phrase id="fldcaption" value="approved" />
+        <phrase id="fldtagvalue1" value="0" />
+        <phrase id="fldtagcaption1" value="no" />
+        <phrase id="fldtagvalue2" value="1" />
+        <phrase id="fldtagcaption2" value="yes" />
       </field>
       <field id="verification_code">
         <phrase id="fldcaption" value="verification code" />
@@ -1274,12 +1299,24 @@
       </field>
       <field id="is_verified">
         <phrase id="fldcaption" value="is verified" />
+        <phrase id="fldtagvalue1" value="0" />
+        <phrase id="fldtagcaption1" value="no" />
+        <phrase id="fldtagvalue2" value="1" />
+        <phrase id="fldtagcaption2" value="yes" />
       </field>
       <field id="is_approved">
         <phrase id="fldcaption" value="is approved" />
+        <phrase id="fldtagvalue1" value="0" />
+        <phrase id="fldtagcaption1" value="no" />
+        <phrase id="fldtagvalue2" value="1" />
+        <phrase id="fldtagcaption2" value="yes" />
       </field>
       <field id="is_blocked">
         <phrase id="fldcaption" value="is blocked" />
+        <phrase id="fldtagvalue1" value="0" />
+        <phrase id="fldtagcaption1" value="no" />
+        <phrase id="fldtagvalue2" value="1" />
+        <phrase id="fldtagcaption2" value="yes" />
       </field>
       <field id="otp">
         <phrase id="fldcaption" value="otp" />

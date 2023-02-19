@@ -307,7 +307,6 @@ class cusers_delete extends cusers {
 			$this->id->Visible = FALSE;
 		$this->name->SetVisibility();
 		$this->_email->SetVisibility();
-		$this->email_verified_at->SetVisibility();
 		$this->phone->SetVisibility();
 		$this->gender->SetVisibility();
 		$this->birthday->SetVisibility();
@@ -321,8 +320,6 @@ class cusers_delete extends cusers {
 		$this->is_blocked->SetVisibility();
 		$this->otp->SetVisibility();
 		$this->slug->SetVisibility();
-		$this->created_at->SetVisibility();
-		$this->updated_at->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -594,8 +591,10 @@ class cusers_delete extends cusers {
 		// name
 		// email
 		// email_verified_at
-		// password
 
+		$this->email_verified_at->CellCssStyle = "white-space: nowrap;";
+
+		// password
 		$this->password->CellCssStyle = "white-space: nowrap;";
 
 		// phone
@@ -613,8 +612,11 @@ class cusers_delete extends cusers {
 		// slug
 		// remember_token
 		// created_at
-		// updated_at
 
+		$this->created_at->CellCssStyle = "white-space: nowrap;";
+
+		// updated_at
+		$this->updated_at->CellCssStyle = "white-space: nowrap;";
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
 		// id
@@ -628,11 +630,6 @@ class cusers_delete extends cusers {
 		// email
 		$this->_email->ViewValue = $this->_email->CurrentValue;
 		$this->_email->ViewCustomAttributes = "";
-
-		// email_verified_at
-		$this->email_verified_at->ViewValue = $this->email_verified_at->CurrentValue;
-		$this->email_verified_at->ViewValue = ew_FormatDateTime($this->email_verified_at->ViewValue, 0);
-		$this->email_verified_at->ViewCustomAttributes = "";
 
 		// phone
 		$this->phone->ViewValue = $this->phone->CurrentValue;
@@ -656,7 +653,27 @@ class cusers_delete extends cusers {
 		$this->image->ViewCustomAttributes = "";
 
 		// country_id
-		$this->country_id->ViewValue = $this->country_id->CurrentValue;
+		if (strval($this->country_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->country_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `countries`";
+		$sWhereWrk = "";
+		$this->country_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->country_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[2] = $rswrk->fields('Disp2Fld');
+				$this->country_id->ViewValue = $this->country_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->country_id->ViewValue = $this->country_id->CurrentValue;
+			}
+		} else {
+			$this->country_id->ViewValue = NULL;
+		}
 		$this->country_id->ViewCustomAttributes = "";
 
 		// city
@@ -664,7 +681,27 @@ class cusers_delete extends cusers {
 		$this->city->ViewCustomAttributes = "";
 
 		// currency_id
-		$this->currency_id->ViewValue = $this->currency_id->CurrentValue;
+		if (strval($this->currency_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->currency_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `currencies`";
+		$sWhereWrk = "";
+		$this->currency_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->currency_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[2] = $rswrk->fields('Disp2Fld');
+				$this->currency_id->ViewValue = $this->currency_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->currency_id->ViewValue = $this->currency_id->CurrentValue;
+			}
+		} else {
+			$this->currency_id->ViewValue = NULL;
+		}
 		$this->currency_id->ViewCustomAttributes = "";
 
 		// type
@@ -676,15 +713,27 @@ class cusers_delete extends cusers {
 		$this->type->ViewCustomAttributes = "";
 
 		// is_verified
-		$this->is_verified->ViewValue = $this->is_verified->CurrentValue;
+		if (strval($this->is_verified->CurrentValue) <> "") {
+			$this->is_verified->ViewValue = $this->is_verified->OptionCaption($this->is_verified->CurrentValue);
+		} else {
+			$this->is_verified->ViewValue = NULL;
+		}
 		$this->is_verified->ViewCustomAttributes = "";
 
 		// is_approved
-		$this->is_approved->ViewValue = $this->is_approved->CurrentValue;
+		if (strval($this->is_approved->CurrentValue) <> "") {
+			$this->is_approved->ViewValue = $this->is_approved->OptionCaption($this->is_approved->CurrentValue);
+		} else {
+			$this->is_approved->ViewValue = NULL;
+		}
 		$this->is_approved->ViewCustomAttributes = "";
 
 		// is_blocked
-		$this->is_blocked->ViewValue = $this->is_blocked->CurrentValue;
+		if (strval($this->is_blocked->CurrentValue) <> "") {
+			$this->is_blocked->ViewValue = $this->is_blocked->OptionCaption($this->is_blocked->CurrentValue);
+		} else {
+			$this->is_blocked->ViewValue = NULL;
+		}
 		$this->is_blocked->ViewCustomAttributes = "";
 
 		// otp
@@ -698,16 +747,6 @@ class cusers_delete extends cusers {
 		// remember_token
 		$this->remember_token->ViewValue = $this->remember_token->CurrentValue;
 		$this->remember_token->ViewCustomAttributes = "";
-
-		// created_at
-		$this->created_at->ViewValue = $this->created_at->CurrentValue;
-		$this->created_at->ViewValue = ew_FormatDateTime($this->created_at->ViewValue, 0);
-		$this->created_at->ViewCustomAttributes = "";
-
-		// updated_at
-		$this->updated_at->ViewValue = $this->updated_at->CurrentValue;
-		$this->updated_at->ViewValue = ew_FormatDateTime($this->updated_at->ViewValue, 0);
-		$this->updated_at->ViewCustomAttributes = "";
 
 			// id
 			$this->id->LinkCustomAttributes = "";
@@ -723,11 +762,6 @@ class cusers_delete extends cusers {
 			$this->_email->LinkCustomAttributes = "";
 			$this->_email->HrefValue = "";
 			$this->_email->TooltipValue = "";
-
-			// email_verified_at
-			$this->email_verified_at->LinkCustomAttributes = "";
-			$this->email_verified_at->HrefValue = "";
-			$this->email_verified_at->TooltipValue = "";
 
 			// phone
 			$this->phone->LinkCustomAttributes = "";
@@ -793,16 +827,6 @@ class cusers_delete extends cusers {
 			$this->slug->LinkCustomAttributes = "";
 			$this->slug->HrefValue = "";
 			$this->slug->TooltipValue = "";
-
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
-			$this->created_at->TooltipValue = "";
-
-			// updated_at
-			$this->updated_at->LinkCustomAttributes = "";
-			$this->updated_at->HrefValue = "";
-			$this->updated_at->TooltipValue = "";
 		}
 
 		// Call Row Rendered event
@@ -1015,8 +1039,18 @@ fusersdelete.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 // Dynamic selection lists
 fusersdelete.Lists["x_gender"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
 fusersdelete.Lists["x_gender"].Options = <?php echo json_encode($users_delete->gender->Options()) ?>;
+fusersdelete.Lists["x_country_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name_ar","x_name_en","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"countries"};
+fusersdelete.Lists["x_country_id"].Data = "<?php echo $users_delete->country_id->LookupFilterQuery(FALSE, "delete") ?>";
+fusersdelete.Lists["x_currency_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name_ar","x_name_en","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"currencies"};
+fusersdelete.Lists["x_currency_id"].Data = "<?php echo $users_delete->currency_id->LookupFilterQuery(FALSE, "delete") ?>";
 fusersdelete.Lists["x_type"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
 fusersdelete.Lists["x_type"].Options = <?php echo json_encode($users_delete->type->Options()) ?>;
+fusersdelete.Lists["x_is_verified"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
+fusersdelete.Lists["x_is_verified"].Options = <?php echo json_encode($users_delete->is_verified->Options()) ?>;
+fusersdelete.Lists["x_is_approved"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
+fusersdelete.Lists["x_is_approved"].Options = <?php echo json_encode($users_delete->is_approved->Options()) ?>;
+fusersdelete.Lists["x_is_blocked"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
+fusersdelete.Lists["x_is_blocked"].Options = <?php echo json_encode($users_delete->is_blocked->Options()) ?>;
 
 // Form object for search
 </script>
@@ -1051,9 +1085,6 @@ $users_delete->ShowMessage();
 <?php } ?>
 <?php if ($users->_email->Visible) { // email ?>
 		<th class="<?php echo $users->_email->HeaderCellClass() ?>"><span id="elh_users__email" class="users__email"><?php echo $users->_email->FldCaption() ?></span></th>
-<?php } ?>
-<?php if ($users->email_verified_at->Visible) { // email_verified_at ?>
-		<th class="<?php echo $users->email_verified_at->HeaderCellClass() ?>"><span id="elh_users_email_verified_at" class="users_email_verified_at"><?php echo $users->email_verified_at->FldCaption() ?></span></th>
 <?php } ?>
 <?php if ($users->phone->Visible) { // phone ?>
 		<th class="<?php echo $users->phone->HeaderCellClass() ?>"><span id="elh_users_phone" class="users_phone"><?php echo $users->phone->FldCaption() ?></span></th>
@@ -1093,12 +1124,6 @@ $users_delete->ShowMessage();
 <?php } ?>
 <?php if ($users->slug->Visible) { // slug ?>
 		<th class="<?php echo $users->slug->HeaderCellClass() ?>"><span id="elh_users_slug" class="users_slug"><?php echo $users->slug->FldCaption() ?></span></th>
-<?php } ?>
-<?php if ($users->created_at->Visible) { // created_at ?>
-		<th class="<?php echo $users->created_at->HeaderCellClass() ?>"><span id="elh_users_created_at" class="users_created_at"><?php echo $users->created_at->FldCaption() ?></span></th>
-<?php } ?>
-<?php if ($users->updated_at->Visible) { // updated_at ?>
-		<th class="<?php echo $users->updated_at->HeaderCellClass() ?>"><span id="elh_users_updated_at" class="users_updated_at"><?php echo $users->updated_at->FldCaption() ?></span></th>
 <?php } ?>
 	</tr>
 	</thead>
@@ -1142,14 +1167,6 @@ while (!$users_delete->Recordset->EOF) {
 <span id="el<?php echo $users_delete->RowCnt ?>_users__email" class="users__email">
 <span<?php echo $users->_email->ViewAttributes() ?>>
 <?php echo $users->_email->ListViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
-<?php if ($users->email_verified_at->Visible) { // email_verified_at ?>
-		<td<?php echo $users->email_verified_at->CellAttributes() ?>>
-<span id="el<?php echo $users_delete->RowCnt ?>_users_email_verified_at" class="users_email_verified_at">
-<span<?php echo $users->email_verified_at->ViewAttributes() ?>>
-<?php echo $users->email_verified_at->ListViewValue() ?></span>
 </span>
 </td>
 <?php } ?>
@@ -1254,22 +1271,6 @@ while (!$users_delete->Recordset->EOF) {
 <span id="el<?php echo $users_delete->RowCnt ?>_users_slug" class="users_slug">
 <span<?php echo $users->slug->ViewAttributes() ?>>
 <?php echo $users->slug->ListViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
-<?php if ($users->created_at->Visible) { // created_at ?>
-		<td<?php echo $users->created_at->CellAttributes() ?>>
-<span id="el<?php echo $users_delete->RowCnt ?>_users_created_at" class="users_created_at">
-<span<?php echo $users->created_at->ViewAttributes() ?>>
-<?php echo $users->created_at->ListViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
-<?php if ($users->updated_at->Visible) { // updated_at ?>
-		<td<?php echo $users->updated_at->CellAttributes() ?>>
-<span id="el<?php echo $users_delete->RowCnt ?>_users_updated_at" class="users_updated_at">
-<span<?php echo $users->updated_at->ViewAttributes() ?>>
-<?php echo $users->updated_at->ListViewValue() ?></span>
 </span>
 </td>
 <?php } ?>

@@ -5,8 +5,7 @@ ob_start(); // Turn on output buffering
 <?php include_once "ewcfg14.php" ?>
 <?php include_once ((EW_USE_ADODB) ? "adodb5/adodb.inc.php" : "ewmysql14.php") ?>
 <?php include_once "phpfn14.php" ?>
-<?php include_once "transfersinfo.php" ?>
-<?php include_once "usersinfo.php" ?>
+<?php include_once "curriculumsinfo.php" ?>
 <?php include_once "userfn14.php" ?>
 <?php
 
@@ -14,9 +13,9 @@ ob_start(); // Turn on output buffering
 // Page class
 //
 
-$transfers_delete = NULL; // Initialize page object first
+$curriculums_delete = NULL; // Initialize page object first
 
-class ctransfers_delete extends ctransfers {
+class ccurriculums_delete extends ccurriculums {
 
 	// Page ID
 	var $PageID = 'delete';
@@ -25,10 +24,10 @@ class ctransfers_delete extends ctransfers {
 	var $ProjectID = '{D43A73A4-5F37-4161-A00D-2E65107145C9}';
 
 	// Table name
-	var $TableName = 'transfers';
+	var $TableName = 'curriculums';
 
 	// Page object name
-	var $PageObjName = 'transfers_delete';
+	var $PageObjName = 'curriculums_delete';
 
 	// Page headings
 	var $Heading = '';
@@ -249,14 +248,11 @@ class ctransfers_delete extends ctransfers {
 		// Parent constuctor
 		parent::__construct();
 
-		// Table object (transfers)
-		if (!isset($GLOBALS["transfers"]) || get_class($GLOBALS["transfers"]) == "ctransfers") {
-			$GLOBALS["transfers"] = &$this;
-			$GLOBALS["Table"] = &$GLOBALS["transfers"];
+		// Table object (curriculums)
+		if (!isset($GLOBALS["curriculums"]) || get_class($GLOBALS["curriculums"]) == "ccurriculums") {
+			$GLOBALS["curriculums"] = &$this;
+			$GLOBALS["Table"] = &$GLOBALS["curriculums"];
 		}
-
-		// Table object (users)
-		if (!isset($GLOBALS['users'])) $GLOBALS['users'] = new cusers();
 
 		// Page ID
 		if (!defined("EW_PAGE_ID"))
@@ -264,7 +260,7 @@ class ctransfers_delete extends ctransfers {
 
 		// Table name (for backward compatibility)
 		if (!defined("EW_TABLE_NAME"))
-			define("EW_TABLE_NAME", 'transfers', TRUE);
+			define("EW_TABLE_NAME", 'curriculums', TRUE);
 
 		// Start timer
 		if (!isset($GLOBALS["gTimer"]))
@@ -295,7 +291,7 @@ class ctransfers_delete extends ctransfers {
 			$Security->SaveLastUrl();
 			$this->setFailureMessage(ew_DeniedMsg()); // Set no permission
 			if ($Security->CanList())
-				$this->Page_Terminate(ew_GetUrl("transferslist.php"));
+				$this->Page_Terminate(ew_GetUrl("curriculumslist.php"));
 			else
 				$this->Page_Terminate(ew_GetUrl("login.php"));
 		}
@@ -309,13 +305,8 @@ class ctransfers_delete extends ctransfers {
 		$this->id->SetVisibility();
 		if ($this->IsAdd() || $this->IsCopy() || $this->IsGridAdd())
 			$this->id->Visible = FALSE;
-		$this->user_id->SetVisibility();
-		$this->amount->SetVisibility();
-		$this->currency_id->SetVisibility();
-		$this->type->SetVisibility();
-		$this->order_id->SetVisibility();
-		$this->approved->SetVisibility();
-		$this->verification_code->SetVisibility();
+		$this->name_ar->SetVisibility();
+		$this->name_en->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -347,13 +338,13 @@ class ctransfers_delete extends ctransfers {
 		Page_Unloaded();
 
 		// Export
-		global $EW_EXPORT, $transfers;
+		global $EW_EXPORT, $curriculums;
 		if ($this->CustomExport <> "" && $this->CustomExport == $this->Export && array_key_exists($this->CustomExport, $EW_EXPORT)) {
 				$sContent = ob_get_contents();
 			if ($gsExportFile == "") $gsExportFile = $this->TableVar;
 			$class = $EW_EXPORT[$this->CustomExport];
 			if (class_exists($class)) {
-				$doc = new $class($transfers);
+				$doc = new $class($curriculums);
 				$doc->Text = $sContent;
 				if ($this->Export == "email")
 					echo $this->ExportEmail($doc->Text);
@@ -393,9 +384,6 @@ class ctransfers_delete extends ctransfers {
 	function Page_Main() {
 		global $Language;
 
-		// Set up master/detail parameters
-		$this->SetupMasterParms();
-
 		// Set up Breadcrumb
 		$this->SetupBreadcrumb();
 
@@ -403,10 +391,10 @@ class ctransfers_delete extends ctransfers {
 		$this->RecKeys = $this->GetRecordKeys(); // Load record keys
 		$sFilter = $this->GetKeyFilter();
 		if ($sFilter == "")
-			$this->Page_Terminate("transferslist.php"); // Prevent SQL injection, return to list
+			$this->Page_Terminate("curriculumslist.php"); // Prevent SQL injection, return to list
 
 		// Set up filter (SQL WHHERE clause) and get return SQL
-		// SQL constructor in transfers class, transfersinfo.php
+		// SQL constructor in curriculums class, curriculumsinfo.php
 
 		$this->CurrentFilter = $sFilter;
 
@@ -434,7 +422,7 @@ class ctransfers_delete extends ctransfers {
 			if ($this->TotalRecs <= 0) { // No record found, exit
 				if ($this->Recordset)
 					$this->Recordset->Close();
-				$this->Page_Terminate("transferslist.php"); // Return to list
+				$this->Page_Terminate("curriculumslist.php"); // Return to list
 			}
 		}
 	}
@@ -499,13 +487,8 @@ class ctransfers_delete extends ctransfers {
 		if (!$rs || $rs->EOF)
 			return;
 		$this->id->setDbValue($row['id']);
-		$this->user_id->setDbValue($row['user_id']);
-		$this->amount->setDbValue($row['amount']);
-		$this->currency_id->setDbValue($row['currency_id']);
-		$this->type->setDbValue($row['type']);
-		$this->order_id->setDbValue($row['order_id']);
-		$this->approved->setDbValue($row['approved']);
-		$this->verification_code->setDbValue($row['verification_code']);
+		$this->name_ar->setDbValue($row['name_ar']);
+		$this->name_en->setDbValue($row['name_en']);
 		$this->created_at->setDbValue($row['created_at']);
 		$this->updated_at->setDbValue($row['updated_at']);
 	}
@@ -514,13 +497,8 @@ class ctransfers_delete extends ctransfers {
 	function NewRow() {
 		$row = array();
 		$row['id'] = NULL;
-		$row['user_id'] = NULL;
-		$row['amount'] = NULL;
-		$row['currency_id'] = NULL;
-		$row['type'] = NULL;
-		$row['order_id'] = NULL;
-		$row['approved'] = NULL;
-		$row['verification_code'] = NULL;
+		$row['name_ar'] = NULL;
+		$row['name_en'] = NULL;
 		$row['created_at'] = NULL;
 		$row['updated_at'] = NULL;
 		return $row;
@@ -532,13 +510,8 @@ class ctransfers_delete extends ctransfers {
 			return;
 		$row = is_array($rs) ? $rs : $rs->fields;
 		$this->id->DbValue = $row['id'];
-		$this->user_id->DbValue = $row['user_id'];
-		$this->amount->DbValue = $row['amount'];
-		$this->currency_id->DbValue = $row['currency_id'];
-		$this->type->DbValue = $row['type'];
-		$this->order_id->DbValue = $row['order_id'];
-		$this->approved->DbValue = $row['approved'];
-		$this->verification_code->DbValue = $row['verification_code'];
+		$this->name_ar->DbValue = $row['name_ar'];
+		$this->name_en->DbValue = $row['name_en'];
 		$this->created_at->DbValue = $row['created_at'];
 		$this->updated_at->DbValue = $row['updated_at'];
 	}
@@ -554,13 +527,8 @@ class ctransfers_delete extends ctransfers {
 
 		// Common render codes for all row types
 		// id
-		// user_id
-		// amount
-		// currency_id
-		// type
-		// order_id
-		// approved
-		// verification_code
+		// name_ar
+		// name_en
 		// created_at
 
 		$this->created_at->CellCssStyle = "white-space: nowrap;";
@@ -573,140 +541,38 @@ class ctransfers_delete extends ctransfers {
 		$this->id->ViewValue = $this->id->CurrentValue;
 		$this->id->ViewCustomAttributes = "";
 
-		// user_id
-		if (strval($this->user_id->CurrentValue) <> "") {
-			$sFilterWrk = "`id`" . ew_SearchString("=", $this->user_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `users`";
-		$sWhereWrk = "";
-		$this->user_id->LookupFilters = array();
-		ew_AddFilter($sWhereWrk, $sFilterWrk);
-		$this->Lookup_Selecting($this->user_id, $sWhereWrk); // Call Lookup Selecting
-		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			$rswrk = Conn()->Execute($sSqlWrk);
-			if ($rswrk && !$rswrk->EOF) { // Lookup values found
-				$arwrk = array();
-				$arwrk[1] = $rswrk->fields('DispFld');
-				$this->user_id->ViewValue = $this->user_id->DisplayValue($arwrk);
-				$rswrk->Close();
-			} else {
-				$this->user_id->ViewValue = $this->user_id->CurrentValue;
-			}
-		} else {
-			$this->user_id->ViewValue = NULL;
-		}
-		$this->user_id->ViewCustomAttributes = "";
+		// name_ar
+		$this->name_ar->ViewValue = $this->name_ar->CurrentValue;
+		$this->name_ar->ViewCustomAttributes = "";
 
-		// amount
-		$this->amount->ViewValue = $this->amount->CurrentValue;
-		$this->amount->ViewCustomAttributes = "";
+		// name_en
+		$this->name_en->ViewValue = $this->name_en->CurrentValue;
+		$this->name_en->ViewCustomAttributes = "";
 
-		// currency_id
-		if (strval($this->currency_id->CurrentValue) <> "") {
-			$sFilterWrk = "`id`" . ew_SearchString("=", $this->currency_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `currencies`";
-		$sWhereWrk = "";
-		$this->currency_id->LookupFilters = array();
-		ew_AddFilter($sWhereWrk, $sFilterWrk);
-		$this->Lookup_Selecting($this->currency_id, $sWhereWrk); // Call Lookup Selecting
-		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			$rswrk = Conn()->Execute($sSqlWrk);
-			if ($rswrk && !$rswrk->EOF) { // Lookup values found
-				$arwrk = array();
-				$arwrk[1] = $rswrk->fields('DispFld');
-				$arwrk[2] = $rswrk->fields('Disp2Fld');
-				$this->currency_id->ViewValue = $this->currency_id->DisplayValue($arwrk);
-				$rswrk->Close();
-			} else {
-				$this->currency_id->ViewValue = $this->currency_id->CurrentValue;
-			}
-		} else {
-			$this->currency_id->ViewValue = NULL;
-		}
-		$this->currency_id->ViewCustomAttributes = "";
+		// created_at
+		$this->created_at->ViewValue = $this->created_at->CurrentValue;
+		$this->created_at->ViewValue = ew_FormatDateTime($this->created_at->ViewValue, 0);
+		$this->created_at->ViewCustomAttributes = "";
 
-		// type
-		if (strval($this->type->CurrentValue) <> "") {
-			$this->type->ViewValue = $this->type->OptionCaption($this->type->CurrentValue);
-		} else {
-			$this->type->ViewValue = NULL;
-		}
-		$this->type->ViewCustomAttributes = "";
-
-		// order_id
-		if (strval($this->order_id->CurrentValue) <> "") {
-			$sFilterWrk = "`id`" . ew_SearchString("=", $this->order_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, `id` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `orders`";
-		$sWhereWrk = "";
-		$this->order_id->LookupFilters = array();
-		ew_AddFilter($sWhereWrk, $sFilterWrk);
-		$this->Lookup_Selecting($this->order_id, $sWhereWrk); // Call Lookup Selecting
-		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			$rswrk = Conn()->Execute($sSqlWrk);
-			if ($rswrk && !$rswrk->EOF) { // Lookup values found
-				$arwrk = array();
-				$arwrk[1] = $rswrk->fields('DispFld');
-				$arwrk[2] = $rswrk->fields('Disp2Fld');
-				$this->order_id->ViewValue = $this->order_id->DisplayValue($arwrk);
-				$rswrk->Close();
-			} else {
-				$this->order_id->ViewValue = $this->order_id->CurrentValue;
-			}
-		} else {
-			$this->order_id->ViewValue = NULL;
-		}
-		$this->order_id->ViewCustomAttributes = "";
-
-		// approved
-		if (strval($this->approved->CurrentValue) <> "") {
-			$this->approved->ViewValue = $this->approved->OptionCaption($this->approved->CurrentValue);
-		} else {
-			$this->approved->ViewValue = NULL;
-		}
-		$this->approved->ViewCustomAttributes = "";
-
-		// verification_code
-		$this->verification_code->ViewValue = $this->verification_code->CurrentValue;
-		$this->verification_code->ViewCustomAttributes = "";
+		// updated_at
+		$this->updated_at->ViewValue = $this->updated_at->CurrentValue;
+		$this->updated_at->ViewValue = ew_FormatDateTime($this->updated_at->ViewValue, 0);
+		$this->updated_at->ViewCustomAttributes = "";
 
 			// id
 			$this->id->LinkCustomAttributes = "";
 			$this->id->HrefValue = "";
 			$this->id->TooltipValue = "";
 
-			// user_id
-			$this->user_id->LinkCustomAttributes = "";
-			$this->user_id->HrefValue = "";
-			$this->user_id->TooltipValue = "";
+			// name_ar
+			$this->name_ar->LinkCustomAttributes = "";
+			$this->name_ar->HrefValue = "";
+			$this->name_ar->TooltipValue = "";
 
-			// amount
-			$this->amount->LinkCustomAttributes = "";
-			$this->amount->HrefValue = "";
-			$this->amount->TooltipValue = "";
-
-			// currency_id
-			$this->currency_id->LinkCustomAttributes = "";
-			$this->currency_id->HrefValue = "";
-			$this->currency_id->TooltipValue = "";
-
-			// type
-			$this->type->LinkCustomAttributes = "";
-			$this->type->HrefValue = "";
-			$this->type->TooltipValue = "";
-
-			// order_id
-			$this->order_id->LinkCustomAttributes = "";
-			$this->order_id->HrefValue = "";
-			$this->order_id->TooltipValue = "";
-
-			// approved
-			$this->approved->LinkCustomAttributes = "";
-			$this->approved->HrefValue = "";
-			$this->approved->TooltipValue = "";
-
-			// verification_code
-			$this->verification_code->LinkCustomAttributes = "";
-			$this->verification_code->HrefValue = "";
-			$this->verification_code->TooltipValue = "";
+			// name_en
+			$this->name_en->LinkCustomAttributes = "";
+			$this->name_en->HrefValue = "";
+			$this->name_en->TooltipValue = "";
 		}
 
 		// Call Row Rendered event
@@ -793,74 +659,12 @@ class ctransfers_delete extends ctransfers {
 		return $DeleteRows;
 	}
 
-	// Set up master/detail based on QueryString
-	function SetupMasterParms() {
-		$bValidMaster = FALSE;
-
-		// Get the keys for master table
-		if (isset($_GET[EW_TABLE_SHOW_MASTER])) {
-			$sMasterTblVar = $_GET[EW_TABLE_SHOW_MASTER];
-			if ($sMasterTblVar == "") {
-				$bValidMaster = TRUE;
-				$this->DbMasterFilter = "";
-				$this->DbDetailFilter = "";
-			}
-			if ($sMasterTblVar == "users") {
-				$bValidMaster = TRUE;
-				if (@$_GET["fk_id"] <> "") {
-					$GLOBALS["users"]->id->setQueryStringValue($_GET["fk_id"]);
-					$this->user_id->setQueryStringValue($GLOBALS["users"]->id->QueryStringValue);
-					$this->user_id->setSessionValue($this->user_id->QueryStringValue);
-					if (!is_numeric($GLOBALS["users"]->id->QueryStringValue)) $bValidMaster = FALSE;
-				} else {
-					$bValidMaster = FALSE;
-				}
-			}
-		} elseif (isset($_POST[EW_TABLE_SHOW_MASTER])) {
-			$sMasterTblVar = $_POST[EW_TABLE_SHOW_MASTER];
-			if ($sMasterTblVar == "") {
-				$bValidMaster = TRUE;
-				$this->DbMasterFilter = "";
-				$this->DbDetailFilter = "";
-			}
-			if ($sMasterTblVar == "users") {
-				$bValidMaster = TRUE;
-				if (@$_POST["fk_id"] <> "") {
-					$GLOBALS["users"]->id->setFormValue($_POST["fk_id"]);
-					$this->user_id->setFormValue($GLOBALS["users"]->id->FormValue);
-					$this->user_id->setSessionValue($this->user_id->FormValue);
-					if (!is_numeric($GLOBALS["users"]->id->FormValue)) $bValidMaster = FALSE;
-				} else {
-					$bValidMaster = FALSE;
-				}
-			}
-		}
-		if ($bValidMaster) {
-
-			// Save current master table
-			$this->setCurrentMasterTable($sMasterTblVar);
-
-			// Reset start record counter (new master key)
-			if (!$this->IsAddOrEdit()) {
-				$this->StartRec = 1;
-				$this->setStartRecordNumber($this->StartRec);
-			}
-
-			// Clear previous master key from Session
-			if ($sMasterTblVar <> "users") {
-				if ($this->user_id->CurrentValue == "") $this->user_id->setSessionValue("");
-			}
-		}
-		$this->DbMasterFilter = $this->GetMasterFilter(); // Get master filter
-		$this->DbDetailFilter = $this->GetDetailFilter(); // Get detail filter
-	}
-
 	// Set up Breadcrumb
 	function SetupBreadcrumb() {
 		global $Breadcrumb, $Language;
 		$Breadcrumb = new cBreadcrumb();
 		$url = substr(ew_CurrentUrl(), strrpos(ew_CurrentUrl(), "/")+1);
-		$Breadcrumb->Add("list", $this->TableVar, $this->AddMasterUrl("transferslist.php"), "", $this->TableVar, TRUE);
+		$Breadcrumb->Add("list", $this->TableVar, $this->AddMasterUrl("curriculumslist.php"), "", $this->TableVar, TRUE);
 		$PageId = "delete";
 		$Breadcrumb->Add("delete", $PageId, $url);
 	}
@@ -946,29 +750,29 @@ class ctransfers_delete extends ctransfers {
 <?php
 
 // Create page object
-if (!isset($transfers_delete)) $transfers_delete = new ctransfers_delete();
+if (!isset($curriculums_delete)) $curriculums_delete = new ccurriculums_delete();
 
 // Page init
-$transfers_delete->Page_Init();
+$curriculums_delete->Page_Init();
 
 // Page main
-$transfers_delete->Page_Main();
+$curriculums_delete->Page_Main();
 
 // Global Page Rendering event (in userfn*.php)
 Page_Rendering();
 
 // Page Rendering event
-$transfers_delete->Page_Render();
+$curriculums_delete->Page_Render();
 ?>
 <?php include_once "header.php" ?>
 <script type="text/javascript">
 
 // Form object
 var CurrentPageID = EW_PAGE_ID = "delete";
-var CurrentForm = ftransfersdelete = new ew_Form("ftransfersdelete", "delete");
+var CurrentForm = fcurriculumsdelete = new ew_Form("fcurriculumsdelete", "delete");
 
 // Form_CustomValidate event
-ftransfersdelete.Form_CustomValidate = 
+fcurriculumsdelete.Form_CustomValidate = 
  function(fobj) { // DO NOT CHANGE THIS LINE!
 
  	// Your custom validation code here, return false if invalid.
@@ -976,37 +780,27 @@ ftransfersdelete.Form_CustomValidate =
  }
 
 // Use JavaScript validation or not
-ftransfersdelete.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
+fcurriculumsdelete.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
-ftransfersdelete.Lists["x_user_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"users"};
-ftransfersdelete.Lists["x_user_id"].Data = "<?php echo $transfers_delete->user_id->LookupFilterQuery(FALSE, "delete") ?>";
-ftransfersdelete.Lists["x_currency_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name_ar","x_name_en","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"currencies"};
-ftransfersdelete.Lists["x_currency_id"].Data = "<?php echo $transfers_delete->currency_id->LookupFilterQuery(FALSE, "delete") ?>";
-ftransfersdelete.Lists["x_type"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
-ftransfersdelete.Lists["x_type"].Options = <?php echo json_encode($transfers_delete->type->Options()) ?>;
-ftransfersdelete.Lists["x_order_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_id","x_id","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"orders"};
-ftransfersdelete.Lists["x_order_id"].Data = "<?php echo $transfers_delete->order_id->LookupFilterQuery(FALSE, "delete") ?>";
-ftransfersdelete.Lists["x_approved"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
-ftransfersdelete.Lists["x_approved"].Options = <?php echo json_encode($transfers_delete->approved->Options()) ?>;
-
 // Form object for search
+
 </script>
 <script type="text/javascript">
 
 // Write your client script here, no need to add script tags.
 </script>
-<?php $transfers_delete->ShowPageHeader(); ?>
+<?php $curriculums_delete->ShowPageHeader(); ?>
 <?php
-$transfers_delete->ShowMessage();
+$curriculums_delete->ShowMessage();
 ?>
-<form name="ftransfersdelete" id="ftransfersdelete" class="form-inline ewForm ewDeleteForm" action="<?php echo ew_CurrentPage() ?>" method="post">
-<?php if ($transfers_delete->CheckToken) { ?>
-<input type="hidden" name="<?php echo EW_TOKEN_NAME ?>" value="<?php echo $transfers_delete->Token ?>">
+<form name="fcurriculumsdelete" id="fcurriculumsdelete" class="form-inline ewForm ewDeleteForm" action="<?php echo ew_CurrentPage() ?>" method="post">
+<?php if ($curriculums_delete->CheckToken) { ?>
+<input type="hidden" name="<?php echo EW_TOKEN_NAME ?>" value="<?php echo $curriculums_delete->Token ?>">
 <?php } ?>
-<input type="hidden" name="t" value="transfers">
+<input type="hidden" name="t" value="curriculums">
 <input type="hidden" name="a_delete" id="a_delete" value="D">
-<?php foreach ($transfers_delete->RecKeys as $key) { ?>
+<?php foreach ($curriculums_delete->RecKeys as $key) { ?>
 <?php $keyvalue = is_array($key) ? implode($EW_COMPOSITE_KEY_SEPARATOR, $key) : $key; ?>
 <input type="hidden" name="key_m[]" value="<?php echo ew_HtmlEncode($keyvalue) ?>">
 <?php } ?>
@@ -1015,120 +809,65 @@ $transfers_delete->ShowMessage();
 <table class="table ewTable">
 	<thead>
 	<tr class="ewTableHeader">
-<?php if ($transfers->id->Visible) { // id ?>
-		<th class="<?php echo $transfers->id->HeaderCellClass() ?>"><span id="elh_transfers_id" class="transfers_id"><?php echo $transfers->id->FldCaption() ?></span></th>
+<?php if ($curriculums->id->Visible) { // id ?>
+		<th class="<?php echo $curriculums->id->HeaderCellClass() ?>"><span id="elh_curriculums_id" class="curriculums_id"><?php echo $curriculums->id->FldCaption() ?></span></th>
 <?php } ?>
-<?php if ($transfers->user_id->Visible) { // user_id ?>
-		<th class="<?php echo $transfers->user_id->HeaderCellClass() ?>"><span id="elh_transfers_user_id" class="transfers_user_id"><?php echo $transfers->user_id->FldCaption() ?></span></th>
+<?php if ($curriculums->name_ar->Visible) { // name_ar ?>
+		<th class="<?php echo $curriculums->name_ar->HeaderCellClass() ?>"><span id="elh_curriculums_name_ar" class="curriculums_name_ar"><?php echo $curriculums->name_ar->FldCaption() ?></span></th>
 <?php } ?>
-<?php if ($transfers->amount->Visible) { // amount ?>
-		<th class="<?php echo $transfers->amount->HeaderCellClass() ?>"><span id="elh_transfers_amount" class="transfers_amount"><?php echo $transfers->amount->FldCaption() ?></span></th>
-<?php } ?>
-<?php if ($transfers->currency_id->Visible) { // currency_id ?>
-		<th class="<?php echo $transfers->currency_id->HeaderCellClass() ?>"><span id="elh_transfers_currency_id" class="transfers_currency_id"><?php echo $transfers->currency_id->FldCaption() ?></span></th>
-<?php } ?>
-<?php if ($transfers->type->Visible) { // type ?>
-		<th class="<?php echo $transfers->type->HeaderCellClass() ?>"><span id="elh_transfers_type" class="transfers_type"><?php echo $transfers->type->FldCaption() ?></span></th>
-<?php } ?>
-<?php if ($transfers->order_id->Visible) { // order_id ?>
-		<th class="<?php echo $transfers->order_id->HeaderCellClass() ?>"><span id="elh_transfers_order_id" class="transfers_order_id"><?php echo $transfers->order_id->FldCaption() ?></span></th>
-<?php } ?>
-<?php if ($transfers->approved->Visible) { // approved ?>
-		<th class="<?php echo $transfers->approved->HeaderCellClass() ?>"><span id="elh_transfers_approved" class="transfers_approved"><?php echo $transfers->approved->FldCaption() ?></span></th>
-<?php } ?>
-<?php if ($transfers->verification_code->Visible) { // verification_code ?>
-		<th class="<?php echo $transfers->verification_code->HeaderCellClass() ?>"><span id="elh_transfers_verification_code" class="transfers_verification_code"><?php echo $transfers->verification_code->FldCaption() ?></span></th>
+<?php if ($curriculums->name_en->Visible) { // name_en ?>
+		<th class="<?php echo $curriculums->name_en->HeaderCellClass() ?>"><span id="elh_curriculums_name_en" class="curriculums_name_en"><?php echo $curriculums->name_en->FldCaption() ?></span></th>
 <?php } ?>
 	</tr>
 	</thead>
 	<tbody>
 <?php
-$transfers_delete->RecCnt = 0;
+$curriculums_delete->RecCnt = 0;
 $i = 0;
-while (!$transfers_delete->Recordset->EOF) {
-	$transfers_delete->RecCnt++;
-	$transfers_delete->RowCnt++;
+while (!$curriculums_delete->Recordset->EOF) {
+	$curriculums_delete->RecCnt++;
+	$curriculums_delete->RowCnt++;
 
 	// Set row properties
-	$transfers->ResetAttrs();
-	$transfers->RowType = EW_ROWTYPE_VIEW; // View
+	$curriculums->ResetAttrs();
+	$curriculums->RowType = EW_ROWTYPE_VIEW; // View
 
 	// Get the field contents
-	$transfers_delete->LoadRowValues($transfers_delete->Recordset);
+	$curriculums_delete->LoadRowValues($curriculums_delete->Recordset);
 
 	// Render row
-	$transfers_delete->RenderRow();
+	$curriculums_delete->RenderRow();
 ?>
-	<tr<?php echo $transfers->RowAttributes() ?>>
-<?php if ($transfers->id->Visible) { // id ?>
-		<td<?php echo $transfers->id->CellAttributes() ?>>
-<span id="el<?php echo $transfers_delete->RowCnt ?>_transfers_id" class="transfers_id">
-<span<?php echo $transfers->id->ViewAttributes() ?>>
-<?php echo $transfers->id->ListViewValue() ?></span>
+	<tr<?php echo $curriculums->RowAttributes() ?>>
+<?php if ($curriculums->id->Visible) { // id ?>
+		<td<?php echo $curriculums->id->CellAttributes() ?>>
+<span id="el<?php echo $curriculums_delete->RowCnt ?>_curriculums_id" class="curriculums_id">
+<span<?php echo $curriculums->id->ViewAttributes() ?>>
+<?php echo $curriculums->id->ListViewValue() ?></span>
 </span>
 </td>
 <?php } ?>
-<?php if ($transfers->user_id->Visible) { // user_id ?>
-		<td<?php echo $transfers->user_id->CellAttributes() ?>>
-<span id="el<?php echo $transfers_delete->RowCnt ?>_transfers_user_id" class="transfers_user_id">
-<span<?php echo $transfers->user_id->ViewAttributes() ?>>
-<?php echo $transfers->user_id->ListViewValue() ?></span>
+<?php if ($curriculums->name_ar->Visible) { // name_ar ?>
+		<td<?php echo $curriculums->name_ar->CellAttributes() ?>>
+<span id="el<?php echo $curriculums_delete->RowCnt ?>_curriculums_name_ar" class="curriculums_name_ar">
+<span<?php echo $curriculums->name_ar->ViewAttributes() ?>>
+<?php echo $curriculums->name_ar->ListViewValue() ?></span>
 </span>
 </td>
 <?php } ?>
-<?php if ($transfers->amount->Visible) { // amount ?>
-		<td<?php echo $transfers->amount->CellAttributes() ?>>
-<span id="el<?php echo $transfers_delete->RowCnt ?>_transfers_amount" class="transfers_amount">
-<span<?php echo $transfers->amount->ViewAttributes() ?>>
-<?php echo $transfers->amount->ListViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
-<?php if ($transfers->currency_id->Visible) { // currency_id ?>
-		<td<?php echo $transfers->currency_id->CellAttributes() ?>>
-<span id="el<?php echo $transfers_delete->RowCnt ?>_transfers_currency_id" class="transfers_currency_id">
-<span<?php echo $transfers->currency_id->ViewAttributes() ?>>
-<?php echo $transfers->currency_id->ListViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
-<?php if ($transfers->type->Visible) { // type ?>
-		<td<?php echo $transfers->type->CellAttributes() ?>>
-<span id="el<?php echo $transfers_delete->RowCnt ?>_transfers_type" class="transfers_type">
-<span<?php echo $transfers->type->ViewAttributes() ?>>
-<?php echo $transfers->type->ListViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
-<?php if ($transfers->order_id->Visible) { // order_id ?>
-		<td<?php echo $transfers->order_id->CellAttributes() ?>>
-<span id="el<?php echo $transfers_delete->RowCnt ?>_transfers_order_id" class="transfers_order_id">
-<span<?php echo $transfers->order_id->ViewAttributes() ?>>
-<?php echo $transfers->order_id->ListViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
-<?php if ($transfers->approved->Visible) { // approved ?>
-		<td<?php echo $transfers->approved->CellAttributes() ?>>
-<span id="el<?php echo $transfers_delete->RowCnt ?>_transfers_approved" class="transfers_approved">
-<span<?php echo $transfers->approved->ViewAttributes() ?>>
-<?php echo $transfers->approved->ListViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
-<?php if ($transfers->verification_code->Visible) { // verification_code ?>
-		<td<?php echo $transfers->verification_code->CellAttributes() ?>>
-<span id="el<?php echo $transfers_delete->RowCnt ?>_transfers_verification_code" class="transfers_verification_code">
-<span<?php echo $transfers->verification_code->ViewAttributes() ?>>
-<?php echo $transfers->verification_code->ListViewValue() ?></span>
+<?php if ($curriculums->name_en->Visible) { // name_en ?>
+		<td<?php echo $curriculums->name_en->CellAttributes() ?>>
+<span id="el<?php echo $curriculums_delete->RowCnt ?>_curriculums_name_en" class="curriculums_name_en">
+<span<?php echo $curriculums->name_en->ViewAttributes() ?>>
+<?php echo $curriculums->name_en->ListViewValue() ?></span>
 </span>
 </td>
 <?php } ?>
 	</tr>
 <?php
-	$transfers_delete->Recordset->MoveNext();
+	$curriculums_delete->Recordset->MoveNext();
 }
-$transfers_delete->Recordset->Close();
+$curriculums_delete->Recordset->Close();
 ?>
 </tbody>
 </table>
@@ -1136,14 +875,14 @@ $transfers_delete->Recordset->Close();
 </div>
 <div>
 <button class="btn btn-primary ewButton" name="btnAction" id="btnAction" type="submit"><?php echo $Language->Phrase("DeleteBtn") ?></button>
-<button class="btn btn-default ewButton" name="btnCancel" id="btnCancel" type="button" data-href="<?php echo $transfers_delete->getReturnUrl() ?>"><?php echo $Language->Phrase("CancelBtn") ?></button>
+<button class="btn btn-default ewButton" name="btnCancel" id="btnCancel" type="button" data-href="<?php echo $curriculums_delete->getReturnUrl() ?>"><?php echo $Language->Phrase("CancelBtn") ?></button>
 </div>
 </form>
 <script type="text/javascript">
-ftransfersdelete.Init();
+fcurriculumsdelete.Init();
 </script>
 <?php
-$transfers_delete->ShowPageFooter();
+$curriculums_delete->ShowPageFooter();
 if (EW_DEBUG_ENABLED)
 	echo ew_DebugMsg();
 ?>
@@ -1155,5 +894,5 @@ if (EW_DEBUG_ENABLED)
 </script>
 <?php include_once "footer.php" ?>
 <?php
-$transfers_delete->Page_Terminate();
+$curriculums_delete->Page_Terminate();
 ?>

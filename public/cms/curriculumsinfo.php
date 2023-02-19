@@ -1,17 +1,15 @@
 <?php
 
 // Global variable for table object
-$topics = NULL;
+$curriculums = NULL;
 
 //
-// Table class for topics
+// Table class for curriculums
 //
-class ctopics extends cTable {
+class ccurriculums extends cTable {
 	var $id;
 	var $name_ar;
 	var $name_en;
-	var $parent_id;
-	var $image;
 	var $created_at;
 	var $updated_at;
 
@@ -23,12 +21,12 @@ class ctopics extends cTable {
 
 		// Language object
 		if (!isset($Language)) $Language = new cLanguage();
-		$this->TableVar = 'topics';
-		$this->TableName = 'topics';
+		$this->TableVar = 'curriculums';
+		$this->TableName = 'curriculums';
 		$this->TableType = 'TABLE';
 
 		// Update Table
-		$this->UpdateTable = "`topics`";
+		$this->UpdateTable = "`curriculums`";
 		$this->DBID = 'DB';
 		$this->ExportAll = TRUE;
 		$this->ExportPageBreakCount = 0; // Page break per every n record (PDF only)
@@ -48,42 +46,29 @@ class ctopics extends cTable {
 		$this->BasicSearch = new cBasicSearch($this->TableVar);
 
 		// id
-		$this->id = new cField('topics', 'topics', 'x_id', 'id', '`id`', '`id`', 19, -1, FALSE, '`id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'NO');
+		$this->id = new cField('curriculums', 'curriculums', 'x_id', 'id', '`id`', '`id`', 19, -1, FALSE, '`id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'NO');
 		$this->id->Sortable = TRUE; // Allow sort
 		$this->id->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['id'] = &$this->id;
 
 		// name_ar
-		$this->name_ar = new cField('topics', 'topics', 'x_name_ar', 'name_ar', '`name_ar`', '`name_ar`', 201, -1, FALSE, '`name_ar`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->name_ar = new cField('curriculums', 'curriculums', 'x_name_ar', 'name_ar', '`name_ar`', '`name_ar`', 201, -1, FALSE, '`name_ar`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->name_ar->Sortable = TRUE; // Allow sort
 		$this->fields['name_ar'] = &$this->name_ar;
 
 		// name_en
-		$this->name_en = new cField('topics', 'topics', 'x_name_en', 'name_en', '`name_en`', '`name_en`', 201, -1, FALSE, '`name_en`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->name_en = new cField('curriculums', 'curriculums', 'x_name_en', 'name_en', '`name_en`', '`name_en`', 201, -1, FALSE, '`name_en`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->name_en->Sortable = TRUE; // Allow sort
 		$this->fields['name_en'] = &$this->name_en;
 
-		// parent_id
-		$this->parent_id = new cField('topics', 'topics', 'x_parent_id', 'parent_id', '`parent_id`', '`parent_id`', 19, -1, FALSE, '`parent_id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
-		$this->parent_id->Sortable = TRUE; // Allow sort
-		$this->parent_id->UsePleaseSelect = TRUE; // Use PleaseSelect by default
-		$this->parent_id->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
-		$this->parent_id->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
-		$this->fields['parent_id'] = &$this->parent_id;
-
-		// image
-		$this->image = new cField('topics', 'topics', 'x_image', 'image', '`image`', '`image`', 201, -1, TRUE, '`image`', FALSE, FALSE, FALSE, 'IMAGE', 'FILE');
-		$this->image->Sortable = TRUE; // Allow sort
-		$this->fields['image'] = &$this->image;
-
 		// created_at
-		$this->created_at = new cField('topics', 'topics', 'x_created_at', 'created_at', '`created_at`', ew_CastDateFieldForLike('`created_at`', 0, "DB"), 135, 0, FALSE, '`created_at`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->created_at = new cField('curriculums', 'curriculums', 'x_created_at', 'created_at', '`created_at`', ew_CastDateFieldForLike('`created_at`', 0, "DB"), 135, 0, FALSE, '`created_at`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->created_at->Sortable = FALSE; // Allow sort
 		$this->created_at->FldDefaultErrMsg = str_replace("%s", $GLOBALS["EW_DATE_FORMAT"], $Language->Phrase("IncorrectDate"));
 		$this->fields['created_at'] = &$this->created_at;
 
 		// updated_at
-		$this->updated_at = new cField('topics', 'topics', 'x_updated_at', 'updated_at', '`updated_at`', ew_CastDateFieldForLike('`updated_at`', 0, "DB"), 135, 0, FALSE, '`updated_at`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->updated_at = new cField('curriculums', 'curriculums', 'x_updated_at', 'updated_at', '`updated_at`', ew_CastDateFieldForLike('`updated_at`', 0, "DB"), 135, 0, FALSE, '`updated_at`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->updated_at->Sortable = FALSE; // Allow sort
 		$this->updated_at->FldDefaultErrMsg = str_replace("%s", $GLOBALS["EW_DATE_FORMAT"], $Language->Phrase("IncorrectDate"));
 		$this->fields['updated_at'] = &$this->updated_at;
@@ -130,7 +115,7 @@ class ctopics extends cTable {
 	var $_SqlFrom = "";
 
 	function getSqlFrom() { // From
-		return ($this->_SqlFrom <> "") ? $this->_SqlFrom : "`topics`";
+		return ($this->_SqlFrom <> "") ? $this->_SqlFrom : "`curriculums`";
 	}
 
 	function SqlFrom() { // For backward compatibility
@@ -443,7 +428,7 @@ class ctopics extends cTable {
 		if (@$_SESSION[$name] <> "") {
 			return $_SESSION[$name];
 		} else {
-			return "topicslist.php";
+			return "curriculumslist.php";
 		}
 	}
 
@@ -454,11 +439,11 @@ class ctopics extends cTable {
 	// Get modal caption
 	function GetModalCaption($pageName) {
 		global $Language;
-		if ($pageName == "topicsview.php")
+		if ($pageName == "curriculumsview.php")
 			return $Language->Phrase("View");
-		elseif ($pageName == "topicsedit.php")
+		elseif ($pageName == "curriculumsedit.php")
 			return $Language->Phrase("Edit");
-		elseif ($pageName == "topicsadd.php")
+		elseif ($pageName == "curriculumsadd.php")
 			return $Language->Phrase("Add");
 		else
 			return "";
@@ -466,30 +451,30 @@ class ctopics extends cTable {
 
 	// List URL
 	function GetListUrl() {
-		return "topicslist.php";
+		return "curriculumslist.php";
 	}
 
 	// View URL
 	function GetViewUrl($parm = "") {
 		if ($parm <> "")
-			$url = $this->KeyUrl("topicsview.php", $this->UrlParm($parm));
+			$url = $this->KeyUrl("curriculumsview.php", $this->UrlParm($parm));
 		else
-			$url = $this->KeyUrl("topicsview.php", $this->UrlParm(EW_TABLE_SHOW_DETAIL . "="));
+			$url = $this->KeyUrl("curriculumsview.php", $this->UrlParm(EW_TABLE_SHOW_DETAIL . "="));
 		return $this->AddMasterUrl($url);
 	}
 
 	// Add URL
 	function GetAddUrl($parm = "") {
 		if ($parm <> "")
-			$url = "topicsadd.php?" . $this->UrlParm($parm);
+			$url = "curriculumsadd.php?" . $this->UrlParm($parm);
 		else
-			$url = "topicsadd.php";
+			$url = "curriculumsadd.php";
 		return $this->AddMasterUrl($url);
 	}
 
 	// Edit URL
 	function GetEditUrl($parm = "") {
-		$url = $this->KeyUrl("topicsedit.php", $this->UrlParm($parm));
+		$url = $this->KeyUrl("curriculumsedit.php", $this->UrlParm($parm));
 		return $this->AddMasterUrl($url);
 	}
 
@@ -501,7 +486,7 @@ class ctopics extends cTable {
 
 	// Copy URL
 	function GetCopyUrl($parm = "") {
-		$url = $this->KeyUrl("topicsadd.php", $this->UrlParm($parm));
+		$url = $this->KeyUrl("curriculumsadd.php", $this->UrlParm($parm));
 		return $this->AddMasterUrl($url);
 	}
 
@@ -513,7 +498,7 @@ class ctopics extends cTable {
 
 	// Delete URL
 	function GetDeleteUrl() {
-		return $this->KeyUrl("topicsdelete.php", $this->UrlParm());
+		return $this->KeyUrl("curriculumsdelete.php", $this->UrlParm());
 	}
 
 	// Add master url
@@ -617,8 +602,6 @@ class ctopics extends cTable {
 		$this->id->setDbValue($rs->fields('id'));
 		$this->name_ar->setDbValue($rs->fields('name_ar'));
 		$this->name_en->setDbValue($rs->fields('name_en'));
-		$this->parent_id->setDbValue($rs->fields('parent_id'));
-		$this->image->Upload->DbValue = $rs->fields('image');
 		$this->created_at->setDbValue($rs->fields('created_at'));
 		$this->updated_at->setDbValue($rs->fields('updated_at'));
 	}
@@ -634,8 +617,6 @@ class ctopics extends cTable {
 		// id
 		// name_ar
 		// name_en
-		// parent_id
-		// image
 		// created_at
 
 		$this->created_at->CellCssStyle = "white-space: nowrap;";
@@ -654,42 +635,6 @@ class ctopics extends cTable {
 		// name_en
 		$this->name_en->ViewValue = $this->name_en->CurrentValue;
 		$this->name_en->ViewCustomAttributes = "";
-
-		// parent_id
-		if (strval($this->parent_id->CurrentValue) <> "") {
-			$sFilterWrk = "`id`" . ew_SearchString("=", $this->parent_id->CurrentValue, EW_DATATYPE_NUMBER, "");
-		$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `topics`";
-		$sWhereWrk = "";
-		$this->parent_id->LookupFilters = array();
-		ew_AddFilter($sWhereWrk, $sFilterWrk);
-		$this->Lookup_Selecting($this->parent_id, $sWhereWrk); // Call Lookup Selecting
-		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
-			$rswrk = Conn()->Execute($sSqlWrk);
-			if ($rswrk && !$rswrk->EOF) { // Lookup values found
-				$arwrk = array();
-				$arwrk[1] = $rswrk->fields('DispFld');
-				$arwrk[2] = $rswrk->fields('Disp2Fld');
-				$this->parent_id->ViewValue = $this->parent_id->DisplayValue($arwrk);
-				$rswrk->Close();
-			} else {
-				$this->parent_id->ViewValue = $this->parent_id->CurrentValue;
-			}
-		} else {
-			$this->parent_id->ViewValue = NULL;
-		}
-		$this->parent_id->ViewCustomAttributes = "";
-
-		// image
-		$this->image->UploadPath = "../images";
-		if (!ew_Empty($this->image->Upload->DbValue)) {
-			$this->image->ImageWidth = 100;
-			$this->image->ImageHeight = 0;
-			$this->image->ImageAlt = $this->image->FldAlt();
-			$this->image->ViewValue = $this->image->Upload->DbValue;
-		} else {
-			$this->image->ViewValue = "";
-		}
-		$this->image->ViewCustomAttributes = "";
 
 		// created_at
 		$this->created_at->ViewValue = $this->created_at->CurrentValue;
@@ -715,30 +660,6 @@ class ctopics extends cTable {
 		$this->name_en->LinkCustomAttributes = "";
 		$this->name_en->HrefValue = "";
 		$this->name_en->TooltipValue = "";
-
-		// parent_id
-		$this->parent_id->LinkCustomAttributes = "";
-		$this->parent_id->HrefValue = "";
-		$this->parent_id->TooltipValue = "";
-
-		// image
-		$this->image->LinkCustomAttributes = "";
-		$this->image->UploadPath = "../images";
-		if (!ew_Empty($this->image->Upload->DbValue)) {
-			$this->image->HrefValue = ew_GetFileUploadUrl($this->image, $this->image->Upload->DbValue); // Add prefix/suffix
-			$this->image->LinkAttrs["target"] = ""; // Add target
-			if ($this->Export <> "") $this->image->HrefValue = ew_FullUrl($this->image->HrefValue, "href");
-		} else {
-			$this->image->HrefValue = "";
-		}
-		$this->image->HrefValue2 = $this->image->UploadPath . $this->image->Upload->DbValue;
-		$this->image->TooltipValue = "";
-		if ($this->image->UseColorbox) {
-			if (ew_Empty($this->image->TooltipValue))
-				$this->image->LinkAttrs["title"] = $Language->Phrase("ViewImageGallery");
-			$this->image->LinkAttrs["data-rel"] = "topics_x_image";
-			ew_AppendClass($this->image->LinkAttrs["class"], "ewLightbox");
-		}
 
 		// created_at
 		$this->created_at->LinkCustomAttributes = "";
@@ -782,25 +703,6 @@ class ctopics extends cTable {
 		$this->name_en->EditValue = $this->name_en->CurrentValue;
 		$this->name_en->PlaceHolder = ew_RemoveHtml($this->name_en->FldCaption());
 
-		// parent_id
-		$this->parent_id->EditAttrs["class"] = "form-control";
-		$this->parent_id->EditCustomAttributes = "";
-
-		// image
-		$this->image->EditAttrs["class"] = "form-control";
-		$this->image->EditCustomAttributes = "";
-		$this->image->UploadPath = "../images";
-		if (!ew_Empty($this->image->Upload->DbValue)) {
-			$this->image->ImageWidth = 100;
-			$this->image->ImageHeight = 0;
-			$this->image->ImageAlt = $this->image->FldAlt();
-			$this->image->EditValue = $this->image->Upload->DbValue;
-		} else {
-			$this->image->EditValue = "";
-		}
-		if (!ew_Empty($this->image->CurrentValue))
-				$this->image->Upload->FileName = $this->image->CurrentValue;
-
 		// created_at
 		$this->created_at->EditAttrs["class"] = "form-control";
 		$this->created_at->EditCustomAttributes = "";
@@ -843,14 +745,12 @@ class ctopics extends cTable {
 					if ($this->id->Exportable) $Doc->ExportCaption($this->id);
 					if ($this->name_ar->Exportable) $Doc->ExportCaption($this->name_ar);
 					if ($this->name_en->Exportable) $Doc->ExportCaption($this->name_en);
-					if ($this->parent_id->Exportable) $Doc->ExportCaption($this->parent_id);
-					if ($this->image->Exportable) $Doc->ExportCaption($this->image);
 				} else {
 					if ($this->id->Exportable) $Doc->ExportCaption($this->id);
 					if ($this->name_ar->Exportable) $Doc->ExportCaption($this->name_ar);
 					if ($this->name_en->Exportable) $Doc->ExportCaption($this->name_en);
-					if ($this->parent_id->Exportable) $Doc->ExportCaption($this->parent_id);
-					if ($this->image->Exportable) $Doc->ExportCaption($this->image);
+					if ($this->created_at->Exportable) $Doc->ExportCaption($this->created_at);
+					if ($this->updated_at->Exportable) $Doc->ExportCaption($this->updated_at);
 				}
 				$Doc->EndExportRow();
 			}
@@ -885,14 +785,12 @@ class ctopics extends cTable {
 						if ($this->id->Exportable) $Doc->ExportField($this->id);
 						if ($this->name_ar->Exportable) $Doc->ExportField($this->name_ar);
 						if ($this->name_en->Exportable) $Doc->ExportField($this->name_en);
-						if ($this->parent_id->Exportable) $Doc->ExportField($this->parent_id);
-						if ($this->image->Exportable) $Doc->ExportField($this->image);
 					} else {
 						if ($this->id->Exportable) $Doc->ExportField($this->id);
 						if ($this->name_ar->Exportable) $Doc->ExportField($this->name_ar);
 						if ($this->name_en->Exportable) $Doc->ExportField($this->name_en);
-						if ($this->parent_id->Exportable) $Doc->ExportField($this->parent_id);
-						if ($this->image->Exportable) $Doc->ExportField($this->image);
+						if ($this->created_at->Exportable) $Doc->ExportField($this->created_at);
+						if ($this->updated_at->Exportable) $Doc->ExportField($this->updated_at);
 					}
 					$Doc->EndExportRow($RowCnt);
 				}

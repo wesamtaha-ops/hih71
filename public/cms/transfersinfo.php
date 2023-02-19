@@ -57,8 +57,10 @@ class ctransfers extends cTable {
 		$this->fields['id'] = &$this->id;
 
 		// user_id
-		$this->user_id = new cField('transfers', 'transfers', 'x_user_id', 'user_id', '`user_id`', '`user_id`', 19, -1, FALSE, '`user_id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->user_id = new cField('transfers', 'transfers', 'x_user_id', 'user_id', '`user_id`', '`user_id`', 19, -1, FALSE, '`user_id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
 		$this->user_id->Sortable = TRUE; // Allow sort
+		$this->user_id->UsePleaseSelect = TRUE; // Use PleaseSelect by default
+		$this->user_id->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
 		$this->user_id->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['user_id'] = &$this->user_id;
 
@@ -69,8 +71,10 @@ class ctransfers extends cTable {
 		$this->fields['amount'] = &$this->amount;
 
 		// currency_id
-		$this->currency_id = new cField('transfers', 'transfers', 'x_currency_id', 'currency_id', '`currency_id`', '`currency_id`', 19, -1, FALSE, '`currency_id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->currency_id = new cField('transfers', 'transfers', 'x_currency_id', 'currency_id', '`currency_id`', '`currency_id`', 19, -1, FALSE, '`currency_id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
 		$this->currency_id->Sortable = TRUE; // Allow sort
+		$this->currency_id->UsePleaseSelect = TRUE; // Use PleaseSelect by default
+		$this->currency_id->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
 		$this->currency_id->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['currency_id'] = &$this->currency_id;
 
@@ -81,14 +85,17 @@ class ctransfers extends cTable {
 		$this->fields['type'] = &$this->type;
 
 		// order_id
-		$this->order_id = new cField('transfers', 'transfers', 'x_order_id', 'order_id', '`order_id`', '`order_id`', 19, -1, FALSE, '`order_id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->order_id = new cField('transfers', 'transfers', 'x_order_id', 'order_id', '`order_id`', '`order_id`', 19, -1, FALSE, '`order_id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'SELECT');
 		$this->order_id->Sortable = TRUE; // Allow sort
+		$this->order_id->UsePleaseSelect = TRUE; // Use PleaseSelect by default
+		$this->order_id->PleaseSelectText = $Language->Phrase("PleaseSelect"); // PleaseSelect text
 		$this->order_id->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['order_id'] = &$this->order_id;
 
 		// approved
-		$this->approved = new cField('transfers', 'transfers', 'x_approved', 'approved', '`approved`', '`approved`', 16, -1, FALSE, '`approved`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->approved = new cField('transfers', 'transfers', 'x_approved', 'approved', '`approved`', '`approved`', 16, -1, FALSE, '`approved`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'RADIO');
 		$this->approved->Sortable = TRUE; // Allow sort
+		$this->approved->OptionCount = 2;
 		$this->approved->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['approved'] = &$this->approved;
 
@@ -99,13 +106,13 @@ class ctransfers extends cTable {
 
 		// created_at
 		$this->created_at = new cField('transfers', 'transfers', 'x_created_at', 'created_at', '`created_at`', ew_CastDateFieldForLike('`created_at`', 0, "DB"), 135, 0, FALSE, '`created_at`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->created_at->Sortable = TRUE; // Allow sort
+		$this->created_at->Sortable = FALSE; // Allow sort
 		$this->created_at->FldDefaultErrMsg = str_replace("%s", $GLOBALS["EW_DATE_FORMAT"], $Language->Phrase("IncorrectDate"));
 		$this->fields['created_at'] = &$this->created_at;
 
 		// updated_at
 		$this->updated_at = new cField('transfers', 'transfers', 'x_updated_at', 'updated_at', '`updated_at`', ew_CastDateFieldForLike('`updated_at`', 0, "DB"), 135, 0, FALSE, '`updated_at`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->updated_at->Sortable = TRUE; // Allow sort
+		$this->updated_at->Sortable = FALSE; // Allow sort
 		$this->updated_at->FldDefaultErrMsg = str_replace("%s", $GLOBALS["EW_DATE_FORMAT"], $Language->Phrase("IncorrectDate"));
 		$this->fields['updated_at'] = &$this->updated_at;
 	}
@@ -715,14 +722,37 @@ class ctransfers extends cTable {
 		// approved
 		// verification_code
 		// created_at
-		// updated_at
-		// id
 
+		$this->created_at->CellCssStyle = "white-space: nowrap;";
+
+		// updated_at
+		$this->updated_at->CellCssStyle = "white-space: nowrap;";
+
+		// id
 		$this->id->ViewValue = $this->id->CurrentValue;
 		$this->id->ViewCustomAttributes = "";
 
 		// user_id
-		$this->user_id->ViewValue = $this->user_id->CurrentValue;
+		if (strval($this->user_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->user_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `users`";
+		$sWhereWrk = "";
+		$this->user_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->user_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->user_id->ViewValue = $this->user_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->user_id->ViewValue = $this->user_id->CurrentValue;
+			}
+		} else {
+			$this->user_id->ViewValue = NULL;
+		}
 		$this->user_id->ViewCustomAttributes = "";
 
 		// amount
@@ -730,7 +760,27 @@ class ctransfers extends cTable {
 		$this->amount->ViewCustomAttributes = "";
 
 		// currency_id
-		$this->currency_id->ViewValue = $this->currency_id->CurrentValue;
+		if (strval($this->currency_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->currency_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `currencies`";
+		$sWhereWrk = "";
+		$this->currency_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->currency_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[2] = $rswrk->fields('Disp2Fld');
+				$this->currency_id->ViewValue = $this->currency_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->currency_id->ViewValue = $this->currency_id->CurrentValue;
+			}
+		} else {
+			$this->currency_id->ViewValue = NULL;
+		}
 		$this->currency_id->ViewCustomAttributes = "";
 
 		// type
@@ -742,11 +792,35 @@ class ctransfers extends cTable {
 		$this->type->ViewCustomAttributes = "";
 
 		// order_id
-		$this->order_id->ViewValue = $this->order_id->CurrentValue;
+		if (strval($this->order_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->order_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, `id` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `orders`";
+		$sWhereWrk = "";
+		$this->order_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->order_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[2] = $rswrk->fields('Disp2Fld');
+				$this->order_id->ViewValue = $this->order_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->order_id->ViewValue = $this->order_id->CurrentValue;
+			}
+		} else {
+			$this->order_id->ViewValue = NULL;
+		}
 		$this->order_id->ViewCustomAttributes = "";
 
 		// approved
-		$this->approved->ViewValue = $this->approved->CurrentValue;
+		if (strval($this->approved->CurrentValue) <> "") {
+			$this->approved->ViewValue = $this->approved->OptionCaption($this->approved->CurrentValue);
+		} else {
+			$this->approved->ViewValue = NULL;
+		}
 		$this->approved->ViewCustomAttributes = "";
 
 		// verification_code
@@ -838,11 +912,28 @@ class ctransfers extends cTable {
 		$this->user_id->EditCustomAttributes = "";
 		if ($this->user_id->getSessionValue() <> "") {
 			$this->user_id->CurrentValue = $this->user_id->getSessionValue();
-		$this->user_id->ViewValue = $this->user_id->CurrentValue;
+		if (strval($this->user_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->user_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `users`";
+		$sWhereWrk = "";
+		$this->user_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->user_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->user_id->ViewValue = $this->user_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->user_id->ViewValue = $this->user_id->CurrentValue;
+			}
+		} else {
+			$this->user_id->ViewValue = NULL;
+		}
 		$this->user_id->ViewCustomAttributes = "";
 		} else {
-		$this->user_id->EditValue = $this->user_id->CurrentValue;
-		$this->user_id->PlaceHolder = ew_RemoveHtml($this->user_id->FldCaption());
 		}
 
 		// amount
@@ -854,8 +945,6 @@ class ctransfers extends cTable {
 		// currency_id
 		$this->currency_id->EditAttrs["class"] = "form-control";
 		$this->currency_id->EditCustomAttributes = "";
-		$this->currency_id->EditValue = $this->currency_id->CurrentValue;
-		$this->currency_id->PlaceHolder = ew_RemoveHtml($this->currency_id->FldCaption());
 
 		// type
 		$this->type->EditCustomAttributes = "";
@@ -864,14 +953,10 @@ class ctransfers extends cTable {
 		// order_id
 		$this->order_id->EditAttrs["class"] = "form-control";
 		$this->order_id->EditCustomAttributes = "";
-		$this->order_id->EditValue = $this->order_id->CurrentValue;
-		$this->order_id->PlaceHolder = ew_RemoveHtml($this->order_id->FldCaption());
 
 		// approved
-		$this->approved->EditAttrs["class"] = "form-control";
 		$this->approved->EditCustomAttributes = "";
-		$this->approved->EditValue = $this->approved->CurrentValue;
-		$this->approved->PlaceHolder = ew_RemoveHtml($this->approved->FldCaption());
+		$this->approved->EditValue = $this->approved->Options(FALSE);
 
 		// verification_code
 		$this->verification_code->EditAttrs["class"] = "form-control";
@@ -926,8 +1011,6 @@ class ctransfers extends cTable {
 					if ($this->order_id->Exportable) $Doc->ExportCaption($this->order_id);
 					if ($this->approved->Exportable) $Doc->ExportCaption($this->approved);
 					if ($this->verification_code->Exportable) $Doc->ExportCaption($this->verification_code);
-					if ($this->created_at->Exportable) $Doc->ExportCaption($this->created_at);
-					if ($this->updated_at->Exportable) $Doc->ExportCaption($this->updated_at);
 				} else {
 					if ($this->id->Exportable) $Doc->ExportCaption($this->id);
 					if ($this->user_id->Exportable) $Doc->ExportCaption($this->user_id);
@@ -937,8 +1020,6 @@ class ctransfers extends cTable {
 					if ($this->order_id->Exportable) $Doc->ExportCaption($this->order_id);
 					if ($this->approved->Exportable) $Doc->ExportCaption($this->approved);
 					if ($this->verification_code->Exportable) $Doc->ExportCaption($this->verification_code);
-					if ($this->created_at->Exportable) $Doc->ExportCaption($this->created_at);
-					if ($this->updated_at->Exportable) $Doc->ExportCaption($this->updated_at);
 				}
 				$Doc->EndExportRow();
 			}
@@ -978,8 +1059,6 @@ class ctransfers extends cTable {
 						if ($this->order_id->Exportable) $Doc->ExportField($this->order_id);
 						if ($this->approved->Exportable) $Doc->ExportField($this->approved);
 						if ($this->verification_code->Exportable) $Doc->ExportField($this->verification_code);
-						if ($this->created_at->Exportable) $Doc->ExportField($this->created_at);
-						if ($this->updated_at->Exportable) $Doc->ExportField($this->updated_at);
 					} else {
 						if ($this->id->Exportable) $Doc->ExportField($this->id);
 						if ($this->user_id->Exportable) $Doc->ExportField($this->user_id);
@@ -989,8 +1068,6 @@ class ctransfers extends cTable {
 						if ($this->order_id->Exportable) $Doc->ExportField($this->order_id);
 						if ($this->approved->Exportable) $Doc->ExportField($this->approved);
 						if ($this->verification_code->Exportable) $Doc->ExportField($this->verification_code);
-						if ($this->created_at->Exportable) $Doc->ExportField($this->created_at);
-						if ($this->updated_at->Exportable) $Doc->ExportField($this->updated_at);
 					}
 					$Doc->EndExportRow($RowCnt);
 				}

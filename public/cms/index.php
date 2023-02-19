@@ -297,7 +297,7 @@ class cdefault {
 		if ($Security->IsLoggedIn())
 		$this->Page_Terminate("countrieslist.php"); // Exit and go to default page
 		if ($Security->IsLoggedIn())
-			$this->Page_Terminate("courseslist.php");
+			$this->Page_Terminate("curriculumslist.php");
 		if ($Security->IsLoggedIn())
 			$this->Page_Terminate("currencieslist.php");
 		if ($Security->IsLoggedIn())

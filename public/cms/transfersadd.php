@@ -318,8 +318,6 @@ class ctransfers_add extends ctransfers {
 		$this->order_id->SetVisibility();
 		$this->approved->SetVisibility();
 		$this->verification_code->SetVisibility();
-		$this->created_at->SetVisibility();
-		$this->updated_at->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -571,14 +569,6 @@ class ctransfers_add extends ctransfers {
 		if (!$this->verification_code->FldIsDetailKey) {
 			$this->verification_code->setFormValue($objForm->GetValue("x_verification_code"));
 		}
-		if (!$this->created_at->FldIsDetailKey) {
-			$this->created_at->setFormValue($objForm->GetValue("x_created_at"));
-			$this->created_at->CurrentValue = ew_UnFormatDateTime($this->created_at->CurrentValue, 0);
-		}
-		if (!$this->updated_at->FldIsDetailKey) {
-			$this->updated_at->setFormValue($objForm->GetValue("x_updated_at"));
-			$this->updated_at->CurrentValue = ew_UnFormatDateTime($this->updated_at->CurrentValue, 0);
-		}
 	}
 
 	// Restore form values
@@ -591,10 +581,6 @@ class ctransfers_add extends ctransfers {
 		$this->order_id->CurrentValue = $this->order_id->FormValue;
 		$this->approved->CurrentValue = $this->approved->FormValue;
 		$this->verification_code->CurrentValue = $this->verification_code->FormValue;
-		$this->created_at->CurrentValue = $this->created_at->FormValue;
-		$this->created_at->CurrentValue = ew_UnFormatDateTime($this->created_at->CurrentValue, 0);
-		$this->updated_at->CurrentValue = $this->updated_at->FormValue;
-		$this->updated_at->CurrentValue = ew_UnFormatDateTime($this->updated_at->CurrentValue, 0);
 	}
 
 	// Load row based on key values
@@ -726,7 +712,26 @@ class ctransfers_add extends ctransfers {
 		$this->id->ViewCustomAttributes = "";
 
 		// user_id
-		$this->user_id->ViewValue = $this->user_id->CurrentValue;
+		if (strval($this->user_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->user_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `users`";
+		$sWhereWrk = "";
+		$this->user_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->user_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$this->user_id->ViewValue = $this->user_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->user_id->ViewValue = $this->user_id->CurrentValue;
+			}
+		} else {
+			$this->user_id->ViewValue = NULL;
+		}
 		$this->user_id->ViewCustomAttributes = "";
 
 		// amount
@@ -734,7 +739,27 @@ class ctransfers_add extends ctransfers {
 		$this->amount->ViewCustomAttributes = "";
 
 		// currency_id
-		$this->currency_id->ViewValue = $this->currency_id->CurrentValue;
+		if (strval($this->currency_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->currency_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `currencies`";
+		$sWhereWrk = "";
+		$this->currency_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->currency_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[2] = $rswrk->fields('Disp2Fld');
+				$this->currency_id->ViewValue = $this->currency_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->currency_id->ViewValue = $this->currency_id->CurrentValue;
+			}
+		} else {
+			$this->currency_id->ViewValue = NULL;
+		}
 		$this->currency_id->ViewCustomAttributes = "";
 
 		// type
@@ -746,26 +771,40 @@ class ctransfers_add extends ctransfers {
 		$this->type->ViewCustomAttributes = "";
 
 		// order_id
-		$this->order_id->ViewValue = $this->order_id->CurrentValue;
+		if (strval($this->order_id->CurrentValue) <> "") {
+			$sFilterWrk = "`id`" . ew_SearchString("=", $this->order_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+		$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, `id` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `orders`";
+		$sWhereWrk = "";
+		$this->order_id->LookupFilters = array();
+		ew_AddFilter($sWhereWrk, $sFilterWrk);
+		$this->Lookup_Selecting($this->order_id, $sWhereWrk); // Call Lookup Selecting
+		if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			if ($rswrk && !$rswrk->EOF) { // Lookup values found
+				$arwrk = array();
+				$arwrk[1] = $rswrk->fields('DispFld');
+				$arwrk[2] = $rswrk->fields('Disp2Fld');
+				$this->order_id->ViewValue = $this->order_id->DisplayValue($arwrk);
+				$rswrk->Close();
+			} else {
+				$this->order_id->ViewValue = $this->order_id->CurrentValue;
+			}
+		} else {
+			$this->order_id->ViewValue = NULL;
+		}
 		$this->order_id->ViewCustomAttributes = "";
 
 		// approved
-		$this->approved->ViewValue = $this->approved->CurrentValue;
+		if (strval($this->approved->CurrentValue) <> "") {
+			$this->approved->ViewValue = $this->approved->OptionCaption($this->approved->CurrentValue);
+		} else {
+			$this->approved->ViewValue = NULL;
+		}
 		$this->approved->ViewCustomAttributes = "";
 
 		// verification_code
 		$this->verification_code->ViewValue = $this->verification_code->CurrentValue;
 		$this->verification_code->ViewCustomAttributes = "";
-
-		// created_at
-		$this->created_at->ViewValue = $this->created_at->CurrentValue;
-		$this->created_at->ViewValue = ew_FormatDateTime($this->created_at->ViewValue, 0);
-		$this->created_at->ViewCustomAttributes = "";
-
-		// updated_at
-		$this->updated_at->ViewValue = $this->updated_at->CurrentValue;
-		$this->updated_at->ViewValue = ew_FormatDateTime($this->updated_at->ViewValue, 0);
-		$this->updated_at->ViewCustomAttributes = "";
 
 			// user_id
 			$this->user_id->LinkCustomAttributes = "";
@@ -801,16 +840,6 @@ class ctransfers_add extends ctransfers {
 			$this->verification_code->LinkCustomAttributes = "";
 			$this->verification_code->HrefValue = "";
 			$this->verification_code->TooltipValue = "";
-
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
-			$this->created_at->TooltipValue = "";
-
-			// updated_at
-			$this->updated_at->LinkCustomAttributes = "";
-			$this->updated_at->HrefValue = "";
-			$this->updated_at->TooltipValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_ADD) { // Add row
 
 			// user_id
@@ -818,11 +847,43 @@ class ctransfers_add extends ctransfers {
 			$this->user_id->EditCustomAttributes = "";
 			if ($this->user_id->getSessionValue() <> "") {
 				$this->user_id->CurrentValue = $this->user_id->getSessionValue();
-			$this->user_id->ViewValue = $this->user_id->CurrentValue;
+			if (strval($this->user_id->CurrentValue) <> "") {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->user_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `users`";
+			$sWhereWrk = "";
+			$this->user_id->LookupFilters = array();
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->user_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+				$rswrk = Conn()->Execute($sSqlWrk);
+				if ($rswrk && !$rswrk->EOF) { // Lookup values found
+					$arwrk = array();
+					$arwrk[1] = $rswrk->fields('DispFld');
+					$this->user_id->ViewValue = $this->user_id->DisplayValue($arwrk);
+					$rswrk->Close();
+				} else {
+					$this->user_id->ViewValue = $this->user_id->CurrentValue;
+				}
+			} else {
+				$this->user_id->ViewValue = NULL;
+			}
 			$this->user_id->ViewCustomAttributes = "";
 			} else {
-			$this->user_id->EditValue = ew_HtmlEncode($this->user_id->CurrentValue);
-			$this->user_id->PlaceHolder = ew_RemoveHtml($this->user_id->FldCaption());
+			if (trim(strval($this->user_id->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->user_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			}
+			$sSqlWrk = "SELECT `id`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `users`";
+			$sWhereWrk = "";
+			$this->user_id->LookupFilters = array();
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->user_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->user_id->EditValue = $arwrk;
 			}
 
 			// amount
@@ -834,8 +895,21 @@ class ctransfers_add extends ctransfers {
 			// currency_id
 			$this->currency_id->EditAttrs["class"] = "form-control";
 			$this->currency_id->EditCustomAttributes = "";
-			$this->currency_id->EditValue = ew_HtmlEncode($this->currency_id->CurrentValue);
-			$this->currency_id->PlaceHolder = ew_RemoveHtml($this->currency_id->FldCaption());
+			if (trim(strval($this->currency_id->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->currency_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			}
+			$sSqlWrk = "SELECT `id`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `currencies`";
+			$sWhereWrk = "";
+			$this->currency_id->LookupFilters = array();
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->currency_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->currency_id->EditValue = $arwrk;
 
 			// type
 			$this->type->EditCustomAttributes = "";
@@ -844,32 +918,31 @@ class ctransfers_add extends ctransfers {
 			// order_id
 			$this->order_id->EditAttrs["class"] = "form-control";
 			$this->order_id->EditCustomAttributes = "";
-			$this->order_id->EditValue = ew_HtmlEncode($this->order_id->CurrentValue);
-			$this->order_id->PlaceHolder = ew_RemoveHtml($this->order_id->FldCaption());
+			if (trim(strval($this->order_id->CurrentValue)) == "") {
+				$sFilterWrk = "0=1";
+			} else {
+				$sFilterWrk = "`id`" . ew_SearchString("=", $this->order_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			}
+			$sSqlWrk = "SELECT `id`, `id` AS `DispFld`, `id` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld`, '' AS `SelectFilterFld`, '' AS `SelectFilterFld2`, '' AS `SelectFilterFld3`, '' AS `SelectFilterFld4` FROM `orders`";
+			$sWhereWrk = "";
+			$this->order_id->LookupFilters = array();
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->order_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$rswrk = Conn()->Execute($sSqlWrk);
+			$arwrk = ($rswrk) ? $rswrk->GetRows() : array();
+			if ($rswrk) $rswrk->Close();
+			$this->order_id->EditValue = $arwrk;
 
 			// approved
-			$this->approved->EditAttrs["class"] = "form-control";
 			$this->approved->EditCustomAttributes = "";
-			$this->approved->EditValue = ew_HtmlEncode($this->approved->CurrentValue);
-			$this->approved->PlaceHolder = ew_RemoveHtml($this->approved->FldCaption());
+			$this->approved->EditValue = $this->approved->Options(FALSE);
 
 			// verification_code
 			$this->verification_code->EditAttrs["class"] = "form-control";
 			$this->verification_code->EditCustomAttributes = "";
 			$this->verification_code->EditValue = ew_HtmlEncode($this->verification_code->CurrentValue);
 			$this->verification_code->PlaceHolder = ew_RemoveHtml($this->verification_code->FldCaption());
-
-			// created_at
-			$this->created_at->EditAttrs["class"] = "form-control";
-			$this->created_at->EditCustomAttributes = "";
-			$this->created_at->EditValue = ew_HtmlEncode(ew_FormatDateTime($this->created_at->CurrentValue, 8));
-			$this->created_at->PlaceHolder = ew_RemoveHtml($this->created_at->FldCaption());
-
-			// updated_at
-			$this->updated_at->EditAttrs["class"] = "form-control";
-			$this->updated_at->EditCustomAttributes = "";
-			$this->updated_at->EditValue = ew_HtmlEncode(ew_FormatDateTime($this->updated_at->CurrentValue, 8));
-			$this->updated_at->PlaceHolder = ew_RemoveHtml($this->updated_at->FldCaption());
 
 			// Add refer script
 			// user_id
@@ -900,14 +973,6 @@ class ctransfers_add extends ctransfers {
 			// verification_code
 			$this->verification_code->LinkCustomAttributes = "";
 			$this->verification_code->HrefValue = "";
-
-			// created_at
-			$this->created_at->LinkCustomAttributes = "";
-			$this->created_at->HrefValue = "";
-
-			// updated_at
-			$this->updated_at->LinkCustomAttributes = "";
-			$this->updated_at->HrefValue = "";
 		}
 		if ($this->RowType == EW_ROWTYPE_ADD || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_SEARCH) // Add/Edit/Search row
 			$this->SetupFieldTitles();
@@ -930,9 +995,6 @@ class ctransfers_add extends ctransfers {
 		if (!$this->user_id->FldIsDetailKey && !is_null($this->user_id->FormValue) && $this->user_id->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->user_id->FldCaption(), $this->user_id->ReqErrMsg));
 		}
-		if (!ew_CheckInteger($this->user_id->FormValue)) {
-			ew_AddMessage($gsFormError, $this->user_id->FldErrMsg());
-		}
 		if (!$this->amount->FldIsDetailKey && !is_null($this->amount->FormValue) && $this->amount->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->amount->FldCaption(), $this->amount->ReqErrMsg));
 		}
@@ -942,29 +1004,11 @@ class ctransfers_add extends ctransfers {
 		if (!$this->currency_id->FldIsDetailKey && !is_null($this->currency_id->FormValue) && $this->currency_id->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->currency_id->FldCaption(), $this->currency_id->ReqErrMsg));
 		}
-		if (!ew_CheckInteger($this->currency_id->FormValue)) {
-			ew_AddMessage($gsFormError, $this->currency_id->FldErrMsg());
-		}
 		if ($this->type->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->type->FldCaption(), $this->type->ReqErrMsg));
 		}
-		if (!ew_CheckInteger($this->order_id->FormValue)) {
-			ew_AddMessage($gsFormError, $this->order_id->FldErrMsg());
-		}
-		if (!$this->approved->FldIsDetailKey && !is_null($this->approved->FormValue) && $this->approved->FormValue == "") {
+		if ($this->approved->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->approved->FldCaption(), $this->approved->ReqErrMsg));
-		}
-		if (!ew_CheckInteger($this->approved->FormValue)) {
-			ew_AddMessage($gsFormError, $this->approved->FldErrMsg());
-		}
-		if (!$this->created_at->FldIsDetailKey && !is_null($this->created_at->FormValue) && $this->created_at->FormValue == "") {
-			ew_AddMessage($gsFormError, str_replace("%s", $this->created_at->FldCaption(), $this->created_at->ReqErrMsg));
-		}
-		if (!ew_CheckDateDef($this->created_at->FormValue)) {
-			ew_AddMessage($gsFormError, $this->created_at->FldErrMsg());
-		}
-		if (!ew_CheckDateDef($this->updated_at->FormValue)) {
-			ew_AddMessage($gsFormError, $this->updated_at->FldErrMsg());
 		}
 
 		// Return validate result
@@ -1010,12 +1054,6 @@ class ctransfers_add extends ctransfers {
 
 		// verification_code
 		$this->verification_code->SetDbValueDef($rsnew, $this->verification_code->CurrentValue, NULL, FALSE);
-
-		// created_at
-		$this->created_at->SetDbValueDef($rsnew, ew_UnFormatDateTime($this->created_at->CurrentValue, 0), ew_CurrentDate(), FALSE);
-
-		// updated_at
-		$this->updated_at->SetDbValueDef($rsnew, ew_UnFormatDateTime($this->updated_at->CurrentValue, 0), NULL, FALSE);
 
 		// Call Row Inserting event
 		$rs = ($rsold == NULL) ? NULL : $rsold->fields;
@@ -1124,6 +1162,42 @@ class ctransfers_add extends ctransfers {
 		global $gsLanguage;
 		$pageId = $pageId ?: $this->PageID;
 		switch ($fld->FldVar) {
+		case "x_user_id":
+			$sSqlWrk = "";
+			$sSqlWrk = "SELECT `id` AS `LinkFld`, `name` AS `DispFld`, '' AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `users`";
+			$sWhereWrk = "";
+			$fld->LookupFilters = array();
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "19", "fn0" => "");
+			$sSqlWrk = "";
+			$this->Lookup_Selecting($this->user_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
+		case "x_currency_id":
+			$sSqlWrk = "";
+			$sSqlWrk = "SELECT `id` AS `LinkFld`, `name_ar` AS `DispFld`, `name_en` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `currencies`";
+			$sWhereWrk = "";
+			$fld->LookupFilters = array();
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "19", "fn0" => "");
+			$sSqlWrk = "";
+			$this->Lookup_Selecting($this->currency_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
+		case "x_order_id":
+			$sSqlWrk = "";
+			$sSqlWrk = "SELECT `id` AS `LinkFld`, `id` AS `DispFld`, `id` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `orders`";
+			$sWhereWrk = "";
+			$fld->LookupFilters = array();
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`id` IN ({filter_value})', "t0" => "3", "fn0" => "");
+			$sSqlWrk = "";
+			$this->Lookup_Selecting($this->order_id, $sWhereWrk); // Call Lookup Selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
 		}
 	}
 
@@ -1246,9 +1320,6 @@ ftransfersadd.Validate = function() {
 			elm = this.GetElements("x" + infix + "_user_id");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $transfers->user_id->FldCaption(), $transfers->user_id->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_user_id");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($transfers->user_id->FldErrMsg()) ?>");
 			elm = this.GetElements("x" + infix + "_amount");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $transfers->amount->FldCaption(), $transfers->amount->ReqErrMsg)) ?>");
@@ -1258,30 +1329,12 @@ ftransfersadd.Validate = function() {
 			elm = this.GetElements("x" + infix + "_currency_id");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $transfers->currency_id->FldCaption(), $transfers->currency_id->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_currency_id");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($transfers->currency_id->FldErrMsg()) ?>");
 			elm = this.GetElements("x" + infix + "_type");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $transfers->type->FldCaption(), $transfers->type->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_order_id");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($transfers->order_id->FldErrMsg()) ?>");
 			elm = this.GetElements("x" + infix + "_approved");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $transfers->approved->FldCaption(), $transfers->approved->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_approved");
-			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($transfers->approved->FldErrMsg()) ?>");
-			elm = this.GetElements("x" + infix + "_created_at");
-			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
-				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $transfers->created_at->FldCaption(), $transfers->created_at->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_created_at");
-			if (elm && !ew_CheckDateDef(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($transfers->created_at->FldErrMsg()) ?>");
-			elm = this.GetElements("x" + infix + "_updated_at");
-			if (elm && !ew_CheckDateDef(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($transfers->updated_at->FldErrMsg()) ?>");
 
 			// Fire Form_CustomValidate event
 			if (!this.Form_CustomValidate(fobj))
@@ -1311,8 +1364,16 @@ ftransfersadd.Form_CustomValidate =
 ftransfersadd.ValidateRequired = <?php echo json_encode(EW_CLIENT_VALIDATE) ?>;
 
 // Dynamic selection lists
+ftransfersadd.Lists["x_user_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"users"};
+ftransfersadd.Lists["x_user_id"].Data = "<?php echo $transfers_add->user_id->LookupFilterQuery(FALSE, "add") ?>";
+ftransfersadd.Lists["x_currency_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_name_ar","x_name_en","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"currencies"};
+ftransfersadd.Lists["x_currency_id"].Data = "<?php echo $transfers_add->currency_id->LookupFilterQuery(FALSE, "add") ?>";
 ftransfersadd.Lists["x_type"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
 ftransfersadd.Lists["x_type"].Options = <?php echo json_encode($transfers_add->type->Options()) ?>;
+ftransfersadd.Lists["x_order_id"] = {"LinkField":"x_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_id","x_id","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"orders"};
+ftransfersadd.Lists["x_order_id"].Data = "<?php echo $transfers_add->order_id->LookupFilterQuery(FALSE, "add") ?>";
+ftransfersadd.Lists["x_approved"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
+ftransfersadd.Lists["x_approved"].Options = <?php echo json_encode($transfers_add->approved->Options()) ?>;
 
 // Form object for search
 </script>
@@ -1348,7 +1409,9 @@ $transfers_add->ShowMessage();
 <input type="hidden" id="x_user_id" name="x_user_id" value="<?php echo ew_HtmlEncode($transfers->user_id->CurrentValue) ?>">
 <?php } else { ?>
 <span id="el_transfers_user_id">
-<input type="text" data-table="transfers" data-field="x_user_id" name="x_user_id" id="x_user_id" size="30" placeholder="<?php echo ew_HtmlEncode($transfers->user_id->getPlaceHolder()) ?>" value="<?php echo $transfers->user_id->EditValue ?>"<?php echo $transfers->user_id->EditAttributes() ?>>
+<select data-table="transfers" data-field="x_user_id" data-value-separator="<?php echo $transfers->user_id->DisplayValueSeparatorAttribute() ?>" id="x_user_id" name="x_user_id"<?php echo $transfers->user_id->EditAttributes() ?>>
+<?php echo $transfers->user_id->SelectOptionListHtml("x_user_id") ?>
+</select>
 </span>
 <?php } ?>
 <?php echo $transfers->user_id->CustomMsg ?></div></div>
@@ -1369,7 +1432,9 @@ $transfers_add->ShowMessage();
 		<label id="elh_transfers_currency_id" for="x_currency_id" class="<?php echo $transfers_add->LeftColumnClass ?>"><?php echo $transfers->currency_id->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
 		<div class="<?php echo $transfers_add->RightColumnClass ?>"><div<?php echo $transfers->currency_id->CellAttributes() ?>>
 <span id="el_transfers_currency_id">
-<input type="text" data-table="transfers" data-field="x_currency_id" name="x_currency_id" id="x_currency_id" size="30" placeholder="<?php echo ew_HtmlEncode($transfers->currency_id->getPlaceHolder()) ?>" value="<?php echo $transfers->currency_id->EditValue ?>"<?php echo $transfers->currency_id->EditAttributes() ?>>
+<select data-table="transfers" data-field="x_currency_id" data-value-separator="<?php echo $transfers->currency_id->DisplayValueSeparatorAttribute() ?>" id="x_currency_id" name="x_currency_id"<?php echo $transfers->currency_id->EditAttributes() ?>>
+<?php echo $transfers->currency_id->SelectOptionListHtml("x_currency_id") ?>
+</select>
 </span>
 <?php echo $transfers->currency_id->CustomMsg ?></div></div>
 	</div>
@@ -1392,17 +1457,22 @@ $transfers_add->ShowMessage();
 		<label id="elh_transfers_order_id" for="x_order_id" class="<?php echo $transfers_add->LeftColumnClass ?>"><?php echo $transfers->order_id->FldCaption() ?></label>
 		<div class="<?php echo $transfers_add->RightColumnClass ?>"><div<?php echo $transfers->order_id->CellAttributes() ?>>
 <span id="el_transfers_order_id">
-<input type="text" data-table="transfers" data-field="x_order_id" name="x_order_id" id="x_order_id" size="30" placeholder="<?php echo ew_HtmlEncode($transfers->order_id->getPlaceHolder()) ?>" value="<?php echo $transfers->order_id->EditValue ?>"<?php echo $transfers->order_id->EditAttributes() ?>>
+<select data-table="transfers" data-field="x_order_id" data-value-separator="<?php echo $transfers->order_id->DisplayValueSeparatorAttribute() ?>" id="x_order_id" name="x_order_id"<?php echo $transfers->order_id->EditAttributes() ?>>
+<?php echo $transfers->order_id->SelectOptionListHtml("x_order_id") ?>
+</select>
 </span>
 <?php echo $transfers->order_id->CustomMsg ?></div></div>
 	</div>
 <?php } ?>
 <?php if ($transfers->approved->Visible) { // approved ?>
 	<div id="r_approved" class="form-group">
-		<label id="elh_transfers_approved" for="x_approved" class="<?php echo $transfers_add->LeftColumnClass ?>"><?php echo $transfers->approved->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
+		<label id="elh_transfers_approved" class="<?php echo $transfers_add->LeftColumnClass ?>"><?php echo $transfers->approved->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
 		<div class="<?php echo $transfers_add->RightColumnClass ?>"><div<?php echo $transfers->approved->CellAttributes() ?>>
 <span id="el_transfers_approved">
-<input type="text" data-table="transfers" data-field="x_approved" name="x_approved" id="x_approved" size="30" placeholder="<?php echo ew_HtmlEncode($transfers->approved->getPlaceHolder()) ?>" value="<?php echo $transfers->approved->EditValue ?>"<?php echo $transfers->approved->EditAttributes() ?>>
+<div id="tp_x_approved" class="ewTemplate"><input type="radio" data-table="transfers" data-field="x_approved" data-value-separator="<?php echo $transfers->approved->DisplayValueSeparatorAttribute() ?>" name="x_approved" id="x_approved" value="{value}"<?php echo $transfers->approved->EditAttributes() ?>></div>
+<div id="dsl_x_approved" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
+<?php echo $transfers->approved->RadioButtonListHtml(FALSE, "x_approved") ?>
+</div></div>
 </span>
 <?php echo $transfers->approved->CustomMsg ?></div></div>
 	</div>
@@ -1415,26 +1485,6 @@ $transfers_add->ShowMessage();
 <input type="text" data-table="transfers" data-field="x_verification_code" name="x_verification_code" id="x_verification_code" size="30" maxlength="100" placeholder="<?php echo ew_HtmlEncode($transfers->verification_code->getPlaceHolder()) ?>" value="<?php echo $transfers->verification_code->EditValue ?>"<?php echo $transfers->verification_code->EditAttributes() ?>>
 </span>
 <?php echo $transfers->verification_code->CustomMsg ?></div></div>
-	</div>
-<?php } ?>
-<?php if ($transfers->created_at->Visible) { // created_at ?>
-	<div id="r_created_at" class="form-group">
-		<label id="elh_transfers_created_at" for="x_created_at" class="<?php echo $transfers_add->LeftColumnClass ?>"><?php echo $transfers->created_at->FldCaption() ?><?php echo $Language->Phrase("FieldRequiredIndicator") ?></label>
-		<div class="<?php echo $transfers_add->RightColumnClass ?>"><div<?php echo $transfers->created_at->CellAttributes() ?>>
-<span id="el_transfers_created_at">
-<input type="text" data-table="transfers" data-field="x_created_at" name="x_created_at" id="x_created_at" placeholder="<?php echo ew_HtmlEncode($transfers->created_at->getPlaceHolder()) ?>" value="<?php echo $transfers->created_at->EditValue ?>"<?php echo $transfers->created_at->EditAttributes() ?>>
-</span>
-<?php echo $transfers->created_at->CustomMsg ?></div></div>
-	</div>
-<?php } ?>
-<?php if ($transfers->updated_at->Visible) { // updated_at ?>
-	<div id="r_updated_at" class="form-group">
-		<label id="elh_transfers_updated_at" for="x_updated_at" class="<?php echo $transfers_add->LeftColumnClass ?>"><?php echo $transfers->updated_at->FldCaption() ?></label>
-		<div class="<?php echo $transfers_add->RightColumnClass ?>"><div<?php echo $transfers->updated_at->CellAttributes() ?>>
-<span id="el_transfers_updated_at">
-<input type="text" data-table="transfers" data-field="x_updated_at" name="x_updated_at" id="x_updated_at" placeholder="<?php echo ew_HtmlEncode($transfers->updated_at->getPlaceHolder()) ?>" value="<?php echo $transfers->updated_at->EditValue ?>"<?php echo $transfers->updated_at->EditAttributes() ?>>
-</span>
-<?php echo $transfers->updated_at->CustomMsg ?></div></div>
 	</div>
 <?php } ?>
 </div><!-- /page* -->
