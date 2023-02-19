@@ -8,7 +8,7 @@ $teachers_courses = NULL;
 //
 class cteachers_courses extends cTable {
 	var $teacher_id;
-	var $course_id;
+	var $curriculum_id;
 
 	//
 	// Table class constructor
@@ -48,11 +48,11 @@ class cteachers_courses extends cTable {
 		$this->teacher_id->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['teacher_id'] = &$this->teacher_id;
 
-		// course_id
-		$this->course_id = new cField('teachers_courses', 'teachers_courses', 'x_course_id', 'course_id', '`course_id`', '`course_id`', 19, -1, FALSE, '`course_id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->course_id->Sortable = TRUE; // Allow sort
-		$this->course_id->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
-		$this->fields['course_id'] = &$this->course_id;
+		// curriculum_id
+		$this->curriculum_id = new cField('teachers_courses', 'teachers_courses', 'x_curriculum_id', 'curriculum_id', '`curriculum_id`', '`curriculum_id`', 19, -1, FALSE, '`curriculum_id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->curriculum_id->Sortable = TRUE; // Allow sort
+		$this->curriculum_id->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
+		$this->fields['curriculum_id'] = &$this->curriculum_id;
 	}
 
 	// Field Visibility
@@ -605,7 +605,7 @@ class cteachers_courses extends cTable {
 	// Load row values from recordset
 	function LoadListRowValues(&$rs) {
 		$this->teacher_id->setDbValue($rs->fields('teacher_id'));
-		$this->course_id->setDbValue($rs->fields('course_id'));
+		$this->curriculum_id->setDbValue($rs->fields('curriculum_id'));
 	}
 
 	// Render list row values
@@ -617,25 +617,25 @@ class cteachers_courses extends cTable {
 
 	// Common render codes
 		// teacher_id
-		// course_id
+		// curriculum_id
 		// teacher_id
 
 		$this->teacher_id->ViewValue = $this->teacher_id->CurrentValue;
 		$this->teacher_id->ViewCustomAttributes = "";
 
-		// course_id
-		$this->course_id->ViewValue = $this->course_id->CurrentValue;
-		$this->course_id->ViewCustomAttributes = "";
+		// curriculum_id
+		$this->curriculum_id->ViewValue = $this->curriculum_id->CurrentValue;
+		$this->curriculum_id->ViewCustomAttributes = "";
 
 		// teacher_id
 		$this->teacher_id->LinkCustomAttributes = "";
 		$this->teacher_id->HrefValue = "";
 		$this->teacher_id->TooltipValue = "";
 
-		// course_id
-		$this->course_id->LinkCustomAttributes = "";
-		$this->course_id->HrefValue = "";
-		$this->course_id->TooltipValue = "";
+		// curriculum_id
+		$this->curriculum_id->LinkCustomAttributes = "";
+		$this->curriculum_id->HrefValue = "";
+		$this->curriculum_id->TooltipValue = "";
 
 		// Call Row Rendered event
 		$this->Row_Rendered();
@@ -663,11 +663,11 @@ class cteachers_courses extends cTable {
 		$this->teacher_id->PlaceHolder = ew_RemoveHtml($this->teacher_id->FldCaption());
 		}
 
-		// course_id
-		$this->course_id->EditAttrs["class"] = "form-control";
-		$this->course_id->EditCustomAttributes = "";
-		$this->course_id->EditValue = $this->course_id->CurrentValue;
-		$this->course_id->PlaceHolder = ew_RemoveHtml($this->course_id->FldCaption());
+		// curriculum_id
+		$this->curriculum_id->EditAttrs["class"] = "form-control";
+		$this->curriculum_id->EditCustomAttributes = "";
+		$this->curriculum_id->EditValue = $this->curriculum_id->CurrentValue;
+		$this->curriculum_id->PlaceHolder = ew_RemoveHtml($this->curriculum_id->FldCaption());
 
 		// Call Row Rendered event
 		$this->Row_Rendered();
@@ -697,10 +697,10 @@ class cteachers_courses extends cTable {
 				$Doc->BeginExportRow();
 				if ($ExportPageType == "view") {
 					if ($this->teacher_id->Exportable) $Doc->ExportCaption($this->teacher_id);
-					if ($this->course_id->Exportable) $Doc->ExportCaption($this->course_id);
+					if ($this->curriculum_id->Exportable) $Doc->ExportCaption($this->curriculum_id);
 				} else {
 					if ($this->teacher_id->Exportable) $Doc->ExportCaption($this->teacher_id);
-					if ($this->course_id->Exportable) $Doc->ExportCaption($this->course_id);
+					if ($this->curriculum_id->Exportable) $Doc->ExportCaption($this->curriculum_id);
 				}
 				$Doc->EndExportRow();
 			}
@@ -733,10 +733,10 @@ class cteachers_courses extends cTable {
 					$Doc->BeginExportRow($RowCnt); // Allow CSS styles if enabled
 					if ($ExportPageType == "view") {
 						if ($this->teacher_id->Exportable) $Doc->ExportField($this->teacher_id);
-						if ($this->course_id->Exportable) $Doc->ExportField($this->course_id);
+						if ($this->curriculum_id->Exportable) $Doc->ExportField($this->curriculum_id);
 					} else {
 						if ($this->teacher_id->Exportable) $Doc->ExportField($this->teacher_id);
-						if ($this->course_id->Exportable) $Doc->ExportField($this->course_id);
+						if ($this->curriculum_id->Exportable) $Doc->ExportField($this->curriculum_id);
 					}
 					$Doc->EndExportRow($RowCnt);
 				}

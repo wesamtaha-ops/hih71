@@ -10,7 +10,7 @@ use \App\Models\Topic;
 use \App\Models\Level;
 use \App\Models\Teacher;
 use \App\Models\TeacherLevel;
-use \App\Models\TeacherCourse;
+use \App\Models\TeacherCurriculum;
 use \App\Models\TeacherTopic;
 use \App\Models\TeacherTrain;
 use \App\Models\TeacherStudyType;
@@ -19,7 +19,7 @@ use \App\Models\TeacherCertificate;
 
 use \App\Models\User;
 use \App\Models\Language;
-use \App\Models\Course;
+use \App\Models\Curriculum;
 use \App\Models\LanguageLevel;
 use \App\Models\Currency;
 use \App\Models\Country;

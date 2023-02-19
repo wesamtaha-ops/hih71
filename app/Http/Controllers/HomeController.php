@@ -8,7 +8,7 @@ use \App\Models\Level;
 use \App\Models\Teacher;
 use \App\Models\Transfer;
 use \App\Models\TeacherLevel;
-use \App\Models\TeacherCourse;
+use \App\Models\TeacherCurriculum;
 use \App\Models\TeacherPackage;
 use \App\Models\TeacherTopic;
 use \App\Models\TeacherTrain;
@@ -21,7 +21,7 @@ use \App\Models\Order;
 
 use \App\Models\User;
 use \App\Models\Language;
-use \App\Models\Course;
+use \App\Models\Curriculum;
 use \App\Models\LanguageLevel;
 use \App\Models\Currency;
 use \App\Models\Country;
@@ -51,7 +51,7 @@ class HomeController extends Controller
         $data = [
             'topics' => ParsingService::parseTopics(Topic::where('parent_id', '!=' ,null)->get()),
             'main_topics' => ParsingService::parseTopics(Topic::where('parent_id', '=' ,null)->get()),
-            'levels' => ParsingService::parseLevels(Level::get()),
+            'curriculums' => ParsingService::parseCurriculum(Curriculum::get()),
             'teachers' => $teachers
         ];
 
@@ -111,11 +111,11 @@ class HomeController extends Controller
             $teachers->where('country_id', $request->country_id);
         }
 
-        if($request->course_id) {
-            $course_id = $request->course_id;
+        if($request->curriculum_id) {
+            $curriculum_id = $request->curriculum_id;
 
-            $teachers->whereHas('teacher.courses', function($q) use($course_id){
-                $q->where('course_id', $course_id);
+            $teachers->whereHas('teacher.curriculums', function($q) use($curriculum_id){
+                $q->where('curriculum_id', $curriculum_id);
             });
         }
 
@@ -145,7 +145,7 @@ class HomeController extends Controller
             'current_page' => $current_page,
             'pages_count' => $pages_count,
             'countries' => ParsingService::parseCountries(Country::get()->toArray()),
-            'courses' => ParsingService::parseCourses(Course::get()->toArray()),
+            'curriculums' => ParsingService::ParseCurriculum(Curriculum::get()->toArray()),
             'main_topics' => ParsingService::parseTopics(Topic::where('parent_id', '!=' ,null)->get()->toArray()),
             'levels' => ParsingService::parseLevels(Level::get()->toArray()),
             'languages' => ParsingService::parseLanguages(Language::get()->toArray()),
@@ -159,11 +159,12 @@ class HomeController extends Controller
             'country',
             'teacher', 
             'teacher.levels', 
-            'teacher.courses', 
+            'teacher.curriculums', 
             'teacher.certificates', 
             'teacher.experiences', 
             'teacher.topics', 
-            'teacher.trains'
+            'teacher.trains',
+            'teacher.packages'
         ])->first();
         $languages = ParsingService::parseLanguages(Language::get()->toArray());
         $topics = ParsingService::parseTopics(Topic::where('parent_id', '!=', null)->get()->toArray());
@@ -187,7 +188,7 @@ class HomeController extends Controller
     }
 
     public function profile() {
-        $teacher_info = Teacher::where('user_id', \Auth::id())->with(['levels', 'courses', 'certificates', 'experiences', 'topics', 'trains', 'availability'])->first();
+        $teacher_info = Teacher::where('user_id', \Auth::id())->with(['levels', 'curriculums', 'certificates', 'experiences', 'topics', 'trains', 'availability'])->first();
 
         $topics = Topic::where('parent_id', '!=', null)->get();
         $all_topics = [];
@@ -201,7 +202,7 @@ class HomeController extends Controller
             'languages' => ParsingService::parseLanguages(Language::get()->toArray()),
             'languages_levels' => ParsingService::parseLanguagesLevels(LanguageLevel::get()->toArray()),
             'levels' => ParsingService::parseLevels(Level::get()->toArray()),
-            'courses' => ParsingService::parseCourses(Course::get()->toArray()),
+            'curriculums' => ParsingService::parseCurriculum(Curriculum::get()->toArray()),
             'topics' => $all_topics,
             'teacher_info' => $teacher_info
         ]);
@@ -307,10 +308,10 @@ class HomeController extends Controller
             }
         }
 
-        if($request->courses) {
-            TeacherCourse::where('teacher_id', \Auth::id())->delete();
-            foreach($request->courses as $course_id) {
-                TeacherCourse::insert(['teacher_id' => \Auth::id(), 'course_id' => $course_id]);
+        if($request->curriculums) {
+            TeacherCurriculum::where('teacher_id', \Auth::id())->delete();
+            foreach($request->curriculums as $curriculum_id) {
+                TeacherCurriculum::insert(['teacher_id' => \Auth::id(), 'curriculum_id' => $curriculum_id]);
             }
         }
 
@@ -456,5 +457,9 @@ class HomeController extends Controller
         return redirect( route('packages', ['success' => 1] ) );
     }
 
+    public function show_package($package_id) {
+        $package = TeacherPackage::find($package_id);
+        return view('package', ['package' => $package]);
+    }
 }
 

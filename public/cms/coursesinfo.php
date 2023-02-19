@@ -46,29 +46,29 @@ class ccourses extends cTable {
 		$this->BasicSearch = new cBasicSearch($this->TableVar);
 
 		// id
-		$this->id = new cField('courses', 'courses', 'x_id', 'id', '`id`', '`id`', 19, -1, FALSE, '`id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'NO');
+		$this->id = new cField('curriculums', 'curriculums' 'x_id', 'id', '`id`', '`id`', 19, -1, FALSE, '`id`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'NO');
 		$this->id->Sortable = TRUE; // Allow sort
 		$this->id->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
 		$this->fields['id'] = &$this->id;
 
 		// name_ar
-		$this->name_ar = new cField('courses', 'courses', 'x_name_ar', 'name_ar', '`name_ar`', '`name_ar`', 201, -1, FALSE, '`name_ar`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->name_ar = new cField('curriculums', 'curriculums' 'x_name_ar', 'name_ar', '`name_ar`', '`name_ar`', 201, -1, FALSE, '`name_ar`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->name_ar->Sortable = TRUE; // Allow sort
 		$this->fields['name_ar'] = &$this->name_ar;
 
 		// name_en
-		$this->name_en = new cField('courses', 'courses', 'x_name_en', 'name_en', '`name_en`', '`name_en`', 201, -1, FALSE, '`name_en`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->name_en = new cField('curriculums', 'curriculums' 'x_name_en', 'name_en', '`name_en`', '`name_en`', 201, -1, FALSE, '`name_en`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->name_en->Sortable = TRUE; // Allow sort
 		$this->fields['name_en'] = &$this->name_en;
 
 		// created_at
-		$this->created_at = new cField('courses', 'courses', 'x_created_at', 'created_at', '`created_at`', ew_CastDateFieldForLike('`created_at`', 0, "DB"), 135, 0, FALSE, '`created_at`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->created_at = new cField('curriculums', 'curriculums' 'x_created_at', 'created_at', '`created_at`', ew_CastDateFieldForLike('`created_at`', 0, "DB"), 135, 0, FALSE, '`created_at`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->created_at->Sortable = FALSE; // Allow sort
 		$this->created_at->FldDefaultErrMsg = str_replace("%s", $GLOBALS["EW_DATE_FORMAT"], $Language->Phrase("IncorrectDate"));
 		$this->fields['created_at'] = &$this->created_at;
 
 		// updated_at
-		$this->updated_at = new cField('courses', 'courses', 'x_updated_at', 'updated_at', '`updated_at`', ew_CastDateFieldForLike('`updated_at`', 0, "DB"), 135, 0, FALSE, '`updated_at`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->updated_at = new cField('curriculums', 'curriculums' 'x_updated_at', 'updated_at', '`updated_at`', ew_CastDateFieldForLike('`updated_at`', 0, "DB"), 135, 0, FALSE, '`updated_at`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->updated_at->Sortable = FALSE; // Allow sort
 		$this->updated_at->FldDefaultErrMsg = str_replace("%s", $GLOBALS["EW_DATE_FORMAT"], $Language->Phrase("IncorrectDate"));
 		$this->fields['updated_at'] = &$this->updated_at;

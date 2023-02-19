@@ -332,7 +332,7 @@ class cteachers_courses_grid extends cteachers_courses {
 		// Set up list options
 		$this->SetupListOptions();
 		$this->teacher_id->SetVisibility();
-		$this->course_id->SetVisibility();
+		$this->curriculum_id->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -793,7 +793,7 @@ class cteachers_courses_grid extends cteachers_courses {
 		global $objForm;
 		if ($objForm->HasValue("x_teacher_id") && $objForm->HasValue("o_teacher_id") && $this->teacher_id->CurrentValue <> $this->teacher_id->OldValue)
 			return FALSE;
-		if ($objForm->HasValue("x_course_id") && $objForm->HasValue("o_course_id") && $this->course_id->CurrentValue <> $this->course_id->OldValue)
+		if ($objForm->HasValue("x_curriculum_id") && $objForm->HasValue("o_curriculum_id") && $this->curriculum_id->CurrentValue <> $this->curriculum_id->OldValue)
 			return FALSE;
 		return TRUE;
 	}
@@ -1085,8 +1085,8 @@ class cteachers_courses_grid extends cteachers_courses {
 	function LoadDefaultValues() {
 		$this->teacher_id->CurrentValue = NULL;
 		$this->teacher_id->OldValue = $this->teacher_id->CurrentValue;
-		$this->course_id->CurrentValue = NULL;
-		$this->course_id->OldValue = $this->course_id->CurrentValue;
+		$this->curriculum_id->CurrentValue = NULL;
+		$this->curriculum_id->OldValue = $this->curriculum_id->CurrentValue;
 	}
 
 	// Load form values
@@ -1099,17 +1099,17 @@ class cteachers_courses_grid extends cteachers_courses {
 			$this->teacher_id->setFormValue($objForm->GetValue("x_teacher_id"));
 		}
 		$this->teacher_id->setOldValue($objForm->GetValue("o_teacher_id"));
-		if (!$this->course_id->FldIsDetailKey) {
-			$this->course_id->setFormValue($objForm->GetValue("x_course_id"));
+		if (!$this->curriculum_id->FldIsDetailKey) {
+			$this->curriculum_id->setFormValue($objForm->GetValue("x_curriculum_id"));
 		}
-		$this->course_id->setOldValue($objForm->GetValue("o_course_id"));
+		$this->curriculum_id->setOldValue($objForm->GetValue("o_curriculum_id"));
 	}
 
 	// Restore form values
 	function RestoreFormValues() {
 		global $objForm;
 		$this->teacher_id->CurrentValue = $this->teacher_id->FormValue;
-		$this->course_id->CurrentValue = $this->course_id->FormValue;
+		$this->curriculum_id->CurrentValue = $this->curriculum_id->FormValue;
 	}
 
 	// Load recordset
@@ -1172,7 +1172,7 @@ class cteachers_courses_grid extends cteachers_courses {
 		if (!$rs || $rs->EOF)
 			return;
 		$this->teacher_id->setDbValue($row['teacher_id']);
-		$this->course_id->setDbValue($row['course_id']);
+		$this->curriculum_id->setDbValue($row['curriculum_id']);
 	}
 
 	// Return a row with default values
@@ -1180,7 +1180,7 @@ class cteachers_courses_grid extends cteachers_courses {
 		$this->LoadDefaultValues();
 		$row = array();
 		$row['teacher_id'] = $this->teacher_id->CurrentValue;
-		$row['course_id'] = $this->course_id->CurrentValue;
+		$row['curriculum_id'] = $this->curriculum_id->CurrentValue;
 		return $row;
 	}
 
@@ -1190,7 +1190,7 @@ class cteachers_courses_grid extends cteachers_courses {
 			return;
 		$row = is_array($rs) ? $rs : $rs->fields;
 		$this->teacher_id->DbValue = $row['teacher_id'];
-		$this->course_id->DbValue = $row['course_id'];
+		$this->curriculum_id->DbValue = $row['curriculum_id'];
 	}
 
 	// Load old record
@@ -1213,7 +1213,7 @@ class cteachers_courses_grid extends cteachers_courses {
 
 		// Common render codes for all row types
 		// teacher_id
-		// course_id
+		// curriculum_id
 
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
@@ -1221,19 +1221,19 @@ class cteachers_courses_grid extends cteachers_courses {
 		$this->teacher_id->ViewValue = $this->teacher_id->CurrentValue;
 		$this->teacher_id->ViewCustomAttributes = "";
 
-		// course_id
-		$this->course_id->ViewValue = $this->course_id->CurrentValue;
-		$this->course_id->ViewCustomAttributes = "";
+		// curriculum_id
+		$this->curriculum_id->ViewValue = $this->curriculum_id->CurrentValue;
+		$this->curriculum_id->ViewCustomAttributes = "";
 
 			// teacher_id
 			$this->teacher_id->LinkCustomAttributes = "";
 			$this->teacher_id->HrefValue = "";
 			$this->teacher_id->TooltipValue = "";
 
-			// course_id
-			$this->course_id->LinkCustomAttributes = "";
-			$this->course_id->HrefValue = "";
-			$this->course_id->TooltipValue = "";
+			// curriculum_id
+			$this->curriculum_id->LinkCustomAttributes = "";
+			$this->curriculum_id->HrefValue = "";
+			$this->curriculum_id->TooltipValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_ADD) { // Add row
 
 			// teacher_id
@@ -1249,11 +1249,11 @@ class cteachers_courses_grid extends cteachers_courses {
 			$this->teacher_id->PlaceHolder = ew_RemoveHtml($this->teacher_id->FldCaption());
 			}
 
-			// course_id
-			$this->course_id->EditAttrs["class"] = "form-control";
-			$this->course_id->EditCustomAttributes = "";
-			$this->course_id->EditValue = ew_HtmlEncode($this->course_id->CurrentValue);
-			$this->course_id->PlaceHolder = ew_RemoveHtml($this->course_id->FldCaption());
+			// curriculum_id
+			$this->curriculum_id->EditAttrs["class"] = "form-control";
+			$this->curriculum_id->EditCustomAttributes = "";
+			$this->curriculum_id->EditValue = ew_HtmlEncode($this->curriculum_id->CurrentValue);
+			$this->curriculum_id->PlaceHolder = ew_RemoveHtml($this->curriculum_id->FldCaption());
 
 			// Add refer script
 			// teacher_id
@@ -1261,9 +1261,9 @@ class cteachers_courses_grid extends cteachers_courses {
 			$this->teacher_id->LinkCustomAttributes = "";
 			$this->teacher_id->HrefValue = "";
 
-			// course_id
-			$this->course_id->LinkCustomAttributes = "";
-			$this->course_id->HrefValue = "";
+			// curriculum_id
+			$this->curriculum_id->LinkCustomAttributes = "";
+			$this->curriculum_id->HrefValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_EDIT) { // Edit row
 
 			// teacher_id
@@ -1279,11 +1279,11 @@ class cteachers_courses_grid extends cteachers_courses {
 			$this->teacher_id->PlaceHolder = ew_RemoveHtml($this->teacher_id->FldCaption());
 			}
 
-			// course_id
-			$this->course_id->EditAttrs["class"] = "form-control";
-			$this->course_id->EditCustomAttributes = "";
-			$this->course_id->EditValue = ew_HtmlEncode($this->course_id->CurrentValue);
-			$this->course_id->PlaceHolder = ew_RemoveHtml($this->course_id->FldCaption());
+			// curriculum_id
+			$this->curriculum_id->EditAttrs["class"] = "form-control";
+			$this->curriculum_id->EditCustomAttributes = "";
+			$this->curriculum_id->EditValue = ew_HtmlEncode($this->curriculum_id->CurrentValue);
+			$this->curriculum_id->PlaceHolder = ew_RemoveHtml($this->curriculum_id->FldCaption());
 
 			// Edit refer script
 			// teacher_id
@@ -1291,9 +1291,9 @@ class cteachers_courses_grid extends cteachers_courses {
 			$this->teacher_id->LinkCustomAttributes = "";
 			$this->teacher_id->HrefValue = "";
 
-			// course_id
-			$this->course_id->LinkCustomAttributes = "";
-			$this->course_id->HrefValue = "";
+			// curriculum_id
+			$this->curriculum_id->LinkCustomAttributes = "";
+			$this->curriculum_id->HrefValue = "";
 		}
 		if ($this->RowType == EW_ROWTYPE_ADD || $this->RowType == EW_ROWTYPE_EDIT || $this->RowType == EW_ROWTYPE_SEARCH) // Add/Edit/Search row
 			$this->SetupFieldTitles();
@@ -1316,11 +1316,11 @@ class cteachers_courses_grid extends cteachers_courses {
 		if (!ew_CheckInteger($this->teacher_id->FormValue)) {
 			ew_AddMessage($gsFormError, $this->teacher_id->FldErrMsg());
 		}
-		if (!$this->course_id->FldIsDetailKey && !is_null($this->course_id->FormValue) && $this->course_id->FormValue == "") {
-			ew_AddMessage($gsFormError, str_replace("%s", $this->course_id->FldCaption(), $this->course_id->ReqErrMsg));
+		if (!$this->curriculum_id->FldIsDetailKey && !is_null($this->curriculum_id->FormValue) && $this->curriculum_id->FormValue == "") {
+			ew_AddMessage($gsFormError, str_replace("%s", $this->curriculum_id->FldCaption(), $this->curriculum_id->ReqErrMsg));
 		}
-		if (!ew_CheckInteger($this->course_id->FormValue)) {
-			ew_AddMessage($gsFormError, $this->course_id->FldErrMsg());
+		if (!ew_CheckInteger($this->curriculum_id->FormValue)) {
+			ew_AddMessage($gsFormError, $this->curriculum_id->FldErrMsg());
 		}
 
 		// Return validate result
@@ -1435,8 +1435,8 @@ class cteachers_courses_grid extends cteachers_courses {
 			// teacher_id
 			$this->teacher_id->SetDbValueDef($rsnew, $this->teacher_id->CurrentValue, 0, $this->teacher_id->ReadOnly);
 
-			// course_id
-			$this->course_id->SetDbValueDef($rsnew, $this->course_id->CurrentValue, 0, $this->course_id->ReadOnly);
+			// curriculum_id
+			$this->curriculum_id->SetDbValueDef($rsnew, $this->curriculum_id->CurrentValue, 0, $this->curriculum_id->ReadOnly);
 
 			// Call Row Updating event
 			$bUpdateRow = $this->Row_Updating($rsold, $rsnew);
@@ -1489,8 +1489,8 @@ class cteachers_courses_grid extends cteachers_courses {
 		// teacher_id
 		$this->teacher_id->SetDbValueDef($rsnew, $this->teacher_id->CurrentValue, 0, FALSE);
 
-		// course_id
-		$this->course_id->SetDbValueDef($rsnew, $this->course_id->CurrentValue, 0, FALSE);
+		// curriculum_id
+		$this->curriculum_id->SetDbValueDef($rsnew, $this->curriculum_id->CurrentValue, 0, FALSE);
 
 		// Call Row Inserting event
 		$rs = ($rsold == NULL) ? NULL : $rsold->fields;

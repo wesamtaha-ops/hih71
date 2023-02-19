@@ -14,6 +14,7 @@ return [
 
     'select_topic' => 'إختر الموضوع',
     'select_level' => ' اختر المستوى',
+    'select_curriculums' => 'المنهج',
 
     'logout' => 'تسجيل الخروج',
 

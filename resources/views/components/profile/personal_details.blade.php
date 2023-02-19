@@ -57,82 +57,84 @@
                             'value' => \Auth::user()->birthday
                         ])
 
-                        @include('components.standard.select', [
-                            'id' => 'currency_id', 
-                            'name' => 'currency_id', 
-                            'placeholder' => 'Select Currency', 
-                            'half' => 1, 
-                            'value' => \Auth::user()->currency_id, 
-                            'options' => $currencies, 
-                            'required' => 1
-                        ])
+                        @if(isTeacher())
+                            @include('components.standard.select', [
+                                'id' => 'currency_id', 
+                                'name' => 'currency_id', 
+                                'placeholder' => 'Select Currency', 
+                                'half' => 1, 
+                                'value' => \Auth::user()->currency_id, 
+                                'options' => $currencies, 
+                                'required' => 1
+                            ])
 
-                        @include('components.standard.inputtext', [
-                            'id' => 'fees', 
-                            'name' => 'fees', 
-                            'placeholder' => 'Fees', 
-                            'half' => 1, 
-                            'value' => $teacher_info->fees,
-                            'required' => 1
-                        ])
+                            @include('components.standard.inputtext', [
+                                'id' => 'fees', 
+                                'name' => 'fees', 
+                                'placeholder' => 'Fees', 
+                                'half' => 1, 
+                                'value' => $teacher_info->fees,
+                                'required' => 1
+                            ])
 
-                        @include('components.standard.select', ['id' => 'country_id', 
-                            'name' => 'country_id', 
-                            'placeholder' => 'Select Nationality', 
-                            'half' => 1, 
-                            'value' => \Auth::user()->country_id, 
-                            'options' => $countries
-                        ])
+                            @include('components.standard.select', ['id' => 'country_id', 
+                                'name' => 'country_id', 
+                                'placeholder' => 'Select Nationality', 
+                                'half' => 1, 
+                                'value' => \Auth::user()->country_id, 
+                                'options' => $countries
+                            ])
 
-                        <div id="languages_section" style="width: 100%">
+                            <div id="languages_section" style="width: 100%">
 
-                            @isset($teacher_info->teacher_language)
-                                @foreach(json_decode($teacher_info->teacher_language) as $info)
-                                <span class="languages_container form-group-wrap" style="width: 100%">
+                                @isset($teacher_info->teacher_language)
+                                    @foreach(json_decode($teacher_info->teacher_language) as $info)
+                                    <span class="languages_container form-group-wrap" style="width: 100%">
+                                        @include('components.standard.select', [
+                                            'id' => 'languages', 
+                                            'half' => 1, 
+                                            'name' => 'languages', 
+                                            'placeholder' => 'Select Languages', 
+                                            'options' => $languages, 
+                                            'value' => $info->language
+                                        ])
+                                        @include('components.standard.select', [
+                                            'id' => 'languages_levels', 
+                                            'half' => 1, 
+                                            'name' => 'languages_levels', 
+                                            'placeholder' => 'Select Levels', 
+                                            'options' => $languages_levels, 
+                                            'value' => $info->level
+                                        ])
+                                        </span>
+
+                                    @endforeach
+                                @endisset
+
+                                <div class="languages_container form-group-wrap" style="width: 100%">
                                     @include('components.standard.select', [
                                         'id' => 'languages', 
                                         'half' => 1, 
                                         'name' => 'languages', 
                                         'placeholder' => 'Select Languages', 
-                                        'options' => $languages, 
-                                        'value' => $info->language
+                                        'options' => $languages
                                     ])
+
                                     @include('components.standard.select', [
                                         'id' => 'languages_levels', 
                                         'half' => 1, 
                                         'name' => 'languages_levels', 
                                         'placeholder' => 'Select Levels', 
-                                        'options' => $languages_levels, 
-                                        'value' => $info->level
+                                        'options' => $languages_levels
                                     ])
-                                    </span>
-
-                                @endforeach
-                            @endisset
-
-                            <div class="languages_container form-group-wrap" style="width: 100%">
-                                @include('components.standard.select', [
-                                    'id' => 'languages', 
-                                    'half' => 1, 
-                                    'name' => 'languages', 
-                                    'placeholder' => 'Select Languages', 
-                                    'options' => $languages
-                                ])
-
-                                @include('components.standard.select', [
-                                    'id' => 'languages_levels', 
-                                    'half' => 1, 
-                                    'name' => 'languages_levels', 
-                                    'placeholder' => 'Select Levels', 
-                                    'options' => $languages_levels
-                                ])
+                                </div>
                             </div>
-                        </div>
 
-                        <a href="#" id="btn-add-language" class="form-group">
-                            <i class="fa fa-plus-circle" style="margin-right: 10px;"></i> Add another language
-                        </a>
+                            <a href="#" id="btn-add-language" class="form-group">
+                                <i class="fa fa-plus-circle" style="margin-right: 10px;"></i> Add another language
+                            </a>
                         
+                        @endif
                     </div>
                 </div>
             </fieldset>

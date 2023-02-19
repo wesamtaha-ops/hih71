@@ -23,6 +23,7 @@
                             <li class="nav-item">
                                 <a data-tab="personal" href="#" class="active nav-link"><i class="icon icon-user"></i><span>Personal details</span></a>
                             </li>
+                            @if(isTeacher())
                             <li class="nav-item">
                                 <a data-tab="additional-info" href="#" class="nav-link"><i class="icon icon-phone"></i><span>Additional Information</span></a>
                             </li>
@@ -38,6 +39,7 @@
                             <li class="nav-item">
                                 <a data-tab="description" href="#" class="nav-link"><i class="icon icon-book"></i><span>Description</span></a>
                             </li>
+                            @endif
                         </ul>
                     </aside>
                 </div>
@@ -56,7 +58,7 @@
                             @include('components.profile.additional_info',[
                                 'teacher_info' => $teacher_info,
                                 'levels' => $levels,
-                                'courses' => $courses
+                                'curriculums' => $curriculums
                             ])
                         </div>
 
