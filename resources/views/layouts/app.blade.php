@@ -136,17 +136,13 @@
                             <li class="tu-facebookv3"><a href="https://www.facebook.com/" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
                             <li class="tu-twitterv3"><a href="https://twitter.com/?lang=en" target="_blank"><i class="fab fa-twitter"></i></a></li>
                             <li class="tu-linkedinv3"><a href="https://www.linkedin.com" target="_blank"><i class="fab fa-linkedin-in"></i></a></li>
-                            <li class="tu-dribbblev3"><a href="https://dribbble.com/"  target="_blank"><i class="fab fa-dribbble"></i></a></li>
-                            <li class="tu-twitchv3"><a href="https://www.twitch.tv/"  target="_blank"><i class="fab fa-twitch"></i></a></li>
                         </ul>
                     </div>
                     <div class="col-lg-5">
                         <h5 class="tu-footertitle">Feel free to share your question</h5>
                         <ul class="tu-footerlist tu-footericonlist">
-                            <li><a href="tel:+6287777263549"><i class="icon icon-phone-call"></i><em>+62 877 77263549</em><span>( Mon to Sun 9am - 11pm GMT )</span></a></li>
-                            <li><a href="mailto:hello@youremailid.co.uk"><i class="icon icon-mail"></i><em>hello@youremailid.co.uk</em></a></li>
-                            <li><a href="tel:+681109998263"><i class="icon icon-printer"></i><em>+62 811 09998263</em></a></li>
-                            <li><a href="tel:(+33)775559375"><i class="fab fa-whatsapp"></i><em>(+33)7 75 55 9375</em><span>( Mon to Sun 9am - 11pm GMT )</span></a></li>
+                            <li><a href="tel:+6287777263549"><i class="icon icon-phone-call"></i><em>+971 5 77263549</em><span>( Mon to Sun 9am - 11pm GMT )</span></a></li>
+                            <li><a href="mailto:hello@youremailid.co.uk"><i class="icon icon-mail"></i><em>info@hih71.co.uk</em></a></li>
                         </ul>
                     </div>
                 </div>
@@ -155,12 +151,10 @@
             <div class="tu-footercopyright">
                 <div class="container">
                     <div class="tu-footercopyright_content">
-                        <p>© 1994 - 2022 All Rights Reserved.</p>
+                        <p>© 2023 All Rights Reserved.</p>
                         <ul class="tu-footercopyright_list">
-                            <li><a href="how-it-work.html">Careers</a></li>
                             <li><a href="how-it-work.html">Terms of use</a></li>
                             <li><a href="how-it-work.html">Privacy policy</a></li>
-                            <li><a href="how-it-work.html">Cookie notice</a></li>
                         </ul>
                     </div>
                 </div>

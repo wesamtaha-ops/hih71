@@ -41,13 +41,20 @@ if (! function_exists('convert_to_currency')) {
 
 if (! function_exists('isTeacher')) {
     function isTeacher() {
-        return \Auth::user()->type == 'teacher' ? 1 : 0;
+        return \Auth::check() && \Auth::user()->type == 'teacher' ? 1 : 0;
     }
 }
 
 
 if (! function_exists('isStudent')) {
     function isStudent() {
-        return \Auth::user()->type == 'student' ? 1 : 0;
+        return \Auth::check() && \Auth::user()->type == 'student' ? 1 : 0;
+    }
+}
+
+
+if (! function_exists('isGuest')) {
+    function isGuest() {
+        return !\Auth::check();
     }
 }

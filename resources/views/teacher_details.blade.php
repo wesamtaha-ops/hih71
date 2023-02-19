@@ -53,21 +53,15 @@
                                     </div>
                                 </div>
                             </div>
+                            @if(isStudent() || isGuest())
                             <div class="tu-actionbts">
-                                <div class="tu-userurl">
-                                    <!-- <i class="icon icon-globe"></i>
-                                    <a href="javascript:void(0);">www.tutorlinkhere.com/tutor/uk/armando/295548 <i class="icon icon-copy"></i></a> -->
-                                </div> 
                                 <ul class="tu-profilelinksbtn">
-                                    <!-- <li>
-                                        <a class="tu-linkheart" href="javascript:void(0);"><i class="icon icon-heart"></i><span>Save</span></a>
-                                    </li> -->
-                                    <!-- <li><a href="{{route('message.read', ['id' => $teacher->id ])}}" class="tu-secbtn">Let’s talk now</a></li> -->
                                     <li>
                                         <a href="{{route('book.single', ['teacher_id' => $teacher->id ])}}" class="tu-primbtn">Book a tution</a>
                                     </li>
                                 </ul>
                             </div>
+                            @endif
                         </div>
                         <div class="tu-detailstabs">
 							<ul class="nav nav-tabs tu-nav-tabs" id="myTab" role="tablist">
@@ -247,11 +241,40 @@
                                                     <div class="form-group-wrap">
                                                         <div class="form-group">
                                                             <div class="tu-reviews">
-                                                                <label class="tu-label">Give rating to your review</label>
-                                                                <!-- <div class="tu-my-ratingholder">
-                                                                    <h6>Good experience</h6>
-                                                                    <div id="tu-addreview" class="tu-addreview"></div>
-                                                                </div> -->
+
+                                                                <div class="tu-listing-location tu-ratingstars">
+                                                                    Time     
+                                                                    <div>
+                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
+                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
+                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
+                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
+                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="tu-listing-location tu-ratingstars">
+                                                                    Quality     
+                                                                    <div>
+                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
+                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
+                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
+                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
+                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="tu-listing-location tu-ratingstars">
+                                                                    Easy to get     
+                                                                    <div>
+                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
+                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
+                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
+                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
+                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
+                                                                    </div>
+                                                                </div>
+
                                                             </div>
                                                         </div>
                                                         <div class="form-group tu-message-text">
@@ -262,11 +285,6 @@
                                                                     <span>Enter description</span>
                                                                 </div>
                                                             </div>
-                                                            <!-- <div class="tu-input-counter">
-                                                                <span>Characters left:</span>
-                                                                <b class="tu_current_comment">500</b>
-                                                                /                                        <em class="tu_maximum_comment"> 500</em>
-                                                            </div> -->
                                                         </div>
                         
                                                         <div class="form-group tu-formspacebtw">
@@ -315,3 +333,15 @@
         </section>
 	</main>
 @endsection
+
+@push('scripts')
+    <script>
+        $(document).ready(function () {
+            $('.rating-start').click(function () {
+                $(this).prevAll().removeClass('tu-colororange tu-coloryellow').addClass('tu-coloryellow');
+                $(this).nextAll().removeClass('tu-colororange tu-coloryellow').addClass('tu-colororange');
+                $(this).removeClass('tu-colororange tu-coloryellow').addClass('tu-coloryellow');
+            })
+        })
+    </script>
+@endpush
