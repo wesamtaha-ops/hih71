@@ -115,7 +115,7 @@
         </div>
     </section>
 
-    
+<!--     
     <section class="tu-main-section">
         <div class="container">
             <div class="row align-items-center gy-4">
@@ -142,7 +142,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
     
 </main>
 <!-- MAIN END -->
