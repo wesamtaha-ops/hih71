@@ -1083,7 +1083,7 @@ class cusers_list extends cusers {
 			return FALSE;
 		if ($objForm->HasValue("x_birthday") && $objForm->HasValue("o_birthday") && $this->birthday->CurrentValue <> $this->birthday->OldValue)
 			return FALSE;
-		if ($objForm->HasValue("x_image") && $objForm->HasValue("o_image") && $this->image->CurrentValue <> $this->image->OldValue)
+		if (!ew_Empty($this->image->Upload->Value))
 			return FALSE;
 		if ($objForm->HasValue("x_country_id") && $objForm->HasValue("o_country_id") && $this->country_id->CurrentValue <> $this->country_id->OldValue)
 			return FALSE;
@@ -2372,6 +2372,16 @@ class cusers_list extends cusers {
 		}
 	}
 
+	// Get upload files
+	function GetUploadFiles() {
+		global $objForm, $Language;
+
+		// Get upload data
+		$this->image->Upload->Index = $objForm->Index;
+		$this->image->Upload->UploadFile();
+		$this->image->CurrentValue = $this->image->Upload->FileName;
+	}
+
 	// Load default values
 	function LoadDefaultValues() {
 		$this->id->CurrentValue = NULL;
@@ -2390,8 +2400,8 @@ class cusers_list extends cusers {
 		$this->gender->OldValue = $this->gender->CurrentValue;
 		$this->birthday->CurrentValue = NULL;
 		$this->birthday->OldValue = $this->birthday->CurrentValue;
-		$this->image->CurrentValue = NULL;
-		$this->image->OldValue = $this->image->CurrentValue;
+		$this->image->Upload->DbValue = NULL;
+		$this->image->OldValue = $this->image->Upload->DbValue;
 		$this->country_id->CurrentValue = NULL;
 		$this->country_id->OldValue = $this->country_id->CurrentValue;
 		$this->city->CurrentValue = NULL;
@@ -2527,6 +2537,7 @@ class cusers_list extends cusers {
 
 		// Load from form
 		global $objForm;
+		$this->GetUploadFiles(); // Get upload files
 		if (!$this->id->FldIsDetailKey && $this->CurrentAction <> "gridadd" && $this->CurrentAction <> "add")
 			$this->id->setFormValue($objForm->GetValue("x_id"));
 		if (!$this->name->FldIsDetailKey) {
@@ -2550,10 +2561,6 @@ class cusers_list extends cusers {
 			$this->birthday->CurrentValue = ew_UnFormatDateTime($this->birthday->CurrentValue, 0);
 		}
 		$this->birthday->setOldValue($objForm->GetValue("o_birthday"));
-		if (!$this->image->FldIsDetailKey) {
-			$this->image->setFormValue($objForm->GetValue("x_image"));
-		}
-		$this->image->setOldValue($objForm->GetValue("o_image"));
 		if (!$this->country_id->FldIsDetailKey) {
 			$this->country_id->setFormValue($objForm->GetValue("x_country_id"));
 		}
@@ -2603,7 +2610,6 @@ class cusers_list extends cusers {
 		$this->gender->CurrentValue = $this->gender->FormValue;
 		$this->birthday->CurrentValue = $this->birthday->FormValue;
 		$this->birthday->CurrentValue = ew_UnFormatDateTime($this->birthday->CurrentValue, 0);
-		$this->image->CurrentValue = $this->image->FormValue;
 		$this->country_id->CurrentValue = $this->country_id->FormValue;
 		$this->city->CurrentValue = $this->city->FormValue;
 		$this->currency_id->CurrentValue = $this->currency_id->FormValue;
@@ -2682,7 +2688,8 @@ class cusers_list extends cusers {
 		$this->phone->setDbValue($row['phone']);
 		$this->gender->setDbValue($row['gender']);
 		$this->birthday->setDbValue($row['birthday']);
-		$this->image->setDbValue($row['image']);
+		$this->image->Upload->DbValue = $row['image'];
+		$this->image->setDbValue($this->image->Upload->DbValue);
 		$this->country_id->setDbValue($row['country_id']);
 		$this->city->setDbValue($row['city']);
 		$this->currency_id->setDbValue($row['currency_id']);
@@ -2709,7 +2716,7 @@ class cusers_list extends cusers {
 		$row['phone'] = $this->phone->CurrentValue;
 		$row['gender'] = $this->gender->CurrentValue;
 		$row['birthday'] = $this->birthday->CurrentValue;
-		$row['image'] = $this->image->CurrentValue;
+		$row['image'] = $this->image->Upload->DbValue;
 		$row['country_id'] = $this->country_id->CurrentValue;
 		$row['city'] = $this->city->CurrentValue;
 		$row['currency_id'] = $this->currency_id->CurrentValue;
@@ -2738,7 +2745,7 @@ class cusers_list extends cusers {
 		$this->phone->DbValue = $row['phone'];
 		$this->gender->DbValue = $row['gender'];
 		$this->birthday->DbValue = $row['birthday'];
-		$this->image->DbValue = $row['image'];
+		$this->image->Upload->DbValue = $row['image'];
 		$this->country_id->DbValue = $row['country_id'];
 		$this->city->DbValue = $row['city'];
 		$this->currency_id->DbValue = $row['currency_id'];
@@ -2853,7 +2860,12 @@ class cusers_list extends cusers {
 		$this->birthday->ViewCustomAttributes = "";
 
 		// image
-		$this->image->ViewValue = $this->image->CurrentValue;
+		$this->image->UploadPath = "../images";
+		if (!ew_Empty($this->image->Upload->DbValue)) {
+			$this->image->ViewValue = $this->image->Upload->DbValue;
+		} else {
+			$this->image->ViewValue = "";
+		}
 		$this->image->ViewCustomAttributes = "";
 
 		// country_id
@@ -2985,6 +2997,7 @@ class cusers_list extends cusers {
 			// image
 			$this->image->LinkCustomAttributes = "";
 			$this->image->HrefValue = "";
+			$this->image->HrefValue2 = $this->image->UploadPath . $this->image->Upload->DbValue;
 			$this->image->TooltipValue = "";
 
 			// country_id
@@ -3067,8 +3080,18 @@ class cusers_list extends cusers {
 			// image
 			$this->image->EditAttrs["class"] = "form-control";
 			$this->image->EditCustomAttributes = "";
-			$this->image->EditValue = ew_HtmlEncode($this->image->CurrentValue);
-			$this->image->PlaceHolder = ew_RemoveHtml($this->image->FldCaption());
+			$this->image->UploadPath = "../images";
+			if (!ew_Empty($this->image->Upload->DbValue)) {
+				$this->image->EditValue = $this->image->Upload->DbValue;
+			} else {
+				$this->image->EditValue = "";
+			}
+			if (!ew_Empty($this->image->CurrentValue))
+					if ($this->RowIndex == '$rowindex$')
+						$this->image->Upload->FileName = "";
+					else
+						$this->image->Upload->FileName = $this->image->CurrentValue;
+			if (is_numeric($this->RowIndex) && !$this->EventCancelled) ew_RenderUploadField($this->image, $this->RowIndex);
 
 			// country_id
 			$this->country_id->EditAttrs["class"] = "form-control";
@@ -3171,6 +3194,7 @@ class cusers_list extends cusers {
 			// image
 			$this->image->LinkCustomAttributes = "";
 			$this->image->HrefValue = "";
+			$this->image->HrefValue2 = $this->image->UploadPath . $this->image->Upload->DbValue;
 
 			// country_id
 			$this->country_id->LinkCustomAttributes = "";
@@ -3247,8 +3271,18 @@ class cusers_list extends cusers {
 			// image
 			$this->image->EditAttrs["class"] = "form-control";
 			$this->image->EditCustomAttributes = "";
-			$this->image->EditValue = ew_HtmlEncode($this->image->CurrentValue);
-			$this->image->PlaceHolder = ew_RemoveHtml($this->image->FldCaption());
+			$this->image->UploadPath = "../images";
+			if (!ew_Empty($this->image->Upload->DbValue)) {
+				$this->image->EditValue = $this->image->Upload->DbValue;
+			} else {
+				$this->image->EditValue = "";
+			}
+			if (!ew_Empty($this->image->CurrentValue))
+					if ($this->RowIndex == '$rowindex$')
+						$this->image->Upload->FileName = "";
+					else
+						$this->image->Upload->FileName = $this->image->CurrentValue;
+			if (is_numeric($this->RowIndex) && !$this->EventCancelled) ew_RenderUploadField($this->image, $this->RowIndex);
 
 			// country_id
 			$this->country_id->EditAttrs["class"] = "form-control";
@@ -3351,6 +3385,7 @@ class cusers_list extends cusers {
 			// image
 			$this->image->LinkCustomAttributes = "";
 			$this->image->HrefValue = "";
+			$this->image->HrefValue2 = $this->image->UploadPath . $this->image->Upload->DbValue;
 
 			// country_id
 			$this->country_id->LinkCustomAttributes = "";
@@ -3594,6 +3629,13 @@ class cusers_list extends cusers {
 
 				// Delete old files
 				$this->LoadDbValues($row);
+				$this->image->OldUploadPath = "../images";
+				$OldFiles = ew_Empty($row['image']) ? array() : array($row['image']);
+				$OldFileCount = count($OldFiles);
+				for ($i = 0; $i < $OldFileCount; $i++) {
+					if (file_exists($this->image->OldPhysicalUploadPath() . $OldFiles[$i]))
+						@unlink($this->image->OldPhysicalUploadPath() . $OldFiles[$i]);
+				}
 				$conn->raiseErrorFn = $GLOBALS["EW_ERROR_FN"];
 				$DeleteRows = $this->Delete($row); // Delete
 				$conn->raiseErrorFn = '';
@@ -3688,6 +3730,8 @@ class cusers_list extends cusers {
 			// Save old values
 			$rsold = &$rs->fields;
 			$this->LoadDbValues($rsold);
+			$this->image->OldUploadPath = "../images";
+			$this->image->UploadPath = $this->image->OldUploadPath;
 			$rsnew = array();
 
 			// name
@@ -3706,7 +3750,14 @@ class cusers_list extends cusers {
 			$this->birthday->SetDbValueDef($rsnew, ew_UnFormatDateTime($this->birthday->CurrentValue, 0), NULL, $this->birthday->ReadOnly);
 
 			// image
-			$this->image->SetDbValueDef($rsnew, $this->image->CurrentValue, NULL, $this->image->ReadOnly);
+			if ($this->image->Visible && !$this->image->ReadOnly && !$this->image->Upload->KeepFile) {
+				$this->image->Upload->DbValue = $rsold['image']; // Get original value
+				if ($this->image->Upload->FileName == "") {
+					$rsnew['image'] = NULL;
+				} else {
+					$rsnew['image'] = $this->image->Upload->FileName;
+				}
+			}
 
 			// country_id
 			$this->country_id->SetDbValueDef($rsnew, $this->country_id->CurrentValue, NULL, $this->country_id->ReadOnly);
@@ -3734,6 +3785,44 @@ class cusers_list extends cusers {
 
 			// slug
 			$this->slug->SetDbValueDef($rsnew, $this->slug->CurrentValue, NULL, $this->slug->ReadOnly);
+			if ($this->image->Visible && !$this->image->Upload->KeepFile) {
+				$this->image->UploadPath = "../images";
+				$OldFiles = ew_Empty($this->image->Upload->DbValue) ? array() : array($this->image->Upload->DbValue);
+				if (!ew_Empty($this->image->Upload->FileName)) {
+					$NewFiles = array($this->image->Upload->FileName);
+					$NewFileCount = count($NewFiles);
+					for ($i = 0; $i < $NewFileCount; $i++) {
+						$fldvar = ($this->image->Upload->Index < 0) ? $this->image->FldVar : substr($this->image->FldVar, 0, 1) . $this->image->Upload->Index . substr($this->image->FldVar, 1);
+						if ($NewFiles[$i] <> "") {
+							$file = $NewFiles[$i];
+							if (file_exists(ew_UploadTempPath($fldvar, $this->image->TblVar) . $file)) {
+								$OldFileFound = FALSE;
+								$OldFileCount = count($OldFiles);
+								for ($j = 0; $j < $OldFileCount; $j++) {
+									$file1 = $OldFiles[$j];
+									if ($file1 == $file) { // Old file found, no need to delete anymore
+										unset($OldFiles[$j]);
+										$OldFileFound = TRUE;
+										break;
+									}
+								}
+								if ($OldFileFound) // No need to check if file exists further
+									continue;
+								$file1 = ew_UploadFileNameEx($this->image->PhysicalUploadPath(), $file); // Get new file name
+								if ($file1 <> $file) { // Rename temp file
+									while (file_exists(ew_UploadTempPath($fldvar, $this->image->TblVar) . $file1) || file_exists($this->image->PhysicalUploadPath() . $file1)) // Make sure no file name clash
+										$file1 = ew_UniqueFilename($this->image->PhysicalUploadPath(), $file1, TRUE); // Use indexed name
+									rename(ew_UploadTempPath($fldvar, $this->image->TblVar) . $file, ew_UploadTempPath($fldvar, $this->image->TblVar) . $file1);
+									$NewFiles[$i] = $file1;
+								}
+							}
+						}
+					}
+					$this->image->Upload->DbValue = empty($OldFiles) ? "" : implode(EW_MULTIPLE_UPLOAD_SEPARATOR, $OldFiles);
+					$this->image->Upload->FileName = implode(EW_MULTIPLE_UPLOAD_SEPARATOR, $NewFiles);
+					$this->image->SetDbValueDef($rsnew, $this->image->Upload->FileName, NULL, $this->image->ReadOnly);
+				}
+			}
 
 			// Call Row Updating event
 			$bUpdateRow = $this->Row_Updating($rsold, $rsnew);
@@ -3745,6 +3834,35 @@ class cusers_list extends cusers {
 					$EditRow = TRUE; // No field to update
 				$conn->raiseErrorFn = '';
 				if ($EditRow) {
+					if ($this->image->Visible && !$this->image->Upload->KeepFile) {
+						$OldFiles = ew_Empty($this->image->Upload->DbValue) ? array() : array($this->image->Upload->DbValue);
+						if (!ew_Empty($this->image->Upload->FileName)) {
+							$NewFiles = array($this->image->Upload->FileName);
+							$NewFiles2 = array($rsnew['image']);
+							$NewFileCount = count($NewFiles);
+							for ($i = 0; $i < $NewFileCount; $i++) {
+								$fldvar = ($this->image->Upload->Index < 0) ? $this->image->FldVar : substr($this->image->FldVar, 0, 1) . $this->image->Upload->Index . substr($this->image->FldVar, 1);
+								if ($NewFiles[$i] <> "") {
+									$file = ew_UploadTempPath($fldvar, $this->image->TblVar) . $NewFiles[$i];
+									if (file_exists($file)) {
+										if (@$NewFiles2[$i] <> "") // Use correct file name
+											$NewFiles[$i] = $NewFiles2[$i];
+										if (!$this->image->Upload->SaveToFile($NewFiles[$i], TRUE, $i)) { // Just replace
+											$this->setFailureMessage($Language->Phrase("UploadErrMsg7"));
+											return FALSE;
+										}
+									}
+								}
+							}
+						} else {
+							$NewFiles = array();
+						}
+						$OldFileCount = count($OldFiles);
+						for ($i = 0; $i < $OldFileCount; $i++) {
+							if ($OldFiles[$i] <> "" && !in_array($OldFiles[$i], $NewFiles))
+								@unlink($this->image->OldPhysicalUploadPath() . $OldFiles[$i]);
+						}
+					}
 				}
 			} else {
 				if ($this->getSuccessMessage() <> "" || $this->getFailureMessage() <> "") {
@@ -3764,6 +3882,9 @@ class cusers_list extends cusers {
 		if ($EditRow)
 			$this->Row_Updated($rsold, $rsnew);
 		$rs->Close();
+
+		// image
+		ew_CleanUploadTempPath($this->image, $this->image->Upload->Index);
 		return $EditRow;
 	}
 
@@ -3797,6 +3918,8 @@ class cusers_list extends cusers {
 		// Load db values from rsold
 		$this->LoadDbValues($rsold);
 		if ($rsold) {
+			$this->image->OldUploadPath = "../images";
+			$this->image->UploadPath = $this->image->OldUploadPath;
 		}
 		$rsnew = array();
 
@@ -3816,7 +3939,14 @@ class cusers_list extends cusers {
 		$this->birthday->SetDbValueDef($rsnew, ew_UnFormatDateTime($this->birthday->CurrentValue, 0), NULL, FALSE);
 
 		// image
-		$this->image->SetDbValueDef($rsnew, $this->image->CurrentValue, NULL, FALSE);
+		if ($this->image->Visible && !$this->image->Upload->KeepFile) {
+			$this->image->Upload->DbValue = ""; // No need to delete old file
+			if ($this->image->Upload->FileName == "") {
+				$rsnew['image'] = NULL;
+			} else {
+				$rsnew['image'] = $this->image->Upload->FileName;
+			}
+		}
 
 		// country_id
 		$this->country_id->SetDbValueDef($rsnew, $this->country_id->CurrentValue, NULL, FALSE);
@@ -3844,6 +3974,44 @@ class cusers_list extends cusers {
 
 		// slug
 		$this->slug->SetDbValueDef($rsnew, $this->slug->CurrentValue, NULL, FALSE);
+		if ($this->image->Visible && !$this->image->Upload->KeepFile) {
+			$this->image->UploadPath = "../images";
+			$OldFiles = ew_Empty($this->image->Upload->DbValue) ? array() : array($this->image->Upload->DbValue);
+			if (!ew_Empty($this->image->Upload->FileName)) {
+				$NewFiles = array($this->image->Upload->FileName);
+				$NewFileCount = count($NewFiles);
+				for ($i = 0; $i < $NewFileCount; $i++) {
+					$fldvar = ($this->image->Upload->Index < 0) ? $this->image->FldVar : substr($this->image->FldVar, 0, 1) . $this->image->Upload->Index . substr($this->image->FldVar, 1);
+					if ($NewFiles[$i] <> "") {
+						$file = $NewFiles[$i];
+						if (file_exists(ew_UploadTempPath($fldvar, $this->image->TblVar) . $file)) {
+							$OldFileFound = FALSE;
+							$OldFileCount = count($OldFiles);
+							for ($j = 0; $j < $OldFileCount; $j++) {
+								$file1 = $OldFiles[$j];
+								if ($file1 == $file) { // Old file found, no need to delete anymore
+									unset($OldFiles[$j]);
+									$OldFileFound = TRUE;
+									break;
+								}
+							}
+							if ($OldFileFound) // No need to check if file exists further
+								continue;
+							$file1 = ew_UploadFileNameEx($this->image->PhysicalUploadPath(), $file); // Get new file name
+							if ($file1 <> $file) { // Rename temp file
+								while (file_exists(ew_UploadTempPath($fldvar, $this->image->TblVar) . $file1) || file_exists($this->image->PhysicalUploadPath() . $file1)) // Make sure no file name clash
+									$file1 = ew_UniqueFilename($this->image->PhysicalUploadPath(), $file1, TRUE); // Use indexed name
+								rename(ew_UploadTempPath($fldvar, $this->image->TblVar) . $file, ew_UploadTempPath($fldvar, $this->image->TblVar) . $file1);
+								$NewFiles[$i] = $file1;
+							}
+						}
+					}
+				}
+				$this->image->Upload->DbValue = empty($OldFiles) ? "" : implode(EW_MULTIPLE_UPLOAD_SEPARATOR, $OldFiles);
+				$this->image->Upload->FileName = implode(EW_MULTIPLE_UPLOAD_SEPARATOR, $NewFiles);
+				$this->image->SetDbValueDef($rsnew, $this->image->Upload->FileName, NULL, FALSE);
+			}
+		}
 
 		// Call Row Inserting event
 		$rs = ($rsold == NULL) ? NULL : $rsold->fields;
@@ -3853,6 +4021,35 @@ class cusers_list extends cusers {
 			$AddRow = $this->Insert($rsnew);
 			$conn->raiseErrorFn = '';
 			if ($AddRow) {
+				if ($this->image->Visible && !$this->image->Upload->KeepFile) {
+					$OldFiles = ew_Empty($this->image->Upload->DbValue) ? array() : array($this->image->Upload->DbValue);
+					if (!ew_Empty($this->image->Upload->FileName)) {
+						$NewFiles = array($this->image->Upload->FileName);
+						$NewFiles2 = array($rsnew['image']);
+						$NewFileCount = count($NewFiles);
+						for ($i = 0; $i < $NewFileCount; $i++) {
+							$fldvar = ($this->image->Upload->Index < 0) ? $this->image->FldVar : substr($this->image->FldVar, 0, 1) . $this->image->Upload->Index . substr($this->image->FldVar, 1);
+							if ($NewFiles[$i] <> "") {
+								$file = ew_UploadTempPath($fldvar, $this->image->TblVar) . $NewFiles[$i];
+								if (file_exists($file)) {
+									if (@$NewFiles2[$i] <> "") // Use correct file name
+										$NewFiles[$i] = $NewFiles2[$i];
+									if (!$this->image->Upload->SaveToFile($NewFiles[$i], TRUE, $i)) { // Just replace
+										$this->setFailureMessage($Language->Phrase("UploadErrMsg7"));
+										return FALSE;
+									}
+								}
+							}
+						}
+					} else {
+						$NewFiles = array();
+					}
+					$OldFileCount = count($OldFiles);
+					for ($i = 0; $i < $OldFileCount; $i++) {
+						if ($OldFiles[$i] <> "" && !in_array($OldFiles[$i], $NewFiles))
+							@unlink($this->image->OldPhysicalUploadPath() . $OldFiles[$i]);
+					}
+				}
 			}
 		} else {
 			if ($this->getSuccessMessage() <> "" || $this->getFailureMessage() <> "") {
@@ -3872,6 +4069,9 @@ class cusers_list extends cusers {
 			$rs = ($rsold == NULL) ? NULL : $rsold->fields;
 			$this->Row_Inserted($rs, $rsnew);
 		}
+
+		// image
+		ew_CleanUploadTempPath($this->image, $this->image->Upload->Index);
 		return $AddRow;
 	}
 
@@ -4987,19 +5187,46 @@ $users_list->ListOptions->Render("body", "left", $users_list->RowCnt);
 		<td data-name="image"<?php echo $users->image->CellAttributes() ?>>
 <?php if ($users->RowType == EW_ROWTYPE_ADD) { // Add record ?>
 <span id="el<?php echo $users_list->RowCnt ?>_users_image" class="form-group users_image">
-<input type="text" data-table="users" data-field="x_image" name="x<?php echo $users_list->RowIndex ?>_image" id="x<?php echo $users_list->RowIndex ?>_image" placeholder="<?php echo ew_HtmlEncode($users->image->getPlaceHolder()) ?>" value="<?php echo $users->image->EditValue ?>"<?php echo $users->image->EditAttributes() ?>>
+<div id="fd_x<?php echo $users_list->RowIndex ?>_image">
+<span title="<?php echo $users->image->FldTitle() ? $users->image->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($users->image->ReadOnly || $users->image->Disabled) echo " hide"; ?>" data-trigger="hover">
+	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
+	<input type="file" title=" " data-table="users" data-field="x_image" name="x<?php echo $users_list->RowIndex ?>_image" id="x<?php echo $users_list->RowIndex ?>_image"<?php echo $users->image->EditAttributes() ?>>
+</span>
+<input type="hidden" name="fn_x<?php echo $users_list->RowIndex ?>_image" id= "fn_x<?php echo $users_list->RowIndex ?>_image" value="<?php echo $users->image->Upload->FileName ?>">
+<input type="hidden" name="fa_x<?php echo $users_list->RowIndex ?>_image" id= "fa_x<?php echo $users_list->RowIndex ?>_image" value="0">
+<input type="hidden" name="fs_x<?php echo $users_list->RowIndex ?>_image" id= "fs_x<?php echo $users_list->RowIndex ?>_image" value="65535">
+<input type="hidden" name="fx_x<?php echo $users_list->RowIndex ?>_image" id= "fx_x<?php echo $users_list->RowIndex ?>_image" value="<?php echo $users->image->UploadAllowedFileExt ?>">
+<input type="hidden" name="fm_x<?php echo $users_list->RowIndex ?>_image" id= "fm_x<?php echo $users_list->RowIndex ?>_image" value="<?php echo $users->image->UploadMaxFileSize ?>">
+</div>
+<table id="ft_x<?php echo $users_list->RowIndex ?>_image" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
 </span>
 <input type="hidden" data-table="users" data-field="x_image" name="o<?php echo $users_list->RowIndex ?>_image" id="o<?php echo $users_list->RowIndex ?>_image" value="<?php echo ew_HtmlEncode($users->image->OldValue) ?>">
 <?php } ?>
 <?php if ($users->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
 <span id="el<?php echo $users_list->RowCnt ?>_users_image" class="form-group users_image">
-<input type="text" data-table="users" data-field="x_image" name="x<?php echo $users_list->RowIndex ?>_image" id="x<?php echo $users_list->RowIndex ?>_image" placeholder="<?php echo ew_HtmlEncode($users->image->getPlaceHolder()) ?>" value="<?php echo $users->image->EditValue ?>"<?php echo $users->image->EditAttributes() ?>>
+<div id="fd_x<?php echo $users_list->RowIndex ?>_image">
+<span title="<?php echo $users->image->FldTitle() ? $users->image->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($users->image->ReadOnly || $users->image->Disabled) echo " hide"; ?>" data-trigger="hover">
+	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
+	<input type="file" title=" " data-table="users" data-field="x_image" name="x<?php echo $users_list->RowIndex ?>_image" id="x<?php echo $users_list->RowIndex ?>_image"<?php echo $users->image->EditAttributes() ?>>
+</span>
+<input type="hidden" name="fn_x<?php echo $users_list->RowIndex ?>_image" id= "fn_x<?php echo $users_list->RowIndex ?>_image" value="<?php echo $users->image->Upload->FileName ?>">
+<?php if (@$_POST["fa_x<?php echo $users_list->RowIndex ?>_image"] == "0") { ?>
+<input type="hidden" name="fa_x<?php echo $users_list->RowIndex ?>_image" id= "fa_x<?php echo $users_list->RowIndex ?>_image" value="0">
+<?php } else { ?>
+<input type="hidden" name="fa_x<?php echo $users_list->RowIndex ?>_image" id= "fa_x<?php echo $users_list->RowIndex ?>_image" value="1">
+<?php } ?>
+<input type="hidden" name="fs_x<?php echo $users_list->RowIndex ?>_image" id= "fs_x<?php echo $users_list->RowIndex ?>_image" value="65535">
+<input type="hidden" name="fx_x<?php echo $users_list->RowIndex ?>_image" id= "fx_x<?php echo $users_list->RowIndex ?>_image" value="<?php echo $users->image->UploadAllowedFileExt ?>">
+<input type="hidden" name="fm_x<?php echo $users_list->RowIndex ?>_image" id= "fm_x<?php echo $users_list->RowIndex ?>_image" value="<?php echo $users->image->UploadMaxFileSize ?>">
+</div>
+<table id="ft_x<?php echo $users_list->RowIndex ?>_image" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
 </span>
 <?php } ?>
 <?php if ($users->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $users_list->RowCnt ?>_users_image" class="users_image">
 <span<?php echo $users->image->ViewAttributes() ?>>
-<?php echo $users->image->ListViewValue() ?></span>
+<?php echo ew_GetFileViewTag($users->image, $users->image->ListViewValue()) ?>
+</span>
 </span>
 <?php } ?>
 </td>
@@ -5317,7 +5544,18 @@ $users_list->ListOptions->Render("body", "left", $users_list->RowIndex);
 	<?php if ($users->image->Visible) { // image ?>
 		<td data-name="image">
 <span id="el$rowindex$_users_image" class="form-group users_image">
-<input type="text" data-table="users" data-field="x_image" name="x<?php echo $users_list->RowIndex ?>_image" id="x<?php echo $users_list->RowIndex ?>_image" placeholder="<?php echo ew_HtmlEncode($users->image->getPlaceHolder()) ?>" value="<?php echo $users->image->EditValue ?>"<?php echo $users->image->EditAttributes() ?>>
+<div id="fd_x<?php echo $users_list->RowIndex ?>_image">
+<span title="<?php echo $users->image->FldTitle() ? $users->image->FldTitle() : $Language->Phrase("ChooseFile") ?>" class="btn btn-default btn-sm fileinput-button ewTooltip<?php if ($users->image->ReadOnly || $users->image->Disabled) echo " hide"; ?>" data-trigger="hover">
+	<span><?php echo $Language->Phrase("ChooseFileBtn") ?></span>
+	<input type="file" title=" " data-table="users" data-field="x_image" name="x<?php echo $users_list->RowIndex ?>_image" id="x<?php echo $users_list->RowIndex ?>_image"<?php echo $users->image->EditAttributes() ?>>
+</span>
+<input type="hidden" name="fn_x<?php echo $users_list->RowIndex ?>_image" id= "fn_x<?php echo $users_list->RowIndex ?>_image" value="<?php echo $users->image->Upload->FileName ?>">
+<input type="hidden" name="fa_x<?php echo $users_list->RowIndex ?>_image" id= "fa_x<?php echo $users_list->RowIndex ?>_image" value="0">
+<input type="hidden" name="fs_x<?php echo $users_list->RowIndex ?>_image" id= "fs_x<?php echo $users_list->RowIndex ?>_image" value="65535">
+<input type="hidden" name="fx_x<?php echo $users_list->RowIndex ?>_image" id= "fx_x<?php echo $users_list->RowIndex ?>_image" value="<?php echo $users->image->UploadAllowedFileExt ?>">
+<input type="hidden" name="fm_x<?php echo $users_list->RowIndex ?>_image" id= "fm_x<?php echo $users_list->RowIndex ?>_image" value="<?php echo $users->image->UploadMaxFileSize ?>">
+</div>
+<table id="ft_x<?php echo $users_list->RowIndex ?>_image" class="table table-condensed pull-left ewUploadTable"><tbody class="files"></tbody></table>
 </span>
 <input type="hidden" data-table="users" data-field="x_image" name="o<?php echo $users_list->RowIndex ?>_image" id="o<?php echo $users_list->RowIndex ?>_image" value="<?php echo ew_HtmlEncode($users->image->OldValue) ?>">
 </td>

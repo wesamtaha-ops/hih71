@@ -94,7 +94,8 @@
 			<td<?php echo $users->image->CellAttributes() ?>>
 <span id="el_users_image">
 <span<?php echo $users->image->ViewAttributes() ?>>
-<?php echo $users->image->ListViewValue() ?></span>
+<?php echo ew_GetFileViewTag($users->image, $users->image->ListViewValue()) ?>
+</span>
 </span>
 </td>
 		</tr>

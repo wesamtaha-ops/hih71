@@ -108,7 +108,7 @@ class cusers extends cTable {
 		$this->fields['birthday'] = &$this->birthday;
 
 		// image
-		$this->image = new cField('users', 'users', 'x_image', 'image', '`image`', '`image`', 201, -1, FALSE, '`image`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->image = new cField('users', 'users', 'x_image', 'image', '`image`', '`image`', 201, -1, TRUE, '`image`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'FILE');
 		$this->image->Sortable = TRUE; // Allow sort
 		$this->fields['image'] = &$this->image;
 
@@ -751,7 +751,7 @@ class cusers extends cTable {
 		$this->phone->setDbValue($rs->fields('phone'));
 		$this->gender->setDbValue($rs->fields('gender'));
 		$this->birthday->setDbValue($rs->fields('birthday'));
-		$this->image->setDbValue($rs->fields('image'));
+		$this->image->Upload->DbValue = $rs->fields('image');
 		$this->country_id->setDbValue($rs->fields('country_id'));
 		$this->city->setDbValue($rs->fields('city'));
 		$this->currency_id->setDbValue($rs->fields('currency_id'));
@@ -844,7 +844,12 @@ class cusers extends cTable {
 		$this->birthday->ViewCustomAttributes = "";
 
 		// image
-		$this->image->ViewValue = $this->image->CurrentValue;
+		$this->image->UploadPath = "../images";
+		if (!ew_Empty($this->image->Upload->DbValue)) {
+			$this->image->ViewValue = $this->image->Upload->DbValue;
+		} else {
+			$this->image->ViewValue = "";
+		}
 		$this->image->ViewCustomAttributes = "";
 
 		// country_id
@@ -996,6 +1001,7 @@ class cusers extends cTable {
 		// image
 		$this->image->LinkCustomAttributes = "";
 		$this->image->HrefValue = "";
+		$this->image->HrefValue2 = $this->image->UploadPath . $this->image->Upload->DbValue;
 		$this->image->TooltipValue = "";
 
 		// country_id
@@ -1122,8 +1128,14 @@ class cusers extends cTable {
 		// image
 		$this->image->EditAttrs["class"] = "form-control";
 		$this->image->EditCustomAttributes = "";
-		$this->image->EditValue = $this->image->CurrentValue;
-		$this->image->PlaceHolder = ew_RemoveHtml($this->image->FldCaption());
+		$this->image->UploadPath = "../images";
+		if (!ew_Empty($this->image->Upload->DbValue)) {
+			$this->image->EditValue = $this->image->Upload->DbValue;
+		} else {
+			$this->image->EditValue = "";
+		}
+		if (!ew_Empty($this->image->CurrentValue))
+				$this->image->Upload->FileName = $this->image->CurrentValue;
 
 		// country_id
 		$this->country_id->EditAttrs["class"] = "form-control";

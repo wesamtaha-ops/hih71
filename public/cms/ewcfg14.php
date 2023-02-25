@@ -3,7 +3,6 @@
  * PHPMaker 2018 configuration file
  */
 error_reporting(0);
-
 // Relative path
 if (!isset($EW_RELATIVE_PATH)) $EW_RELATIVE_PATH = "";
 
@@ -11,7 +10,7 @@ if (!isset($EW_RELATIVE_PATH)) $EW_RELATIVE_PATH = "";
 define("EW_DEBUG_ENABLED", FALSE, TRUE); // TRUE to debug
 if (EW_DEBUG_ENABLED) {
 	@ini_set("display_errors", "1"); // Display errors
-	error_reporting(E_ALL ^ E_NOTICE); // Report all errors except E_NOTICE
+	error_reporting(0); // Report all errors except E_NOTICE
 }
 
 // General
@@ -26,7 +25,7 @@ define("EW_CONFIG_FILE_FOLDER", EW_PROJECT_NAME, TRUE); // Config file name
 define("EW_PROJECT_ID", "{D43A73A4-5F37-4161-A00D-2E65107145C9}", TRUE); // Project ID (GUID)
 $EW_RELATED_PROJECT_ID = "";
 $EW_RELATED_LANGUAGE_FOLDER = "";
-define("EW_RANDOM_KEY", 'Oh6bcCty74tcvcZH', TRUE); // Random key for encryption
+define("EW_RANDOM_KEY", 'cr8qcQqDaTndnTok', TRUE); // Random key for encryption
 define("EW_PROJECT_STYLESHEET_FILENAME", "phpcss/hih71.css", TRUE); // Project stylesheet file name
 define("EW_CHARSET", "utf-8", TRUE); // Project charset
 define("EW_EMAIL_CHARSET", EW_CHARSET, TRUE); // Email charset

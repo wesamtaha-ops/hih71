@@ -789,7 +789,8 @@ class cusers_view extends cusers {
 		$this->phone->setDbValue($row['phone']);
 		$this->gender->setDbValue($row['gender']);
 		$this->birthday->setDbValue($row['birthday']);
-		$this->image->setDbValue($row['image']);
+		$this->image->Upload->DbValue = $row['image'];
+		$this->image->setDbValue($this->image->Upload->DbValue);
 		$this->country_id->setDbValue($row['country_id']);
 		$this->city->setDbValue($row['city']);
 		$this->currency_id->setDbValue($row['currency_id']);
@@ -844,7 +845,7 @@ class cusers_view extends cusers {
 		$this->phone->DbValue = $row['phone'];
 		$this->gender->DbValue = $row['gender'];
 		$this->birthday->DbValue = $row['birthday'];
-		$this->image->DbValue = $row['image'];
+		$this->image->Upload->DbValue = $row['image'];
 		$this->country_id->DbValue = $row['country_id'];
 		$this->city->DbValue = $row['city'];
 		$this->currency_id->DbValue = $row['currency_id'];
@@ -929,7 +930,12 @@ class cusers_view extends cusers {
 		$this->birthday->ViewCustomAttributes = "";
 
 		// image
-		$this->image->ViewValue = $this->image->CurrentValue;
+		$this->image->UploadPath = "../images";
+		if (!ew_Empty($this->image->Upload->DbValue)) {
+			$this->image->ViewValue = $this->image->Upload->DbValue;
+		} else {
+			$this->image->ViewValue = "";
+		}
 		$this->image->ViewCustomAttributes = "";
 
 		// country_id
@@ -1061,6 +1067,7 @@ class cusers_view extends cusers {
 			// image
 			$this->image->LinkCustomAttributes = "";
 			$this->image->HrefValue = "";
+			$this->image->HrefValue2 = $this->image->UploadPath . $this->image->Upload->DbValue;
 			$this->image->TooltipValue = "";
 
 			// country_id
@@ -1455,7 +1462,8 @@ $users_view->ShowMessage();
 		<td data-name="image"<?php echo $users->image->CellAttributes() ?>>
 <span id="el_users_image">
 <span<?php echo $users->image->ViewAttributes() ?>>
-<?php echo $users->image->ViewValue ?></span>
+<?php echo ew_GetFileViewTag($users->image, $users->image->ViewValue) ?>
+</span>
 </span>
 </td>
 	</tr>
