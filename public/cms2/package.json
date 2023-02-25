@@ -1,0 +1,11 @@
+{
+    "name": "hih71",
+    "version": "19.7.0",
+    "description": "hih71",
+    "license": "SEE LICENSE IN LICENSE.md",
+    "private": true,
+    "dependencies": {},
+    "engines": {
+        "node": ">=16"
+    }
+}
