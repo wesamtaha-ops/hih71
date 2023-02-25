@@ -91,7 +91,11 @@ class AuthController extends Controller
         // insert data into db
         User::insert($data);
 
-        $s = Mail::to($data['email'])->send(new OTPMail($data['otp']));
+        try {
+            Mail::to($data['email'])->send(new OTPMail($data['otp']));
+        } catch (\Throwable $th) { // do nothing
+        }
+        
 
         return ['success' => '1'];
     }

@@ -53,7 +53,7 @@
                                 'languages_levels' => $languages_levels    
                             ])
                         </div>
-
+                        @if(isTeacher())
                         <div id="tab-additional-info" class="tabs" style="display: none">
                             @include('components.profile.additional_info',[
                                 'teacher_info' => $teacher_info,
@@ -81,6 +81,7 @@
                         <div id="tab-description" class="tabs" style="display: none">
                             @include('components.profile.description')
                         </div>
+                        @endif
 
                     </div>
                     <div class="tu-btnarea-two">
