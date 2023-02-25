@@ -57,6 +57,6 @@
 		]
 	},
 	"config": {
-		"allow-plugins": true
+		"allow-plugins": false
 	}
 }
