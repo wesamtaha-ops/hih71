@@ -1,0 +1,150 @@
+[25-Feb-2023 22:53:42 UTC] PHP Warning:  require_once(vendor/autoload.php): Failed to open stream: No such file or directory in /mnt/smartcode/onak/public_html/hih71/public/cms2/index.php on line 25
+[25-Feb-2023 22:53:42 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'vendor/autoload.php' (include_path='.:/opt/cpanel/ea-php81/root/usr/share/pear') in /mnt/smartcode/onak/public_html/hih71/public/cms2/index.php:25
+Stack trace:
+#0 {main}
+  thrown in /mnt/smartcode/onak/public_html/hih71/public/cms2/index.php on line 25
+[25-Feb-2023 22:53:43 UTC] PHP Warning:  require_once(vendor/autoload.php): Failed to open stream: No such file or directory in /mnt/smartcode/onak/public_html/hih71/public/cms2/index.php on line 25
+[25-Feb-2023 22:53:43 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'vendor/autoload.php' (include_path='.:/opt/cpanel/ea-php81/root/usr/share/pear') in /mnt/smartcode/onak/public_html/hih71/public/cms2/index.php:25
+Stack trace:
+#0 {main}
+  thrown in /mnt/smartcode/onak/public_html/hih71/public/cms2/index.php on line 25
+[25-Feb-2023 22:54:17 UTC] PHP Fatal error:  Uncaught TypeError: array_merge(): Argument #1 must be of type array, bool given in phar:///opt/cpanel/composer/bin/composer/src/Composer/Config.php:191
+Stack trace:
+#0 phar:///opt/cpanel/composer/bin/composer/src/Composer/Config.php(191): array_merge()
+#1 phar:///opt/cpanel/composer/bin/composer/src/Composer/Factory.php(350): Composer\Config->merge()
+#2 phar:///opt/cpanel/composer/bin/composer/src/Composer/Factory.php(646): Composer\Factory->createComposer()
+#3 phar:///opt/cpanel/composer/bin/composer/src/Composer/Console/Application.php(445): Composer\Factory::create()
+#4 phar:///opt/cpanel/composer/bin/composer/src/Composer/Command/BaseCommand.php(65): Composer\Console\Application->getComposer()
+#5 phar:///opt/cpanel/composer/bin/composer/src/Composer/Command/BaseCommand.php(150): Composer\Command\BaseCommand->getComposer()
+#6 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Command/Command.php(211): Composer\Command\BaseCommand->initialize()
+#7 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Application.php(835): Symfony\Component\Console\Command\Command->run()
+#8 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Application.php(185): Symfony\Component\Console\Application->doRunCommand()
+#9 phar:///opt/cpanel/composer/bin/composer/src/Composer/Console/Application.php(336): Symfony\Component\Console\Application->doRun()
+#10 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Application.php(117): Composer\Console\Application->doRun()
+#11 phar:///opt/cpanel/composer/bin/composer/src/Composer/Console/Application.php(131): Symfony\Component\Console\Application->run()
+#12 phar:///opt/cpanel/composer/bin/composer/bin/composer(83): Composer\Console\Application->run()
+#13 /opt/cpanel/composer/bin/composer(29): require('phar:///opt/cpa...')
+#14 {main}
+  thrown in phar:///opt/cpanel/composer/bin/composer/src/Composer/Config.php on line 191
+[25-Feb-2023 22:54:37 UTC] PHP Fatal error:  Uncaught TypeError: array_merge(): Argument #1 must be of type array, bool given in phar:///opt/cpanel/composer/bin/composer/src/Composer/Config.php:191
+Stack trace:
+#0 phar:///opt/cpanel/composer/bin/composer/src/Composer/Config.php(191): array_merge()
+#1 phar:///opt/cpanel/composer/bin/composer/src/Composer/Factory.php(350): Composer\Config->merge()
+#2 phar:///opt/cpanel/composer/bin/composer/src/Composer/Factory.php(646): Composer\Factory->createComposer()
+#3 phar:///opt/cpanel/composer/bin/composer/src/Composer/Console/Application.php(445): Composer\Factory::create()
+#4 phar:///opt/cpanel/composer/bin/composer/src/Composer/Command/BaseCommand.php(65): Composer\Console\Application->getComposer()
+#5 phar:///opt/cpanel/composer/bin/composer/src/Composer/Command/BaseCommand.php(150): Composer\Command\BaseCommand->getComposer()
+#6 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Command/Command.php(211): Composer\Command\BaseCommand->initialize()
+#7 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Application.php(835): Symfony\Component\Console\Command\Command->run()
+#8 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Application.php(185): Symfony\Component\Console\Application->doRunCommand()
+#9 phar:///opt/cpanel/composer/bin/composer/src/Composer/Console/Application.php(336): Symfony\Component\Console\Application->doRun()
+#10 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Application.php(117): Composer\Console\Application->doRun()
+#11 phar:///opt/cpanel/composer/bin/composer/src/Composer/Console/Application.php(131): Symfony\Component\Console\Application->run()
+#12 phar:///opt/cpanel/composer/bin/composer/bin/composer(83): Composer\Console\Application->run()
+#13 /opt/cpanel/composer/bin/composer(29): require('phar:///opt/cpa...')
+#14 {main}
+  thrown in phar:///opt/cpanel/composer/bin/composer/src/Composer/Config.php on line 191
+[25-Feb-2023 22:55:04 UTC] PHP Fatal error:  Uncaught TypeError: array_merge(): Argument #1 must be of type array, bool given in phar:///opt/cpanel/composer/bin/composer/src/Composer/Config.php:191
+Stack trace:
+#0 phar:///opt/cpanel/composer/bin/composer/src/Composer/Config.php(191): array_merge()
+#1 phar:///opt/cpanel/composer/bin/composer/src/Composer/Factory.php(350): Composer\Config->merge()
+#2 phar:///opt/cpanel/composer/bin/composer/src/Composer/Factory.php(646): Composer\Factory->createComposer()
+#3 phar:///opt/cpanel/composer/bin/composer/src/Composer/Console/Application.php(445): Composer\Factory::create()
+#4 phar:///opt/cpanel/composer/bin/composer/src/Composer/Command/BaseCommand.php(65): Composer\Console\Application->getComposer()
+#5 phar:///opt/cpanel/composer/bin/composer/src/Composer/Command/BaseCommand.php(150): Composer\Command\BaseCommand->getComposer()
+#6 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Command/Command.php(211): Composer\Command\BaseCommand->initialize()
+#7 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Application.php(835): Symfony\Component\Console\Command\Command->run()
+#8 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Application.php(185): Symfony\Component\Console\Application->doRunCommand()
+#9 phar:///opt/cpanel/composer/bin/composer/src/Composer/Console/Application.php(336): Symfony\Component\Console\Application->doRun()
+#10 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Application.php(117): Composer\Console\Application->doRun()
+#11 phar:///opt/cpanel/composer/bin/composer/src/Composer/Console/Application.php(131): Symfony\Component\Console\Application->run()
+#12 phar:///opt/cpanel/composer/bin/composer/bin/composer(83): Composer\Console\Application->run()
+#13 /opt/cpanel/composer/bin/composer(29): require('phar:///opt/cpa...')
+#14 {main}
+  thrown in phar:///opt/cpanel/composer/bin/composer/src/Composer/Config.php on line 191
+[25-Feb-2023 22:56:53 UTC] PHP Fatal error:  Uncaught TypeError: array_merge(): Argument #1 must be of type array, bool given in phar:///opt/cpanel/composer/bin/composer/src/Composer/Config.php:191
+Stack trace:
+#0 phar:///opt/cpanel/composer/bin/composer/src/Composer/Config.php(191): array_merge()
+#1 phar:///opt/cpanel/composer/bin/composer/src/Composer/Factory.php(350): Composer\Config->merge()
+#2 phar:///opt/cpanel/composer/bin/composer/src/Composer/Factory.php(646): Composer\Factory->createComposer()
+#3 phar:///opt/cpanel/composer/bin/composer/src/Composer/Console/Application.php(445): Composer\Factory::create()
+#4 phar:///opt/cpanel/composer/bin/composer/src/Composer/Command/BaseCommand.php(65): Composer\Console\Application->getComposer()
+#5 phar:///opt/cpanel/composer/bin/composer/src/Composer/Command/BaseCommand.php(150): Composer\Command\BaseCommand->getComposer()
+#6 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Command/Command.php(211): Composer\Command\BaseCommand->initialize()
+#7 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Application.php(835): Symfony\Component\Console\Command\Command->run()
+#8 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Application.php(185): Symfony\Component\Console\Application->doRunCommand()
+#9 phar:///opt/cpanel/composer/bin/composer/src/Composer/Console/Application.php(336): Symfony\Component\Console\Application->doRun()
+#10 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Application.php(117): Composer\Console\Application->doRun()
+#11 phar:///opt/cpanel/composer/bin/composer/src/Composer/Console/Application.php(131): Symfony\Component\Console\Application->run()
+#12 phar:///opt/cpanel/composer/bin/composer/bin/composer(83): Composer\Console\Application->run()
+#13 /opt/cpanel/composer/bin/composer(29): require('phar:///opt/cpa...')
+#14 {main}
+  thrown in phar:///opt/cpanel/composer/bin/composer/src/Composer/Config.php on line 191
+[25-Feb-2023 22:56:58 UTC] PHP Fatal error:  Uncaught TypeError: array_merge(): Argument #1 must be of type array, bool given in phar:///opt/cpanel/composer/bin/composer/src/Composer/Config.php:191
+Stack trace:
+#0 phar:///opt/cpanel/composer/bin/composer/src/Composer/Config.php(191): array_merge()
+#1 phar:///opt/cpanel/composer/bin/composer/src/Composer/Factory.php(350): Composer\Config->merge()
+#2 phar:///opt/cpanel/composer/bin/composer/src/Composer/Factory.php(646): Composer\Factory->createComposer()
+#3 phar:///opt/cpanel/composer/bin/composer/src/Composer/Console/Application.php(445): Composer\Factory::create()
+#4 phar:///opt/cpanel/composer/bin/composer/src/Composer/Console/Application.php(578): Composer\Console\Application->getComposer()
+#5 phar:///opt/cpanel/composer/bin/composer/src/Composer/Console/Application.php(213): Composer\Console\Application->getPluginCommands()
+#6 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Application.php(117): Composer\Console\Application->doRun()
+#7 phar:///opt/cpanel/composer/bin/composer/src/Composer/Console/Application.php(131): Symfony\Component\Console\Application->run()
+#8 phar:///opt/cpanel/composer/bin/composer/bin/composer(83): Composer\Console\Application->run()
+#9 /opt/cpanel/composer/bin/composer(29): require('phar:///opt/cpa...')
+#10 {main}
+  thrown in phar:///opt/cpanel/composer/bin/composer/src/Composer/Config.php on line 191
+[25-Feb-2023 22:57:20 UTC] PHP Fatal error:  Uncaught TypeError: array_merge(): Argument #1 must be of type array, bool given in phar:///opt/cpanel/composer/bin/composer/src/Composer/Config.php:191
+Stack trace:
+#0 phar:///opt/cpanel/composer/bin/composer/src/Composer/Config.php(191): array_merge()
+#1 phar:///opt/cpanel/composer/bin/composer/src/Composer/Factory.php(350): Composer\Config->merge()
+#2 phar:///opt/cpanel/composer/bin/composer/src/Composer/Factory.php(646): Composer\Factory->createComposer()
+#3 phar:///opt/cpanel/composer/bin/composer/src/Composer/Console/Application.php(445): Composer\Factory::create()
+#4 phar:///opt/cpanel/composer/bin/composer/src/Composer/Command/BaseCommand.php(65): Composer\Console\Application->getComposer()
+#5 phar:///opt/cpanel/composer/bin/composer/src/Composer/Command/BaseCommand.php(150): Composer\Command\BaseCommand->getComposer()
+#6 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Command/Command.php(211): Composer\Command\BaseCommand->initialize()
+#7 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Application.php(835): Symfony\Component\Console\Command\Command->run()
+#8 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Application.php(185): Symfony\Component\Console\Application->doRunCommand()
+#9 phar:///opt/cpanel/composer/bin/composer/src/Composer/Console/Application.php(336): Symfony\Component\Console\Application->doRun()
+#10 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Application.php(117): Composer\Console\Application->doRun()
+#11 phar:///opt/cpanel/composer/bin/composer/src/Composer/Console/Application.php(131): Symfony\Component\Console\Application->run()
+#12 phar:///opt/cpanel/composer/bin/composer/bin/composer(83): Composer\Console\Application->run()
+#13 /opt/cpanel/composer/bin/composer(29): require('phar:///opt/cpa...')
+#14 {main}
+  thrown in phar:///opt/cpanel/composer/bin/composer/src/Composer/Config.php on line 191
+[25-Feb-2023 22:58:18 UTC] PHP Fatal error:  Uncaught TypeError: array_merge(): Argument #1 must be of type array, bool given in phar:///opt/cpanel/composer/bin/composer/src/Composer/Config.php:191
+Stack trace:
+#0 phar:///opt/cpanel/composer/bin/composer/src/Composer/Config.php(191): array_merge()
+#1 phar:///opt/cpanel/composer/bin/composer/src/Composer/Factory.php(350): Composer\Config->merge()
+#2 phar:///opt/cpanel/composer/bin/composer/src/Composer/Factory.php(646): Composer\Factory->createComposer()
+#3 phar:///opt/cpanel/composer/bin/composer/src/Composer/Console/Application.php(445): Composer\Factory::create()
+#4 phar:///opt/cpanel/composer/bin/composer/src/Composer/Command/BaseCommand.php(65): Composer\Console\Application->getComposer()
+#5 phar:///opt/cpanel/composer/bin/composer/src/Composer/Command/BaseCommand.php(150): Composer\Command\BaseCommand->getComposer()
+#6 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Command/Command.php(211): Composer\Command\BaseCommand->initialize()
+#7 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Application.php(835): Symfony\Component\Console\Command\Command->run()
+#8 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Application.php(185): Symfony\Component\Console\Application->doRunCommand()
+#9 phar:///opt/cpanel/composer/bin/composer/src/Composer/Console/Application.php(336): Symfony\Component\Console\Application->doRun()
+#10 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Application.php(117): Composer\Console\Application->doRun()
+#11 phar:///opt/cpanel/composer/bin/composer/src/Composer/Console/Application.php(131): Symfony\Component\Console\Application->run()
+#12 phar:///opt/cpanel/composer/bin/composer/bin/composer(83): Composer\Console\Application->run()
+#13 /opt/cpanel/composer/bin/composer(29): require('phar:///opt/cpa...')
+#14 {main}
+  thrown in phar:///opt/cpanel/composer/bin/composer/src/Composer/Config.php on line 191
+[25-Feb-2023 22:58:29 UTC] PHP Fatal error:  Uncaught TypeError: array_merge(): Argument #1 must be of type array, bool given in phar:///opt/cpanel/composer/bin/composer/src/Composer/Config.php:191
+Stack trace:
+#0 phar:///opt/cpanel/composer/bin/composer/src/Composer/Config.php(191): array_merge()
+#1 phar:///opt/cpanel/composer/bin/composer/src/Composer/Factory.php(350): Composer\Config->merge()
+#2 phar:///opt/cpanel/composer/bin/composer/src/Composer/Factory.php(646): Composer\Factory->createComposer()
+#3 phar:///opt/cpanel/composer/bin/composer/src/Composer/Console/Application.php(445): Composer\Factory::create()
+#4 phar:///opt/cpanel/composer/bin/composer/src/Composer/Command/BaseCommand.php(65): Composer\Console\Application->getComposer()
+#5 phar:///opt/cpanel/composer/bin/composer/src/Composer/Command/BaseCommand.php(150): Composer\Command\BaseCommand->getComposer()
+#6 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Command/Command.php(211): Composer\Command\BaseCommand->initialize()
+#7 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Application.php(835): Symfony\Component\Console\Command\Command->run()
+#8 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Application.php(185): Symfony\Component\Console\Application->doRunCommand()
+#9 phar:///opt/cpanel/composer/bin/composer/src/Composer/Console/Application.php(336): Symfony\Component\Console\Application->doRun()
+#10 phar:///opt/cpanel/composer/bin/composer/vendor/symfony/console/Application.php(117): Composer\Console\Application->doRun()
+#11 phar:///opt/cpanel/composer/bin/composer/src/Composer/Console/Application.php(131): Symfony\Component\Console\Application->run()
+#12 phar:///opt/cpanel/composer/bin/composer/bin/composer(83): Composer\Console\Application->run()
+#13 /opt/cpanel/composer/bin/composer(29): require('phar:///opt/cpa...')
+#14 {main}
+  thrown in phar:///opt/cpanel/composer/bin/composer/src/Composer/Config.php on line 191
