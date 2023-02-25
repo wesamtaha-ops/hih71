@@ -166,6 +166,11 @@ class HomeController extends Controller
             'teacher.trains',
             'teacher.packages'
         ])->first();
+
+        if(!$teacher->exists()) {
+            return view('404');
+        }
+
         $languages = ParsingService::parseLanguages(Language::get()->toArray());
         $topics = ParsingService::parseTopics(Topic::where('parent_id', '!=', null)->get()->toArray());
         $reviews = [
