@@ -4,7 +4,7 @@ return [
     'home' => 'الرئيسية',
     'current_lang' => 'العربية',
     'login' => 'تسجيل الدخول',
-    'register' => 'مستخدم جديد',
+    'register' => 'التسجيل كطالب',
     'contact' => 'اتصل بنا',
     'become_tutor' => 'إنضم لطاقم المدرسين',
     'welcome' => 'أهلا بك',

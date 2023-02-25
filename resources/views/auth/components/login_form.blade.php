@@ -33,7 +33,8 @@
                 </div>
 
                 <div class="tu-lost-password form-group">
-                    <a href="{{route('register')}}">Join us today</a>
+                    <a class="btn" style="color: #fff; background-color: #03a9f4;" href="{{route('register')}}" > I don't have account </a>
+
                     <a href="{{route('forget')}}" class="tu-password-clr_light">Lost password?</a>
                 </div>
             </div>

@@ -26,7 +26,7 @@ define("EW_CONFIG_FILE_FOLDER", EW_PROJECT_NAME, TRUE); // Config file name
 define("EW_PROJECT_ID", "{D43A73A4-5F37-4161-A00D-2E65107145C9}", TRUE); // Project ID (GUID)
 $EW_RELATED_PROJECT_ID = "";
 $EW_RELATED_LANGUAGE_FOLDER = "";
-define("EW_RANDOM_KEY", '7PcdcQ78C6D91ad1', TRUE); // Random key for encryption
+define("EW_RANDOM_KEY", 'Oh6bcCty74tcvcZH', TRUE); // Random key for encryption
 define("EW_PROJECT_STYLESHEET_FILENAME", "phpcss/hih71.css", TRUE); // Project stylesheet file name
 define("EW_CHARSET", "utf-8", TRUE); // Project charset
 define("EW_EMAIL_CHARSET", EW_CHARSET, TRUE); // Email charset
@@ -78,7 +78,7 @@ if (!defined("EW_USE_MYSQLI"))
 	define('EW_USE_MYSQLI', extension_loaded("mysqli"), TRUE); // Use MySQLi
 if (!defined("EW_USE_MSSQL_NATIVE"))
 	define("EW_USE_MSSQL_NATIVE", FALSE, TRUE); // Use ADOdb "mssqlnative" driver for MSSQL
-$EW_CONN["DB"] = array("conn" => NULL, "id" => "DB", "type" => "MYSQL", "host" => "localhost", "port" => 3306, "user" => "onak_hih71", "pass" => "onak_hih71", "db" => "onak_hih71", "qs" => "`", "qe" => "`");
+$EW_CONN["DB"] = array("conn" => NULL, "id" => "DB", "type" => "MYSQL", "host" => "localhost", "port" => 3306, "user" => "root", "pass" => "", "db" => "hih71", "qs" => "`", "qe" => "`");
 $EW_CONN[0] = &$EW_CONN["DB"];
 
 // Set up database error function
@@ -327,7 +327,7 @@ $EW_REMOTE_FILE_PATTERN = '/^((https?\:)?|ftps?\:|s3:)\/\//i';
 $EW_UPLOAD_TYPE = "POST"; // HTTP request method for the file uploads, e.g. "POST", "PUT" //***
 define("EW_UPLOAD_TEMP_PATH", "", TRUE); // Upload temp path (absolute local physical path)
 define("EW_UPLOAD_TEMP_HREF_PATH", "", TRUE); // Upload temp href path (absolute URL path for download)
-define("EW_UPLOAD_DEST_PATH", "", TRUE); // Upload destination path (relative to app root)
+define("EW_UPLOAD_DEST_PATH", "../images/", TRUE); // Upload destination path (relative to app root)
 define("EW_UPLOAD_HREF_PATH", "", TRUE); // Upload file href path (for download)
 define("EW_UPLOAD_URL", "ewupload14.php", TRUE); // Upload URL
 define("EW_UPLOAD_TEMP_FOLDER_PREFIX", "temp__", TRUE); // Upload temp folders prefix

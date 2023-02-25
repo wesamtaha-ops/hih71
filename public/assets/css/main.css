@@ -3634,7 +3634,7 @@ input.tu-showplaceholder::placeholder {
   z-index: 1;
   position: relative;
   margin-top: -100px;
-  background: #0A0F26;
+  background: #215bbd;
   padding: 200px 0 100px;
   overflow: hidden;
 }
@@ -8238,7 +8238,6 @@ display: none;
     z-index: 1;
     position: relative;
     margin-top: -100px;
-    background: #002057;
     padding: 200px 0 100px;
     overflow: hidden;
 }
@@ -8345,4 +8344,8 @@ text-transform: capitalize;
 .tu-boxarea { overflow: auto; }
     
     
-    
+.tu-navbar .navbar-collapse {
+  margin-left: auto;
+  flex: initial;
+  padding-bottom: 10px;
+}
