@@ -168,7 +168,7 @@ class HomeController extends Controller
         ])->first();
 
         if(!$teacher->exists()) {
-            return view('404');
+            abort(404);
         }
 
         $languages = ParsingService::parseLanguages(Language::get()->toArray());
@@ -187,7 +187,7 @@ class HomeController extends Controller
                 'reviews' => $reviews
             ]);
         } else {
-            return view('404');
+            abort(404);
         }
         
     }
