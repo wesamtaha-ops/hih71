@@ -4,6 +4,7 @@
 <main class="tu-main tu-bgmain">
         <section class="tu-main-section">
             <div class="container">
+                @if($teacher)
                 <div class="row gy-4">
                     <div class="col-xl-8 col-xxl-9">
                         <div class="tu-tutorprofilewrapp">
@@ -329,6 +330,9 @@
                         </aside>
                     </div>
                 </div>
+                @else
+                    There is no such teacher
+                @endif
             </div>
         </section>
 	</main>
