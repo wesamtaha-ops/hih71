@@ -17,7 +17,7 @@ class Teacher extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id','have_certificates','have_experiences','have_assay_experiences','timezone','order_immediatly','teacher_language','video', 'teach_gender', 'weekly_hours','heading_en','description_en','heading_ar','description_ar', 'fees'
+        'user_id','have_certificates','have_experiences','have_assay_experiences','timezone','order_immediatly','teacher_language','video', 'teach_gender', 'weekly_hours','heading_en','description_en','heading_ar','description_ar', 'fees','currency_id'
     ];
 
     public function levels() {
