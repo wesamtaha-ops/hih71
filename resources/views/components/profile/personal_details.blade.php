@@ -15,7 +15,7 @@
                             'placeholder' => 'Full Name', 
                             'half' => 1, 
                             'required' => 1,
-                            'value' => \Auth::user()->name
+                            'value' => @\Auth::user()->name
                         ])
 
                         @include('components.standard.inputtext', [
@@ -25,7 +25,7 @@
                             'half' => 1,
                             'disabled' => 'true', 
                             'type' => 'email', 
-                            'value' => \Auth::user()->email
+                            'value' => @\Auth::user()->email
                         ])
 
                         @include('components.standard.inputtext', [
@@ -33,7 +33,7 @@
                             'name' => 'phone', 
                             'placeholder' => 'Phone', 
                             'half' => 1,
-                            'value' => \Auth::user()->phone
+                            'value' => @\Auth::user()->phone
                         ])
                         
                         @include('components.standard.select', [
@@ -54,36 +54,42 @@
                             'placeholder' => 'Date Of Birth', 
                             'half' => 1, 
                             'type' => 'date', 
-                            'value' => \Auth::user()->birthday
+                            'value' => @\Auth::user()->birthday
                         ])
 
                         @if(isTeacher())
-                            @include('components.standard.select', [
-                                'id' => 'currency_id', 
-                                'name' => 'currency_id', 
-                                'placeholder' => 'Select Currency', 
-                                'half' => 1, 
-                                'value' => \Auth::user()->currency_id, 
-                                'options' => $currencies, 
-                                'required' => 1
-                            ])
+                            @if(@\Auth::user()->currency_id)
+                                @include('components.standard.select', [
+                                    'id' => 'currency_id', 
+                                    'name' => 'currency_id', 
+                                    'placeholder' => 'Select Currency', 
+                                    'half' => 1, 
+                                    'value' => \Auth::user()->currency_id, 
+                                    'options' => $currencies, 
+                                    'required' => 1
+                                ])
+                            @endif
 
-                            @include('components.standard.inputtext', [
-                                'id' => 'fees', 
-                                'name' => 'fees', 
-                                'placeholder' => 'Fees', 
-                                'half' => 1, 
-                                'value' => $teacher_info->fees,
-                                'required' => 1
-                            ])
+                            @if(@$teacher_info->fees)
+                                @include('components.standard.inputtext', [
+                                    'id' => 'fees', 
+                                    'name' => 'fees', 
+                                    'placeholder' => 'Fees', 
+                                    'half' => 1, 
+                                    'value' => $teacher_info->fees,
+                                    'required' => 1
+                                ])
+                            @endif
 
-                            @include('components.standard.select', ['id' => 'country_id', 
-                                'name' => 'country_id', 
-                                'placeholder' => 'Select Nationality', 
-                                'half' => 1, 
-                                'value' => \Auth::user()->country_id, 
-                                'options' => $countries
-                            ])
+                            @if(@\Auth::user()->country_id)
+                                @include('components.standard.select', ['id' => 'country_id', 
+                                    'name' => 'country_id', 
+                                    'placeholder' => 'Select Nationality', 
+                                    'half' => 1, 
+                                    'value' => \Auth::user()->country_id, 
+                                    'options' => $countries
+                                ])
+                            @endif
 
                             <div id="languages_section" style="width: 100%">
 
