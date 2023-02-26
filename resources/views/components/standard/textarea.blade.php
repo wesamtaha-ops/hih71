@@ -6,6 +6,7 @@
                 class="form-control" 
                 required="" 
                 placeholder="{{$placeholder}}" 
+                @if(@$required) required @endif
                 @isset($disabled) disabled @endisset>{{@$value}}</textarea>
         <div class="tu-placeholder">
             <span>{{$placeholder}}</span>
