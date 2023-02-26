@@ -58,7 +58,7 @@
                         ])
 
                         @if(isTeacher())
-                            @if(@currencies)
+                            @if(@$currencies)
                                 @include('components.standard.select', [
                                     'id' => 'currency_id', 
                                     'name' => 'currency_id', 
