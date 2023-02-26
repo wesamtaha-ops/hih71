@@ -39,7 +39,7 @@
                                             <h6>Languages I know</h6>
                                             <div class="tu-languagelist">
                                                 <ul class="tu-languages">
-                                                    @if(@@$teacher->teacher->teacher_language)
+                                                    @if(@$teacher->teacher->teacher_language)
                                                         @foreach(json_decode(@$teacher->teacher->teacher_language) as $language)
                                                             @foreach($languages as $lang)
                                                                 @if($lang['id'] == $language->language)
@@ -104,14 +104,16 @@
 													<div id="flush-collapseOneba" class="accordion-collapse collapse show"  data-bs-parent="#accordionFlushExampleaa">
 														<div class="tu-edubodymain">
 															<div class="tu-accordioneduc">
-                                                                @foreach(@$teacher->teacher->certificates as $certificate)
-                                                                <ul class="tu-branchdetail" style="margin-top: 10px;">
-                                                                    <li><i class="icon icon-home"></i><span>{{$certificate->university}}</span></li>
-                                                                    <li><i class="icon icon-book"></i><span>{{$certificate->degree}}</span></li>
-                                                                    <li><i class="icon icon-calendar"></i><span>From: {{$certificate->from_date}}</span></li>
-                                                                    <li><i class="icon icon-calendar"></i><span>To: {{$certificate->to_date}}</span></li>
-                                                                </ul>
-                                                                @endforeach
+                                                                @if(@$teacher->teacher->certificates)
+                                                                    @foreach($teacher->teacher->certificates as $certificate)
+                                                                    <ul class="tu-branchdetail" style="margin-top: 10px;">
+                                                                        <li><i class="icon icon-home"></i><span>{{$certificate->university}}</span></li>
+                                                                        <li><i class="icon icon-book"></i><span>{{$certificate->degree}}</span></li>
+                                                                        <li><i class="icon icon-calendar"></i><span>From: {{$certificate->from_date}}</span></li>
+                                                                        <li><i class="icon icon-calendar"></i><span>To: {{$certificate->to_date}}</span></li>
+                                                                    </ul>
+                                                                    @endforeach
+                                                                @endif
 															</div>
 														</div>
 													</div>
@@ -130,14 +132,16 @@
 													<div id="flush-collapseOneaa" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExampleaa">
 														<div class="tu-edubodymain">
 															<div class="tu-accordioneduc">
-                                                                @foreach(@$teacher->teacher->experiences as $experience)
-                                                                <ul class="tu-branchdetail" style="margin-top: 10px;">
-                                                                    <li><i class="icon icon-home"></i><span>{{$experience->company}}</span></li>
-                                                                    <li><i class="icon icon-book"></i><span>{{$experience->title}}</span></li>
-                                                                    <li><i class="icon icon-calendar"></i><span>From: {{$experience->from_date}}</span></li>
-                                                                    <li><i class="icon icon-calendar"></i><span>To: {{$experience->to_date}}</span></li>
-                                                                </ul>
-                                                                @endforeach
+                                                                @if(@$teacher->teacher->experiences)
+                                                                    @foreach($teacher->teacher->experiences as $experience)
+                                                                    <ul class="tu-branchdetail" style="margin-top: 10px;">
+                                                                        <li><i class="icon icon-home"></i><span>{{$experience->company}}</span></li>
+                                                                        <li><i class="icon icon-book"></i><span>{{$experience->title}}</span></li>
+                                                                        <li><i class="icon icon-calendar"></i><span>From: {{$experience->from_date}}</span></li>
+                                                                        <li><i class="icon icon-calendar"></i><span>To: {{$experience->to_date}}</span></li>
+                                                                    </ul>
+                                                                    @endforeach
+                                                                @endif
 															</div>
 														</div>
 													</div>
@@ -156,14 +160,16 @@
 													<div id="flush-collapseOneca" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExampleaa">
 														<div class="tu-edubodymain">
 															<div class="tu-accordioneduc">
-                                                                @foreach(@$teacher->teacher->trains as $train)
-                                                                <ul class="tu-branchdetail" style="margin-top: 10px;">
-                                                                    <li><i class="icon icon-home"></i><span>{{$train->instituation}}</span></li>
-                                                                    <li><i class="icon icon-book"></i><span>{{$train->subject}}</span></li>
-                                                                    <li><i class="icon icon-calendar"></i><span>From: {{$train->from_date}}</span></li>
-                                                                    <li><i class="icon icon-calendar"></i><span>To: {{$train->to_date}}</span></li>
-                                                                </ul>
-                                                                @endforeach
+                                                                @if(@$teacher->teacher->trains)
+                                                                    @foreach($teacher->teacher->trains as $train)
+                                                                    <ul class="tu-branchdetail" style="margin-top: 10px;">
+                                                                        <li><i class="icon icon-home"></i><span>{{$train->instituation}}</span></li>
+                                                                        <li><i class="icon icon-book"></i><span>{{$train->subject}}</span></li>
+                                                                        <li><i class="icon icon-calendar"></i><span>From: {{$train->from_date}}</span></li>
+                                                                        <li><i class="icon icon-calendar"></i><span>To: {{$train->to_date}}</span></li>
+                                                                    </ul>
+                                                                    @endforeach
+                                                                @endif
 															</div>
 														</div>
 													</div>
@@ -178,17 +184,19 @@
                                         <ul class="tu-icanteach">  
                                             <li>
                                                 <ul class="tu-serviceslist">
-                                                    @foreach(@$teacher->teacher->topics as $topic)
-                                                    <li>
-                                                        <a href="#">
-                                                            @foreach($topics as $single_topic)
-                                                                @if($single_topic['id'] == $topic->topic_id )
-                                                                    {{$single_topic['name']}}, {{$single_topic['parent']}}
-                                                                 @endif
-                                                            @endforeach
-                                                        </a>
-                                                    </li>
-                                                    @endforeach
+                                                    @if(@$teacher->teacher->topics)
+                                                        @foreach($teacher->teacher->topics as $topic)
+                                                        <li>
+                                                            <a href="#">
+                                                                @foreach($topics as $single_topic)
+                                                                    @if($single_topic['id'] == $topic->topic_id )
+                                                                        {{$single_topic['name']}}, {{$single_topic['parent']}}
+                                                                    @endif
+                                                                @endforeach
+                                                            </a>
+                                                        </li>
+                                                        @endforeach
+                                                    @endif
                                                 </ul>
                                             </li>
                                         </ul>
@@ -315,9 +323,9 @@
                             </div>
 
                             
-                            @if(@@$teacher->teacher->packages)
+                            @if(@$teacher->teacher->packages)
                             <div class="tu-contactbox">
-                                @foreach(@$teacher->teacher->packages as $package)
+                                @foreach($teacher->teacher->packages as $package)
                                 <div style="margin-bottom: 10px;">
                                     <a href="{{ route('package.show', ['package_id' => $package->id]) }}">
                                         <img src="{{asset('images/' . $package->image)}}" style="width: 100%; height: 150px; object-fit: cover;" />
