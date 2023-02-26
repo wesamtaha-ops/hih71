@@ -35,10 +35,7 @@
                         <div class="form-group">
                             <a href="login.html" class="tu-primbtn-lg"><span>Send reset link</span><i class="icon icon-arrow-right"></i></a>
                         </div>
-                        <div class="tu-lost-password form-group">
-                            <a href="/login">Login now</a>
-                            <a href="/register">Join us today</a>
-                        </div>
+                       
                     </div>
                 </div>
             </fieldset>

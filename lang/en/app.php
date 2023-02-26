@@ -4,9 +4,9 @@ return [
     'home' => 'Home',
     'current_lang' => 'English',
     'login' => 'Login',
-    'register' => 'Register',
+    'register' => 'New Student',
     'contact' => 'Contact Us',
-    'become_tutor' => 'Become Tutor',
+    'become_tutor' => 'Become a Tutor',
     'welcome' => 'Welcome!',
     
     'start_from' => 'Start From',

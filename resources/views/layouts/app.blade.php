@@ -79,8 +79,11 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{route('login')}}">{{ __('app.login') }}</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{route('register', ['user_type' => 'teacher'] )}}">{{__('app.become_tutor')}}</a>
+                        <li>
+                            <a class="nav-link btn" style="color:#fff; padding: 10px; margin-left: 15px; margin-top:5px" href="{{route('register', ['user_type' => 'student'] )}}">{{__('app.register')}}</a>
+                        </li>
+                        <li>
+                            <a class="nav-link btn" style="color:#fff; padding: 10px; margin-left: 15px; margin-top:5px;    background: #03a9f4; " href="{{route('register', ['user_type' => 'teacher'] )}}">{{__('app.become_tutor')}}</a>
                         </li>
                         @endguest
                     </ul>

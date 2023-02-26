@@ -48,13 +48,13 @@
                 <div class="col-lg-12">
                     <aside class="tu-asider-holder">
                         @if(isset(request()->success) && request()->success == 1)
-                        <div class="alert alert-success" role="alert">
+                        <div class="alert alert-success" style="margin: 30px;  padding: 30px;" role="alert">
                             {{request()->message}}
                         </div>
                         @endif
 
                         @if(isset(request()->success) && request()->success == 0)
-                        <div class="alert alert-danger" role="alert">
+                        <div class="alert alert-danger" style="margin: 30px;  padding: 30px;"  role="alert">
                             {{request()->message}}
                         </div>
                         @endif
@@ -62,27 +62,27 @@
                         <div class="tu-asidebox">
                             <div style="display: flex;">
                                 <h4 style="width: 100%; padding-bottom: 10px;border-bottom: 1px solid #f1f1f1">Wallet</h4>
-                                <button type="button" class="btn tu-primbtn-lg" data-bs-toggle="modal" data-bs-target="#topupModal" style="width: 150px;margin-left: 20px;">
-                                    Top-Up
+                                <button type="button" class="btn tu-primbtn-lg" 
+                                style="background: #03a9f4; width: 300px; margin-bottom: 30px; border-radius: 0px; color: #fff "
+                                data-bs-toggle="modal" data-bs-target="#topupModal" style="width: 150px;margin-left: 20px;">
+                                    Top-Up Your Balance
                                 </button>
                             </div>
 
-                            <label>Paid: {{ $paid }} </label>
-                            <label>Balance: {{ $balance }} </label>
-
+                          
 
                             <div style="display: flex;">
                                 <div class="btn tu-primbtn-lg btn-table" id="btn-balance" data-type='balance' style="flex: 1; margin-right: 5px;">
-                                    Balance
+                                Current Balance ${{ $balance }}
                                 </div>
 
                                 <div class="btn tu-primbtn-lg btn-table" id="btn-paid" data-type='paid' style="flex: 1; margin-left: 5px;">
-                                    Paid
+                                Paid Amount  ${{ $paid }}
                                 </div>
                             </div>
 
                             <table id="table-balance" class="table" style="margin-top: 10px;">
-                                <tr>
+                            <tr style="background-color: #f7f8fc;">
                                     <th>Amount</th>
                                     <th>Date</th>
                                 </tr>
@@ -99,7 +99,7 @@
                             </table>
 
                             <table id="table-paid" class="table" style="margin-top: 10px; display: none">
-                                <tr>
+                                <tr style="background-color: #f7f8fc;">
                                     <th>Amount</th>
                                     <th>Order ID</th>
                                     <th>Date</th>
