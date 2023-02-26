@@ -99,8 +99,10 @@
         }
     });
 
-    @foreach($teacher_info->availability as $avaiability) 
-        $('.myc-available-time[data-time="{{$avaiability->time}}"][data-date="{{$avaiability->date}}"]').click()
-    @endforeach
+    @if($teacher_info->availability)
+        @foreach($teacher_info->availability as $avaiability) 
+            $('.myc-available-time[data-time="{{$avaiability->time}}"][data-date="{{$avaiability->date}}"]').click()
+        @endforeach
+    @endif
 </script> 
 @endpush
