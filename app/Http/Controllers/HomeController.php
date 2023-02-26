@@ -79,7 +79,7 @@ class HomeController extends Controller
 
         $current_page = $request->page ?? 1;
 
-        $take = 2;
+        $take = 20;
         $skip = ($current_page - 1) * $take;
 
         $sort = $request->sort ?? 'asc';
