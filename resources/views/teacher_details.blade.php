@@ -15,19 +15,19 @@
                             <span class="tu-cardtag"></span>
                             <div class="tu-profileview">
                                 <figure>
-                                    <img src="{{asset('images/' . $teacher->image)}}" alt="image-description" style="height: 200px; width: 200px; object-fit: cover">
+                                    <img src="{{asset('images/' . @$teacher->image)}}" alt="image-description" style="height: 200px; width: 200px; object-fit: cover">
                                 </figure>
                                 <div class="tu-protutorinfo">
                                     <div class="tu-protutordetail">
                                         <div class="tu-productorder-content">
                                             <figure>
-                                            <img src="{{asset('images/' . $teacher->image)}}" alt="image-description" style=" object-fit: cover">
+                                            <img src="{{asset('images/' . @$teacher->image)}}" alt="image-description" style=" object-fit: cover">
                                             </figure>
                                             <div class="tu-product-title">
-                                                <h3>{{$teacher->name}}
+                                                <h3>{{@$teacher->name}}
                                                     <!-- <i class="icon icon-check-circle tu-greenclr" data-tippy-trigger="mouseenter" data-tippy-html="#tu-verifed" data-tippy-interactive="true" data-tippy-placement="top"></i> -->
                                                 </h3>
-                                                <h5>{{$teacher->teacher->heading_en}}</h5>
+                                                <h5>{{@$teacher->teacher->heading_en}}</h5>
                                             </div>
                                         </div>
                                         <ul class="tu-tutorreview">
@@ -39,8 +39,8 @@
                                             <h6>Languages I know</h6>
                                             <div class="tu-languagelist">
                                                 <ul class="tu-languages">
-                                                    @if(@$teacher->teacher->teacher_language)
-                                                        @foreach(json_decode($teacher->teacher->teacher_language) as $language)
+                                                    @if(@@$teacher->teacher->teacher_language)
+                                                        @foreach(json_decode(@$teacher->teacher->teacher_language) as $language)
                                                             @foreach($languages as $lang)
                                                                 @if($lang['id'] == $language->language)
                                                                     <li>{{$lang['name']}}</li>
@@ -58,7 +58,7 @@
                             <div class="tu-actionbts">
                                 <ul class="tu-profilelinksbtn">
                                     <li>
-                                        <a href="{{route('book.single', ['teacher_id' => $teacher->id ])}}" class="tu-primbtn">Book a tution</a>
+                                        <a href="{{route('book.single', ['teacher_id' => @$teacher->id ])}}" class="tu-primbtn">Book a tution</a>
                                     </li>
                                 </ul>
                             </div>
@@ -80,7 +80,7 @@
 											<h4>A brief introduction</h4>
 										</div>
                                         <div class="tu-description">
-											{{$teacher->teacher->description_en}}
+											{{@$teacher->teacher->description_en}}
 										</div>
                                     </div>
                                     <div class="tu-tabswrapper">
@@ -104,7 +104,7 @@
 													<div id="flush-collapseOneba" class="accordion-collapse collapse show"  data-bs-parent="#accordionFlushExampleaa">
 														<div class="tu-edubodymain">
 															<div class="tu-accordioneduc">
-                                                                @foreach($teacher->teacher->certificates as $certificate)
+                                                                @foreach(@$teacher->teacher->certificates as $certificate)
                                                                 <ul class="tu-branchdetail" style="margin-top: 10px;">
                                                                     <li><i class="icon icon-home"></i><span>{{$certificate->university}}</span></li>
                                                                     <li><i class="icon icon-book"></i><span>{{$certificate->degree}}</span></li>
@@ -130,7 +130,7 @@
 													<div id="flush-collapseOneaa" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExampleaa">
 														<div class="tu-edubodymain">
 															<div class="tu-accordioneduc">
-                                                                @foreach($teacher->teacher->experiences as $experience)
+                                                                @foreach(@$teacher->teacher->experiences as $experience)
                                                                 <ul class="tu-branchdetail" style="margin-top: 10px;">
                                                                     <li><i class="icon icon-home"></i><span>{{$experience->company}}</span></li>
                                                                     <li><i class="icon icon-book"></i><span>{{$experience->title}}</span></li>
@@ -156,7 +156,7 @@
 													<div id="flush-collapseOneca" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExampleaa">
 														<div class="tu-edubodymain">
 															<div class="tu-accordioneduc">
-                                                                @foreach($teacher->teacher->trains as $train)
+                                                                @foreach(@$teacher->teacher->trains as $train)
                                                                 <ul class="tu-branchdetail" style="margin-top: 10px;">
                                                                     <li><i class="icon icon-home"></i><span>{{$train->instituation}}</span></li>
                                                                     <li><i class="icon icon-book"></i><span>{{$train->subject}}</span></li>
@@ -178,7 +178,7 @@
                                         <ul class="tu-icanteach">  
                                             <li>
                                                 <ul class="tu-serviceslist">
-                                                    @foreach($teacher->teacher->topics as $topic)
+                                                    @foreach(@$teacher->teacher->topics as $topic)
                                                     <li>
                                                         <a href="#">
                                                             @foreach($topics as $single_topic)
@@ -197,7 +197,7 @@
                                         <div class="tu-tabstitle">
 											<h4>Media gallery</h4>
 										</div>
-                                        <iframe style="width: 100%; margin-top: 20px;" height="315" src="https://www.youtube.com/embed/{{$teacher->teacher->video}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                                        <iframe style="width: 100%; margin-top: 20px;" height="315" src="https://www.youtube.com/embed/{{@$teacher->teacher->video}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                                     </div>
 								</div>
 								<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
@@ -315,9 +315,9 @@
                             </div>
 
                             
-                            @if(@$teacher->teacher->packages)
+                            @if(@@$teacher->teacher->packages)
                             <div class="tu-contactbox">
-                                @foreach($teacher->teacher->packages as $package)
+                                @foreach(@$teacher->teacher->packages as $package)
                                 <div style="margin-bottom: 10px;">
                                     <a href="{{ route('package.show', ['package_id' => $package->id]) }}">
                                         <img src="{{asset('images/' . $package->image)}}" style="width: 100%; height: 150px; object-fit: cover;" />
