@@ -40,43 +40,5 @@
                 @endforeach
             </div>
         </div>
-
-        <label style="width: 100%; margin-top: 50px;">How would you like to teach or train?</label>
-
-        
-        <div id="teach_online_container">
-
-
-            @include('components.standard.inputtext', [
-                'id' => 'teach_online_container_hour', 
-                'name' => 'teach_online_container_hour', 
-                'placeholder' => 'My rate per hour', 
-                'value' => @$fees             
-            ])
-
-            @include('components.standard.select', [
-                'id' => 'teach_online_container_currency', 
-                'name' => 'teach_online_container_currency', 
-                'placeholder' => 'Select Currencies', 
-                'options' => $currencies, 
-                'header' => 'false',
-                'value' => @$currency_id
-            ])
-
-        </div>
     </div>
 </div>
-
-@push('scripts')
-<script>
-    $(document).ready(function () {
-        if($('#teach_online').is(':checked')) {
-            $('#teach_online_container').slideToggle();
-        }
-
-        $('#teach_online').click(function () {
-            $('#teach_online_container').slideToggle();
-        })
-    })
-</script>
-@endpush

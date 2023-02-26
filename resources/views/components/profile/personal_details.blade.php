@@ -58,7 +58,7 @@
                         ])
 
                         @if(isTeacher())
-                            @if(@\Auth::user()->currency_id)
+                            @if(@currencies)
                                 @include('components.standard.select', [
                                     'id' => 'currency_id', 
                                     'name' => 'currency_id', 
@@ -70,18 +70,16 @@
                                 ])
                             @endif
 
-                            @if(@$teacher_info->fees)
-                                @include('components.standard.inputtext', [
-                                    'id' => 'fees', 
-                                    'name' => 'fees', 
-                                    'placeholder' => 'Fees', 
-                                    'half' => 1, 
-                                    'value' => $teacher_info->fees,
-                                    'required' => 1
-                                ])
-                            @endif
+                            @include('components.standard.inputtext', [
+                                'id' => 'fees', 
+                                'name' => 'fees', 
+                                'placeholder' => 'Fees', 
+                                'half' => 1, 
+                                'value' => @$teacher_info->fees,
+                                'required' => 1
+                            ])
 
-                            @if(@\Auth::user()->country_id)
+                            @if(@$countries)
                                 @include('components.standard.select', ['id' => 'country_id', 
                                     'name' => 'country_id', 
                                     'placeholder' => 'Select Nationality', 
