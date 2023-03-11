@@ -41,5 +41,6 @@ return [
     'home_about_name' => 'Mohammad AlJabiri',
     
     'footer_message' => 'We are passionate about education and strive to make the tutoring process as convenient and stress-free as possible.',
+    'wallet' => 'Wallet'
 
 ];

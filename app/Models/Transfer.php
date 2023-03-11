@@ -20,8 +20,8 @@ class Transfer extends Model
     ];
 
     static function get_user_balance() {
-        $positive = Transfer::where('user_id', \Auth::id())->where('type', 'charge')->sum('amount');
-        $negative = Transfer::where('user_id', \Auth::id())->where('type', 'order')->sum('amount');
+        $positive = Transfer::where('user_id', \Auth::id())->where('approved', 1)->where('type', 'charge')->sum('amount');
+        $negative = Transfer::where('user_id', \Auth::id())->where('approved', 1)->where('type', 'order')->sum('amount');
 
         return $positive - $negative;
     }

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use \App\Models\Topic;
 use \App\Models\Level;
 use \App\Models\Teacher;
+use \App\Models\Transfer;
 use \App\Models\TeacherLevel;
 use \App\Models\TeacherCurriculum;
 use \App\Models\TeacherTopic;
@@ -138,6 +139,8 @@ class AuthController extends Controller
         ];
 
         if(Auth::attempt($credentials)) {
+            $balance = Transfer::get_user_balance();
+            Session::put('balance' , $balance);
             return redirect()->route('home');       
         } else {
             return view('auth.login', ['error' => 'Email/Password is wrong']);

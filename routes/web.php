@@ -57,7 +57,7 @@ Route::group(['middleware'=>'auth'], function(){
 
     Route::get('message/{id}', [App\Http\Controllers\MessageController::class, 'chatHistory'])->name('message.read');
 
-    Route::post('payment/checkout', [App\Http\Controllers\StripeController::class, 'checkout'])->name('payment.checkout');
+Route::post('payment/checkout', [App\Http\Controllers\StripeController::class, 'checkout'])->name('payment.checkout');
 
     Route::get('book/{teacher_id}/single', [App\Http\Controllers\OrderController::class, 'book_single'])->name('book.single');
     Route::post('book/{teacher_id}/single', [App\Http\Controllers\OrderController::class, 'book_single_func'])->name('book.single_func');
