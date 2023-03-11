@@ -32,7 +32,8 @@
                                         </div>
                                         <ul class="tu-tutorreview">
                                             <li>
-                                                <span><i class="fa fa-star tu-coloryellow"> <em>{{sprintf('%0.1f', $reviews['avg'])}}<span>/5.0</span></em> </i>  <em>({{$reviews['count']}})</em></span>
+                                                <span> @include('components.star', ['value' => $reviews['avg']]) <em>{{sprintf('%0.1f', $reviews['avg'])}}<span>/5.0</span> </i>  <em>({{$reviews['count']}})</em></span>
+                                                
                                             </li>
                                         </ul>	
                                         <div class="tu-detailitem">
@@ -222,9 +223,7 @@
                                                             <h6><span>{{$review->user->name}}</span>{{$review->created_at->diffForHumans()}}</h6>
                                                             <div class="tu-listing-location tu-ratingstars">
                                                                 <span>{{sprintf('%0.1f', $review->points)}} </span>
-                                                                <span class="tu-stars tu-sm-stars">
-                                                                    <span></span>
-                                                                </span>
+                                                                @include('components.star', ['value' => $review->points])
                                                             </div>
                                                         </div>
                                                     </div>
@@ -234,83 +233,10 @@
                                                 </div>
                                             </div>
                                             @endforeach
-                                            <div class="show-more">
-                                                <a href="javascript:void(0);" class="tu-readmorebtn tu-show_more">Show all</a>
-                                            </div>
                                         </div>
                                     </div>
                                     
-                                    <div class="tu-tabswrapper">
-                                        <div class="tu-boxtitle">
-                                            <h4>Add your review</h4>
-                                        </div>
-                                        <form class="tu-themeform" id="tu-reviews-form">
-                                            <fieldset>
-                                                <div class="tu-themeform__wrap">
-                                                    <div class="form-group-wrap">
-                                                        <div class="form-group">
-                                                            <div class="tu-reviews">
-
-                                                                <div class="tu-listing-location tu-ratingstars">
-                                                                    Time     
-                                                                    <div>
-                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
-                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
-                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
-                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
-                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="tu-listing-location tu-ratingstars">
-                                                                    Quality     
-                                                                    <div>
-                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
-                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
-                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
-                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
-                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="tu-listing-location tu-ratingstars">
-                                                                    Easy to get     
-                                                                    <div>
-                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
-                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
-                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
-                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
-                                                                        <i class="fa fa-star tu-coloryellow rating-start"></i>
-                                                                    </div>
-                                                                </div>
-
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group tu-message-text">
-                                                            <label class="tu-label">Review details</label>
-                                                            <div class="tu-placeholderholder">
-                                                                <textarea class="form-control tu-textarea" id="tu-reviews-content" name="reviews_content" required="" placeholder="Enter description" maxlength="500"></textarea>
-                                                                <div class="tu-placeholder">
-                                                                    <span>Enter description</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                        
-                                                        <div class="form-group tu-formspacebtw">
-                                                            <div class="tu-check">
-                                                                <input type="hidden" name="termsconditions" value="">
-                                                                <input type="checkbox" id="termsconditions" name="termsconditions">
-                                                                <label for="termsconditions"><span>I have read and agree to all <a href="javascript:void(0);">Terms &amp; conditions</a></span></label>
-                                                            </div>
-                                                            <a href="tutor-detail.html" class="tu-primbtn-lg tu-submit-reviews" data-profile_id=""><span>Submit</span><i class="icon icon-chevron-right"></i></a>
-                                                            <input type="hidden" name="profile_id" value="584">
-                                                            <input type="hidden" name="user_id" value="691">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </fieldset>
-                                        </form>
-                                    </div>
+                                   @include('components.add_review', ['user_id' => $teacher->id])
                                     
 								</div>
 							</div>
@@ -347,15 +273,3 @@
         </section>
 	</main>
 @endsection
-
-@push('scripts')
-    <script>
-        $(document).ready(function () {
-            $('.rating-start').click(function () {
-                $(this).prevAll().removeClass('tu-colororange tu-coloryellow').addClass('tu-coloryellow');
-                $(this).nextAll().removeClass('tu-colororange tu-coloryellow').addClass('tu-colororange');
-                $(this).removeClass('tu-colororange tu-coloryellow').addClass('tu-coloryellow');
-            })
-        })
-    </script>
-@endpush

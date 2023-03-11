@@ -186,9 +186,9 @@ class HomeController extends Controller
         $languages = ParsingService::parseLanguages(Language::get()->toArray());
         $topics = ParsingService::parseTopics(Topic::where('parent_id', '!=', null)->get()->toArray());
         $reviews = [
-            'count' => Review::where('teacher_id', $teacher_info->id)->count(),
-            'avg' => Review::where('teacher_id', $teacher_info->id)->avg('points'),
-            'reviews' => Review::where('teacher_id', $teacher_info->id)->with('user')->get(),
+            'count' => Review::where('to_user_id', $teacher_info->id)->where('approved', 1)->count(),
+            'avg' => Review::where('to_user_id', $teacher_info->id)->where('approved', 1)->avg('points'),
+            'reviews' => Review::where('to_user_id', $teacher_info->id)->where('approved', 1)->with('user')->get(),
         ];
 
         if($teacher->exists()) {
@@ -479,6 +479,32 @@ class HomeController extends Controller
     public function show_package($package_id) {
         $package = TeacherPackage::find($package_id);
         return view('package', ['package' => $package]);
+    }
+
+    public function add_review(Request $request) {
+
+        $details = json_encode([
+            'time' => $request->rating_time,
+            'quality' => $request->rating_quality,
+            'easy' => $request->rating_easy
+        ]);
+
+        $points = ceil(($request->rating_time + $request->rating_quality + $request->rating_easy) / 3);
+
+        $payload = [
+            'from_user_id' => \Auth::id(),
+            'to_user_id' => $request->user_id,
+            'details' => $details,
+            'points' => $points,
+            'review' => $request->review
+        ];
+
+        if(Review::insert($payload)) {
+            return ['success' => 1];
+        } else {
+            return ['success' => 0];
+        }
+
     }
 }
 

@@ -65,6 +65,7 @@ Route::post('payment/checkout', [App\Http\Controllers\StripeController::class, '
 
     Route::get('/lessons', [App\Http\Controllers\OrderController::class, 'lessons'])->name('lessons');
 
+    Route::post('/review', [App\Http\Controllers\HomeController::class, 'add_review'])->name('review.add');
 
 
     // teacher stuff
