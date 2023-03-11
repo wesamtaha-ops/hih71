@@ -27,7 +27,7 @@ use \App\Models\Currency;
 use \App\Models\Country;
 use Auth;
 
-
+use Illuminate\Support\Facades\Session;
 
 use Carbon\Carbon;
 
@@ -61,6 +61,12 @@ class HomeController extends Controller
     public function update_locale($locale = 'en') {
         app()->setLocale($locale);
         session()->put('locale', $locale);
+
+        if(\Auth::check()) {
+            $balance = convert_to_currency(env('DEFAULT_CURRENCY_ID'), Transfer::get_user_balance());
+            Session::put('balance' , $balance);
+        }
+
         return redirect()->back();
     }
 
@@ -72,6 +78,12 @@ class HomeController extends Controller
                 session()->put('current_currency', $currency);
             }
         }
+
+        if(\Auth::check()) {
+            $balance = convert_to_currency(env('DEFAULT_CURRENCY_ID'), Transfer::get_user_balance());
+            Session::put('balance' , $balance);
+        }
+
         return redirect()->back();
     }
 
@@ -395,9 +407,11 @@ class HomeController extends Controller
         }
 
         $transfers = Transfer::where('user_id', \Auth::id())->where('approved', 1)->get();
+        
         $paid = Transfer::where('user_id', \Auth::id())->where('approved', 1)->where('type', 'order')->sum('amount');
-
-        $balance = Transfer::get_user_balance();
+        $paid = convert_to_currency(env('DEFAULT_CURRENCY_ID'), $paid);
+        $balance = convert_to_currency(env('DEFAULT_CURRENCY_ID'), Transfer::get_user_balance());
+        Session::put('balance' , $balance);
 
         return view('wallet', ['transfers' => $transfers, 'paid' => $paid, 'balance' => $balance]);
     }

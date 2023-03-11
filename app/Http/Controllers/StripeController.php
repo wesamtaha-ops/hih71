@@ -40,10 +40,9 @@ class StripeController extends Controller
 
         Transfer::create([
             'user_id' => \Auth::id(),
-            'amount' => request()->amount,
+            'amount' => convert_to_default_currency(request()->currency_id, request()->amount),
             'type' => 'charge',
-            'verification_code' => $salt,
-            'currency_id' => request()->currency_id
+            'verification_code' => $salt
         ]);
 
         return redirect()->away($session->url);

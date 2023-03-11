@@ -25,7 +25,7 @@ if (! function_exists('convert_to_default_currency')) {
 if (! function_exists('convert_to_currency')) {
     function convert_to_currency($currency_id, $value) {
 
-        $current_currency_symbol = Session::get('current_currency')['symbol'] ?? env('DEFAULT_CURRENCY_SYMBOL');
+    $current_currency_symbol = Session::get('current_currency')['symbol'] ?? env('DEFAULT_CURRENCY_SYMBOL');
         
         $all_currencies = session()->get('currencies');
         

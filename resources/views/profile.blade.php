@@ -4,6 +4,9 @@
 <main class="tu-main tu-bgmain">
     <div class="tu-main-section">
         <div class="container">
+            @if(!\Auth::user()->is_approved)
+                <div class="alert alert-danger alert-dismissible ew-info">Your profile is not approved yet!</div>
+            @endif
             <div class="row gy-4">
                 <div class="col-lg-4 col-xl-3">
                     <aside class="tu-asider-holder">

@@ -6,7 +6,7 @@
             <div class="container">
                 @if($teacher)
                 <div class="row gy-4">
-                    <div class="col-xl-8 col-xxl-9">
+                    <div class="col-xl-8 @if(sizeOf($teacher->teacher->packages) > 0) col-xxl-9 @else col-xxl-12 @endif">
                         <div class="tu-tutorprofilewrapp">
                             @if(isset(request()->success) && request()->success == 1)
                             <div class="alert alert-success">{{request()->message}}</div>
@@ -316,6 +316,7 @@
 							</div>
 						</div>
                     </div>
+                    @if(sizeOf($teacher->teacher->packages) > 0)
                     <div class="col-xl-4 col-xxl-3">
                         <aside class="tu-asidedetail">
                             <div class="tu-asideinfo text-center">
@@ -337,6 +338,7 @@
                             @endif
                         </aside>
                     </div>
+                    @endif
                 </div>
                 @else
                     There is no such teacher

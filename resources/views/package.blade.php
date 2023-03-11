@@ -37,11 +37,13 @@
                                     </div>
                                 </div>
                             </div>
+                            @if(\Auth::user()->type == 'student')
                             <div class="tu-actionbts">
                                 <div class="tu-userurl">
                                     <!-- <i class="icon icon-globe"></i>
                                     <a href="javascript:void(0);">www.tutorlinkhere.com/tutor/uk/armando/295548 <i class="icon icon-copy"></i></a> -->
                                 </div> 
+                                
                                 <ul class="tu-profilelinksbtn">
                                     <li>
                                         <form action="{{route('book.package_func', ['package_id' => $package->id])}}" method="post">
@@ -51,6 +53,7 @@
                                     </li>
                                 </ul>
                             </div>
+                            @endif
                         </div>
                     </div>
                 </div>

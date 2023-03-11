@@ -69,15 +69,13 @@
                                 </button>
                             </div>
 
-                          
-
                             <div style="display: flex;">
                                 <div class="btn tu-primbtn-lg btn-table" id="btn-balance" data-type='balance' style="flex: 1; margin-right: 5px;">
-                                Current Balance ${{ $balance }}
+                                    Balance {{$balance}} 
                                 </div>
 
                                 <div class="btn tu-primbtn-lg btn-table" id="btn-paid" data-type='paid' style="flex: 1; margin-left: 5px;">
-                                Paid Amount  ${{ $paid }}
+                                Paid Amount {{ $paid }}
                                 </div>
                             </div>
 
@@ -90,7 +88,7 @@
                                 @foreach($transfers as $transfer)
                                     @if($transfer->type == 'charge')
                                     <tr>
-                                        <td>{{$transfer->amount}}</td>
+                                        <td>{{convert_to_currency(env('DEFAULT_CURRENCY_ID'), $transfer->amount)}}</td>
                                         <td>{{$transfer->created_at->diffForHumans()}}</td>
                                     </tr>
                                     @endif

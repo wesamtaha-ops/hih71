@@ -52,6 +52,13 @@
                                 {{__('app.contact')}}
                             </a>
                         </li>
+                        @auth
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{route('wallet')}}">
+                                {{__('app.wallet')}} ({{session()->get('balance') ?? 0}})
+                            </a>
+                        </li>
+                        @endauth
                         <li class="menu-item-has-children nav-item">
                             <a href="javascript:void(0);">{{ __('app.current_lang') }} </a>
                             <ul class="sub-menu">
@@ -98,9 +105,6 @@
                         <ul class="sub-menu">
                             <li>
                                 <a href="{{route('profile')}}"><i class="icon icon-user"></i>Profile</a>
-                            </li>
-                            <li>
-                                <a href="{{route('wallet')}}"><i class="icon icon-user"></i>Wallet</a>
                             </li>
                             <li>
                                 <a href="{{route('lessons')}}"><i class="icon icon-phone"></i>Lessons</a>

@@ -35,6 +35,7 @@
                         </span>
                     </a>
                 </li>
+                @if(\Auth::user()->type == 'student')
                 <li>
                     <a href="{{route('book.single', ['teacher_id' => $teacher->id, 'topic_id' => request()->topic_id ])}}">
                         <span>
@@ -43,6 +44,7 @@
                         </span>
                     </a>
                 </li>
+                @endif
             </ul>
         </div>
         <div class="tu-listinginfo_description">
