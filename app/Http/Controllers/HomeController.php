@@ -131,6 +131,24 @@ class HomeController extends Controller
             });
         }
 
+        if($request->rate3 || $request->rate4 || $request->rate5) {
+            if($request->rate3) {
+                $rates[] = '3';
+            }
+            if($request->rate4) {
+                $rates[] = '4';
+            }
+            if($request->rate5) {
+                $rates[] = '5';
+            }
+        } else {
+            $rates = ["3","4","5"];
+        }
+
+        $teachers->whereIn('rate', $rates);
+
+        
+
         if($request->language_id) {
             $language_id = $request->language_id;
 

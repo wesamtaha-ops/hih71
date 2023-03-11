@@ -106,8 +106,8 @@
                                                 <ul class="tu-categoriesfilter">
                                                     <li>
                                                         <div class="tu-check tu-checksm">
-                                                            <input type="checkbox" id="rate" name="rate" checked>
-                                                            <label for="rate">
+                                                            <input type="checkbox" id="rate5" name="rate5" @if(request()->rate5) checked @endif>
+                                                            <label for="rate5">
                                                                 <span class="tu-stars">
                                                                     <span></span>
                                                                 </span>
@@ -119,7 +119,7 @@
                                                     </li>                                              
                                                     <li>
                                                         <div class="tu-check tu-checksm">
-                                                            <input type="checkbox" id="rate4" name="rate4">
+                                                            <input type="checkbox" id="rate4" name="rate4" @if(request()->rate4) checked @endif>
                                                             <label for="rate4">
                                                                 <span class="tu-stars tu-fourstar">
                                                                     <span></span>
@@ -132,7 +132,7 @@
                                                     </li>                                              
                                                     <li>
                                                         <div class="tu-check tu-checksm">
-                                                            <input type="checkbox" id="rate3" name="rate2" checked>
+                                                            <input type="checkbox" id="rate3" name="rate3"  @if(request()->rate3) checked @endif>
                                                             <label for="rate3">
                                                                 <span class="tu-stars tu-threestar">
                                                                     <span></span>
