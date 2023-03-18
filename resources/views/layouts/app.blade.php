@@ -126,9 +126,9 @@
                                 <a href="{{route('packages')}}"><i class="icon icon-user"></i>@lang('app.packages')</a>
                             </li>
                             @endif
-                            <li>
+                            <!-- <li>
                                 <a href="{{route('password.update')}}"><i class="icon icon-book"></i>@lang('app.change_password')</a>
-                            </li>
+                            </li> -->
                             <li>
                                 <a href="{{route('logout')}}"><i class="icon icon-book-open"></i>{{__('app.logout')}}</a>
                             </li>
