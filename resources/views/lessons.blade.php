@@ -31,11 +31,7 @@
                                         <td>{{$order->teacher->name}}</td>
                                         <td>{{@$order->topic->name_en}}</td>
                                         <td>{{$order->date}} {{$order->time}}</td>
-                                        <td>
-                                            @if($order->meeting_id)
-                                                <a href="/meeting/{{$order->meeting_id}}">Link
-                                            @endif
-                                        </td>
+                                        <td><a href="https://teams.microsoft.com/l/meetup-join/Y0ZDgtMTQ4NS00Y2FiLTkwMjktNDQ1MDY1MWFmYTEz%40thread.v2/">Link</td>
                                     </tr>
                                 @endforeach
 
