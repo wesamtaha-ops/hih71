@@ -6,7 +6,7 @@
             <div class="container">
                 @if($teacher)
                 <div class="row gy-4">
-                    <div class="col-xl-8 @if(sizeOf($teacher->teacher->packages) > 0) col-xxl-9 @else col-xxl-12 @endif">
+                    <div class="@if(sizeOf($teacher->teacher->packages) > 0) col-xl-9 @else col-xl-12 @endif">
                         <div class="tu-tutorprofilewrapp">
                             @if(isset(request()->success) && request()->success == 1)
                             <div class="alert alert-success">{{request()->message}}</div>
@@ -27,17 +27,17 @@
                                                 <h3>{{@$teacher->name}}
                                                     <!-- <i class="icon icon-check-circle tu-greenclr" data-tippy-trigger="mouseenter" data-tippy-html="#tu-verifed" data-tippy-interactive="true" data-tippy-placement="top"></i> -->
                                                 </h3>
-                                                <h5>{{@$teacher->teacher->heading_en}}</h5>
+                                                <h5>{{app()->currentLocale() == 'ar' ?  @$teacher->teacher->heading_ar : @$teacher->teacher->heading_en}}</h5>
                                             </div>
                                         </div>
                                         <ul class="tu-tutorreview">
                                             <li>
-                                                <span> @include('components.star', ['value' => $reviews['avg']]) <em>{{sprintf('%0.1f', $reviews['avg'])}}<span>/5.0</span> </i>  <em>({{$reviews['count']}})</em></span>
+                                                <span> @include('components.star', ['value' => $reviews['avg']]) {{sprintf('%0.1f', $reviews['avg'])}}<span>/5.0</span> </i>  <em>({{$reviews['count']}})</em></span>
                                                 
                                             </li>
                                         </ul>	
                                         <div class="tu-detailitem">
-                                            <h6>Languages I know</h6>
+                                            <h6>@lang('app.language')</h6>
                                             <div class="tu-languagelist">
                                                 <ul class="tu-languages">
                                                     @if(@$teacher->teacher->teacher_language)
@@ -59,7 +59,7 @@
                             <div class="tu-actionbts">
                                 <ul class="tu-profilelinksbtn">
                                     <li>
-                                        <a href="{{route('book.single', ['teacher_id' => @$teacher->id ])}}" class="tu-primbtn">Book a tution</a>
+                                        <a href="{{route('book.single', ['teacher_id' => @$teacher->id ])}}" class="tu-primbtn">@lang('app.book_tution')</a>
                                     </li>
                                 </ul>
                             </div>
@@ -68,25 +68,22 @@
                         <div class="tu-detailstabs">
 							<ul class="nav nav-tabs tu-nav-tabs" id="myTab" role="tablist">
 								<li class="nav-item" role="presentation">
-									<button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true"><i class="icon icon-home"></i><span>Introduction</span></button>
+									<button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true"><i class="icon icon-home"></i><span>@lang('app.introduction')</span></button>
 								</li>
 								<li class="nav-item" role="presentation">
-									<button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false"><i class="icon icon-message-circle"></i><span>Reviews</span></button>
+									<button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false"><i class="icon icon-message-circle"></i><span>@lang('app.reviews')</span></button>
 								</li>
 							</ul>
 							<div class="tab-content tu-tab-content" id="myTabContent">
 								<div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                                     <div class="tu-tabswrapper">
-                                        <div class="tu-tabstitle">
-											<h4>A brief introduction</h4>
-										</div>
                                         <div class="tu-description">
 											{{@$teacher->teacher->description_en}}
 										</div>
                                     </div>
                                     <div class="tu-tabswrapper">
                                         <div class="tu-tabstitle">
-											<h4>Education</h4>
+											<h4>@lang('app.education')</h4>
 										</div>
 
                                         <div class="accordion tu-accordionedu" id="accordionFlushExampleaa">
@@ -96,7 +93,7 @@
 														<div class="tu-accordionedu">
 															<div class="tu-expinfo">
 																<div class="tu-accodion-holder">
-																	<h5 class="collapsed"   data-bs-toggle="collapse" data-bs-target="#flush-collapseOneba" aria-expanded="true" aria-controls="flush-collapseOneba">Higher Education</h5>
+																	<h5 class="collapsed"   data-bs-toggle="collapse" data-bs-target="#flush-collapseOneba" aria-expanded="true" aria-controls="flush-collapseOneba">@lang('app.higher_education_degree')</h5>
 																</div>
 																<i class="icon icon-plus" role="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOneba" aria-expanded="true" aria-controls="flush-collapseOneba"></i>
 															</div>
@@ -124,7 +121,7 @@
 														<div class="tu-accordionedu">
 															<div class="tu-expinfo">
 																<div class="tu-accodion-holder">
-																	<h5  class="collapsed" data-bs-toggle="collapse" data-bs-target="#flush-collapseOneaa" aria-expanded="false" aria-controls="flush-collapseOneaa">Work Experience</h5>
+																	<h5  class="collapsed" data-bs-toggle="collapse" data-bs-target="#flush-collapseOneaa" aria-expanded="false" aria-controls="flush-collapseOneaa">@lang('app.work_experience')</h5>
 																</div>
 																<i class="icon icon-plus" role="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOneaa" aria-expanded="false" aria-controls="flush-collapseOneaa"></i>
 															</div>
@@ -152,7 +149,7 @@
 														<div class="tu-accordionedu">
 															<div class="tu-expinfo">
 																<div class="tu-accodion-holder">
-																	<h5 data-bs-toggle="collapse" data-bs-target="#flush-collapseOneca" aria-expanded="false" aria-controls="flush-collapseOneca">Professional Certificates</h5>
+																	<h5 data-bs-toggle="collapse" data-bs-target="#flush-collapseOneca" aria-expanded="false" aria-controls="flush-collapseOneca">@lang('app.proffesional_certificate')</h5>
 																</div>
 																<i class="icon icon-plus" role="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOneca" aria-expanded="false" aria-controls="flush-collapseOneca"></i>
 															</div>
@@ -180,7 +177,7 @@
                                     </div>
                                     <div class="tu-tabswrapper">
                                         <div class="tu-tabstitle">
-											<h4>I can teach</h4>
+											<h4>@lang('app.i_can_teach')</h4>
 										</div>
                                         <ul class="tu-icanteach">  
                                             <li>
@@ -204,7 +201,7 @@
                                     </div>
                                     <div class="tu-tabswrapper">
                                         <div class="tu-tabstitle">
-											<h4>Media gallery</h4>
+											<h4>@lang('app.media')</h4>
 										</div>
                                         <iframe style="width: 100%; margin-top: 20px;" height="315" src="https://www.youtube.com/embed/{{@$teacher->teacher->video}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                                     </div>
@@ -212,7 +209,7 @@
 								<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                                     <div class="tu-tabswrapper">
                                         <div class="tu-boxtitle">
-                                            <h4>Reviews ({{$reviews['count']}})</h4>
+                                            <h4>@lang('app.reviews') ({{$reviews['count']}})</h4>
                                         </div>
                                         <div class="tu-commentarea">
                                             @foreach($reviews['reviews'] as $review)
@@ -235,18 +232,19 @@
                                             @endforeach
                                         </div>
                                     </div>
-                                    
-                                   @include('components.add_review', ['user_id' => $teacher->id])
+                                    @if(isStudent())
+                                    @include('components.add_review', ['user_id' => $teacher->id])
+                                    @endif
                                     
 								</div>
 							</div>
 						</div>
                     </div>
                     @if(sizeOf($teacher->teacher->packages) > 0)
-                    <div class="col-xl-4 col-xxl-3">
+                    <div class="col-xl-3">
                         <aside class="tu-asidedetail">
                             <div class="tu-asideinfo text-center">
-                                <h6>My Packages</h6>
+                                <h6>@lang('app.packages')</h6>
                             </div>
 
                             
@@ -256,7 +254,7 @@
                                 <div style="margin-bottom: 10px;">
                                     <a href="{{ route('package.show', ['package_id' => $package->id]) }}">
                                         <img src="{{asset('images/' . $package->image)}}" style="width: 100%; height: 150px; object-fit: cover;" />
-                                        <label style="text-align: center">{{$package->title_en}}</label>
+                                        <label style="text-align: center">{{app()->currentLocale() == 'ar' ? $package->title_ar : $package->title_en}}</label>
                                     </a>
                                 </div>
                                 @endforeach

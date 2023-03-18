@@ -1,25 +1,26 @@
 <div class="tu-boxarea">
     <div class="tu-boxsm">
         <div class="tu-boxsmtitle">
-            <h4>I can teach</h4>
+            <h4>@lang('app.i_can_teach')</h4>
         </div>
     </div>
     <div class="tu-box">
         <div class="accordion tu-accordionedu" id="accordionFlushExampleaa">
             <div id="tu-edusortable" class="tu-edusortable">
                 @foreach($topics as $index => $topic)
+                @php $var = preg_replace('/\s+/', '', $index) @endphp
                 <div class="tu-accordion-item">
                     <div class="tu-expwrapper">
                         <div class="tu-accordionedu">
                             <div class="tu-expinfo">
                                 <div class="tu-accodion-holder">
-                                    <h5 class="collapsed"  data-bs-toggle="collapse" data-bs-target="#flush-{{$index}}" aria-expanded="false" aria-controls="flush-{{$index}}">{{ $index }}</h5>
+                                    <h5 class="collapsed"  data-bs-toggle="collapse" data-bs-target="#flush-{{$var}}" aria-expanded="false" aria-controls="flush-{{$var}}">{{ $index }}</h5>
                                 </div>
-                                <i class="icon icon-plus" role="button" data-bs-toggle="collapse" data-bs-target="#flush-{{$index}}" aria-expanded="false" aria-controls="flush-{{$index}}"></i>
+                                <i class="icon icon-plus" role="button" data-bs-toggle="collapse" data-bs-target="#flush-{{$var}}" aria-expanded="false" aria-controls="flush-{{$var}}"></i>
                             </div>
                         </div>
                     </div>
-                    <div id="flush-{{$index}}" class="accordion-collapse collapse"  data-bs-parent="#accordionFlushExampleaa">
+                    <div id="flush-{{$var}}" class="accordion-collapse collapse"  data-bs-parent="#accordionFlushExampleaa">
                         <div class="tu-edubodymain">
                             <div class="tu-accordioneduc">
                                 <div class="form-group-wrap" style="margin: auto">

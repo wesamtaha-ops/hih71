@@ -524,5 +524,10 @@ class HomeController extends Controller
         }
 
     }
+
+    public function category_details($category_id) {
+        $topics = Topic::where('parent_id', $category_id)->get();
+        return view('topics', ['topics' => $topics]);
+    }
 }
 

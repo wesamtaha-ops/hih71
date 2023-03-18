@@ -3,7 +3,7 @@
 
 <div id="frm-container" class="tu-tabswrapper">
     <div class="tu-boxtitle">
-        <h4>Add your review</h4>
+        <h4>@lang('app.add_review')</h4>
     </div>
     <form class="tu-themeform" id="frm_review" method="post" action="{{route('review.add')}}">
         <fieldset>
@@ -13,7 +13,8 @@
                         <div class="tu-reviews">
 
                             <div class="tu-listing-location tu-ratingstars">
-                                Time     
+                                @lang('app.time')
+                                
                                 <input type="hidden" id="rating_time" name="rating_time" value="5" />
                                 <div>
                                     <i class="fa fa-star tu-coloryellow rating rating-time" data-change="rating_time" data-value="1"></i>
@@ -25,7 +26,7 @@
                             </div>
 
                             <div class="tu-listing-location tu-ratingstars">
-                                Quality  
+                                @lang('app.quality')
                                 <input type="hidden" id="rating_quality" name="rating_quality" value="5" />   
                                 <div>
                                     <i class="fa fa-star tu-coloryellow rating rating-quality" data-change="rating_quality" data-value="1"></i>
@@ -37,7 +38,7 @@
                             </div>
 
                             <div class="tu-listing-location tu-ratingstars">
-                                Easy to get   
+                                @lang('app.easy_to_get') 
                                 <input type="hidden" id="rating_easy" name="rating_easy" value="5" />  
                                 <div>
                                     <i class="fa fa-star tu-coloryellow rating rating-easy" data-change="rating_easy" data-value="1"></i>
@@ -51,11 +52,11 @@
                         </div>
                     </div>
                     <div class="form-group tu-message-text">
-                        <label class="tu-label">Review details</label>
+                        <label class="tu-label">@lang('app.review')</label>
                         <div class="tu-placeholderholder">
                             <textarea class="form-control tu-textarea" id="tu-reviews-content" name="review" required="" placeholder="Enter description" maxlength="500"></textarea>
                             <div class="tu-placeholder">
-                                <span>Enter description</span>
+                                <span>@lang('app.description')</span>
                             </div>
                         </div>
                     </div>

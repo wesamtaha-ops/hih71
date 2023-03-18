@@ -30,14 +30,14 @@
                                                         </li>
                                                     </ul>
                                                 </div>	
-                                                <h3>{{@$package->title_en}}</h3>
-                                                <p>{{@$package->description_en}}</h3>
+                                                <h3>{{app()->currentLocale() == 'ar' ?  @$package->title_ar : @$package->title_en}}</h3>
+                                                <p>{{app()->currentLocale() == 'ar' ?  @$package->description_ar : @$package->description_en}}</h3>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            @if(\Auth::user()->type == 'student')
+                            @if(\Auth::check() && \Auth::user()->type == 'student')
                             <div class="tu-actionbts">
                                 <div class="tu-userurl">
                                     <!-- <i class="icon icon-globe"></i>
@@ -48,7 +48,7 @@
                                     <li>
                                         <form action="{{route('book.package_func', ['package_id' => $package->id])}}" method="post">
                                             @csrf
-                                            <button class="tu-primbtn">Book Package</button>
+                                            <button class="tu-primbtn">@lang('app.book_now')</button>
                                         </form>
                                     </li>
                                 </ul>

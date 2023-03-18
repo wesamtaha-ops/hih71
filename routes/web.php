@@ -41,6 +41,10 @@ Route::group(['prefix'=>'ajax', 'as'=>'ajax::'], function() {
    Route::post('message/send', [App\Http\Controllers\MessageController::class, 'ajaxSendMessage'])->name('message.new');
 });
 
+Route::get('/category/{topic_id}', [App\Http\Controllers\HomeController::class, 'category_details'])->name('category.details');
+
+// show package
+Route::get('/package/{package_id}', [App\Http\Controllers\HomeController::class, 'show_package'])->name('package.show');
 
 Route::group(['middleware'=>'auth'], function(){
 
@@ -57,7 +61,7 @@ Route::group(['middleware'=>'auth'], function(){
 
     Route::get('message/{id}', [App\Http\Controllers\MessageController::class, 'chatHistory'])->name('message.read');
 
-Route::post('payment/checkout', [App\Http\Controllers\StripeController::class, 'checkout'])->name('payment.checkout');
+    Route::post('payment/checkout', [App\Http\Controllers\StripeController::class, 'checkout'])->name('payment.checkout');
 
     Route::get('book/{teacher_id}/single', [App\Http\Controllers\OrderController::class, 'book_single'])->name('book.single');
     Route::post('book/{teacher_id}/single', [App\Http\Controllers\OrderController::class, 'book_single_func'])->name('book.single_func');
@@ -83,8 +87,6 @@ Route::post('payment/checkout', [App\Http\Controllers\StripeController::class, '
 
     // student stuff
 
-        // show package
-        Route::get('/package/{package_id}', [App\Http\Controllers\HomeController::class, 'show_package'])->name('package.show');
 
         // book package
         Route::post('package/{package_id}', [App\Http\Controllers\OrderController::class, 'book_package_func'])->name('book.package_func');

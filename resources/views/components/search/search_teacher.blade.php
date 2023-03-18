@@ -25,22 +25,21 @@
             </div>
         </div>
         <div class="tu-listinginfo_service">
-            <h6>You can get teaching service direct at</h6>
             <ul class="tu-service-list">
                 <li>
                     <a href="{{route('teacher', ['slug' => $teacher->slug] )}}">
                         <span>
                             <i class="icon icon-home tu-greenclr"></i>
-                            Teacher Details
+                            @lang('app.teacher_details')
                         </span>
                     </a>
                 </li>
-                @if(\Auth::user()->type == 'student')
+                @if(\Auth::check() && \Auth::user()->type == 'student')
                 <li>
                     <a href="{{route('book.single', ['teacher_id' => $teacher->id, 'topic_id' => request()->topic_id ])}}">
                         <span>
                             <i class="icon icon-map-pin tu-orangeclr"></i>
-                            Book Now
+                            @lang('app.book_now')
                         </span>
                     </a>
                 </li>
@@ -48,10 +47,10 @@
             </ul>
         </div>
         <div class="tu-listinginfo_description">
-            <p>{{@$teacher->teacher->description_en}}</p>
+            <p>{{app()->currentLocale() == 'ar' ? @$teacher->teacher->description_ar : @$teacher->teacher->description_en}}</p>
         </div>
         <ul class="tu-serviceslist">
-            <li style="font-weight: bold; font-size: 13px">Languages</li>
+            <li style="font-weight: bold; font-size: 13px">@lang('app.language')</li>
             @if(@$teacher->teacher->teacher_language)
                 @foreach(json_decode($teacher->teacher->teacher_language) as $teacher_language)
                 <li>

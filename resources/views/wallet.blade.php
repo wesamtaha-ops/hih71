@@ -75,7 +75,7 @@
                                 </div>
 
                                 <div class="btn tu-primbtn-lg btn-table" id="btn-paid" data-type='paid' style="flex: 1; margin-left: 5px;">
-                                Paid Amount {{ $paid }}
+                                    Paid Amount {{ $paid }}
                                 </div>
                             </div>
 
@@ -85,14 +85,23 @@
                                     <th>Date</th>
                                 </tr>
 
+                                @php $check_charge = false; @endphp
                                 @foreach($transfers as $transfer)
                                     @if($transfer->type == 'charge')
+                                    @php $check_charge = true; @endphp
                                     <tr>
                                         <td>{{convert_to_currency(env('DEFAULT_CURRENCY_ID'), $transfer->amount)}}</td>
                                         <td>{{$transfer->created_at->diffForHumans()}}</td>
                                     </tr>
                                     @endif
                                 @endforeach
+
+                                @if(!$check_charge)
+                                    <tr>
+                                        <td colspan="2">No data</td>
+                                    </tr>
+                                @endif
+                                
 
                             </table>
 
@@ -103,6 +112,7 @@
                                     <th>Date</th>
                                 </tr>
 
+                                @php $check_order = false; @endphp
                                 @foreach($transfers as $transfer)
                                     @if($transfer->type == 'order')
                                     <tr>
@@ -110,8 +120,15 @@
                                         <td>{{$transfer->order_id}}</td>
                                         <td>{{$transfer->created_at->diffForHumans()}}</td>
                                     </tr>
+                                    @php $check_order = true; @endphp
                                     @endif
                                 @endforeach
+
+                                @if(!$check_order)
+                                    <tr>
+                                        <td colspan="3">No data</td>
+                                    </tr>
+                                @endif
 
                             </table>
                             

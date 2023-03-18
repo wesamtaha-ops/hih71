@@ -5,7 +5,7 @@
     <div class="tu-main-section">
         <div class="container">
             @if(!\Auth::user()->is_approved)
-                <div class="alert alert-danger alert-dismissible ew-info">Your profile is not approved yet!</div>
+                <div class="alert alert-danger alert-dismissible ew-info">@lang('app.your_profile_not_approve')</div>
             @endif
             <div class="row gy-4">
                 <div class="col-lg-4 col-xl-3">
@@ -24,23 +24,23 @@
                         </div>
                         <ul class="tu-side-tabs">
                             <li class="nav-item">
-                                <a data-tab="personal" href="#" class="active nav-link"><i class="icon icon-user"></i><span>Personal details</span></a>
+                                <a data-tab="personal" href="#" class="active nav-link"><i class="icon icon-user"></i><span>@lang('app.personal_details')</span></a>
                             </li>
                             @if(isTeacher())
                             <li class="nav-item">
-                                <a data-tab="additional-info" href="#" class="nav-link"><i class="icon icon-phone"></i><span>Additional Information</span></a>
+                                <a data-tab="additional-info" href="#" class="nav-link"><i class="icon icon-phone"></i><span>@lang('app.additionanl_information')</span></a>
                             </li>
                             <li class="nav-item">
-                                <a data-tab="subjects" href="#" class="nav-link"><i class="icon icon-book"></i><span>Subjects</span></a>
+                                <a data-tab="subjects" href="#" class="nav-link"><i class="icon icon-book"></i><span>@lang('app.subjects')</span></a>
                             </li>
                             <li class="nav-item">
-                                <a data-tab="resume" href="#" class="nav-link"><i class="icon icon-book-open"></i><span>My Resume</span></a>
+                                <a data-tab="resume" href="#" class="nav-link"><i class="icon icon-book-open"></i><span>@lang('app.resume')</span></a>
                             </li>
                             <li class="nav-item">
-                                <a data-tab="availablity" href="#" class="nav-link"><i class="icon icon-image"></i><span>Availability</span></a>
+                                <a data-tab="availablity" href="#" class="nav-link"><i class="icon icon-image"></i><span>@lang('app.availablity')</span></a>
                             </li>
                             <li class="nav-item">
-                                <a data-tab="description" href="#" class="nav-link"><i class="icon icon-book"></i><span>Description</span></a>
+                                <a data-tab="description" href="#" class="nav-link"><i class="icon icon-book"></i><span>@lang('app.description')</span></a>
                             </li>
                             @endif
                         </ul>
@@ -88,8 +88,7 @@
 
                     </div>
                     <div class="tu-btnarea-two">
-                        <span>Save & update the latest changes to the live</span>
-                        <a href="#" id="btn-save" class="tu-primbtn-lg tu-primbtn-orange">Save & update</a>
+                        <a href="#" id="btn-save" class="tu-primbtn-lg tu-primbtn-orange">@lang('app.save_update')</a>
                     </div>
                 </div>
             </div>
