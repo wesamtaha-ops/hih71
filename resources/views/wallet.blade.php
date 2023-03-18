@@ -60,6 +60,7 @@
                         @endif
 
                         <div class="tu-asidebox">
+                            @if(isStudent())
                             <div style="display: flex;">
                                 <h4 style="width: 100%; padding-bottom: 10px;border-bottom: 1px solid #f1f1f1">Wallet</h4>
                                 <button type="button" class="btn tu-primbtn-lg" 
@@ -68,6 +69,7 @@
                                     Top-Up Your Balance
                                 </button>
                             </div>
+                            
 
                             <div style="display: flex;">
                                 <div class="btn tu-primbtn-lg btn-table" id="btn-balance" data-type='balance' style="flex: 1; margin-right: 5px;">
@@ -78,6 +80,7 @@
                                     Paid Amount {{ $paid }}
                                 </div>
                             </div>
+                            @endif
 
                             <table id="table-balance" class="table" style="margin-top: 10px;">
                             <tr style="background-color: #f7f8fc;">
