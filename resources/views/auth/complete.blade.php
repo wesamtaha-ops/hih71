@@ -26,23 +26,23 @@
                         'content' => $profile_form
                     ],
                     [
-                        'title' => 'Additional Information',
+                        'title' => __('app.additionanl_information'),
                         'content' => $addition_info_form
                     ],
                     [
-                        'title' => 'Subjects',
+                        'title' => __('app.subjects'),
                         'content' => $subject_form
                     ],
                     [
-                        'title' => 'My Resume',
+                        'title' => __('app.resume'),
                         'content' => $resume_form
                     ],
                     [
-                        'title' => 'Availability',
+                        'title' => __('app.availablity'),
                         'content' => $availability_form
                     ],
                     [
-                        'title' => 'Description',
+                        'title' => __('app.description'),
                         'content' => $description_form
                     ]
                 ]

@@ -26,6 +26,18 @@
     <link rel="stylesheet" href="{{asset('assets/css/jquery.mCustomScrollbar.min.css')}}">
     <link rel="stylesheet" href="https://www.jqueryscript.net/demo/Highly-Customizable-jQuery-Toast-Message-Plugin-Toastr/build/toastr.css">
     <link rel="stylesheet" href="{{asset('assets/css/main.css')}}">
+
+    @if(app()->currentLocale() == 'ar')
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&&display=swap" rel="stylesheet">
+        <style>
+            *:not(.icon, .fa, .fa-solid, .fa-star, .fab) {
+                font-family: 'Almarai', sans-serif !important;
+            }
+        </style>
+    @endif
+
     @yield('styles')
 </head>
 <body dir="{{app()->currentLocale() == 'ar' ? 'rtl' : 'ltr'}}">
@@ -48,7 +60,7 @@
                 <div class="collapse navbar-collapse tu-themenav" id="navbarSupportedContent">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link" href="search-listing.html">
+                            <a class="nav-link" href="https://api.whatsapp.com/send?phone=971543333403&text=Hello">
                                 {{__('app.contact')}}
                             </a>
                         </li>
@@ -61,7 +73,7 @@
                         @endauth
                         <li class="menu-item-has-children nav-item">
                             <a href="javascript:void(0);">{{ __('app.current_lang') }} </a>
-                            <ul class="sub-menu">
+                            <ul class="sub-menu" style="left: {{app()->currentLocale() == 'ar' ? 0 : 'auto'}}; right: {{app()->currentLocale() == 'ar' ? 'auto' : 0}}">
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{route('locale.update', ['locale' => 'en'])}}">English</a>
                                 </li>
@@ -74,7 +86,7 @@
                             <a href="javascript:void(0);">
                             {{session()->get('current_currency')['name']}}
                             </a>
-                            <ul class="sub-menu">
+                            <ul class="sub-menu" style="left: {{app()->currentLocale() == 'ar' ? 0 : 'auto'}}; right: {{app()->currentLocale() == 'ar' ? 'auto' : 0}}">
                                 <li class="nav-item">
                                     @foreach(session()->get('currencies') as $currency)
                                     <a class="nav-link" href="{{route('currency.update', ['currency_id' => $currency['id']])}}">{{$currency['name']}}</a>
@@ -102,21 +114,21 @@
                     </li> -->
                     <li class="menu-item-has-children">
                         <strong><a class="nav-link" href="javascript:void(0);"><img src="{{\Auth::user()->image ? asset('images/' . \Auth::user()->image) : 'https://votly.io/media/400/welnnxojxk3w0hpc7gq4tcriarfzvxsaoc7rgdi78ml4j0jbqk.webp'}}" style="width: 30px; height: 30px;" alt="image-description"></a></strong>
-                        <ul class="sub-menu">
+                        <ul class="sub-menu" style="left: {{app()->currentLocale() == 'ar' ? 0 : 'auto'}}; right: {{app()->currentLocale() == 'ar' ? 'auto' : 0}}">
                             <li>
-                                <a href="{{route('profile')}}"><i class="icon icon-user"></i>Profile</a>
+                                <a href="{{route('profile')}}"><i class="icon icon-user"></i>@lang('app.profile')</a>
                             </li>
                             <li>
-                                <a href="{{route('lessons')}}"><i class="icon icon-phone"></i>Lessons</a>
+                                <a href="{{route('lessons')}}"><i class="icon icon-phone"></i>@lang('app.lessons')</a>
                             </li>
                             @if(isTeacher())
                             <li>
-                                <a href="{{route('packages')}}"><i class="icon icon-user"></i>Packages</a>
+                                <a href="{{route('packages')}}"><i class="icon icon-user"></i>@lang('app.packages')</a>
                             </li>
                             @endif
-                            <li>
-                                <a href="{{route('password.update')}}"><i class="icon icon-book"></i>Change Password</a>
-                            </li>
+                            <!-- <li>
+                                <a href="{{route('password.update')}}"><i class="icon icon-book"></i>@lang('app.change_password')</a>
+                            </li> -->
                             <li>
                                 <a href="{{route('logout')}}"><i class="icon icon-book-open"></i>{{__('app.logout')}}</a>
                             </li>
@@ -138,7 +150,7 @@
                         <strong class="tu-footerlogo">
                             <a href="{{route('home')}}"><img src="{{asset('images/logo.jpeg')}}" alt="Logo" style="width: 200px;"></a>
                         </strong>
-                        <p class="tu-footerdescription">Accusamus etidio dignissimos ducimus blanditiis praesentium volupta eleniti atquete corrupti quolores etmquasa molestias epturi sinteam occaecati cupiditate non providente mikume molareshe.</p>
+                        <p class="tu-footerdescription">{{__('app.footer_description')}}</p>
                         <ul class="tu-socialmedia">
                             <li class="tu-facebookv3"><a href="https://www.facebook.com/" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
                             <li class="tu-twitterv3"><a href="https://twitter.com/?lang=en" target="_blank"><i class="fab fa-twitter"></i></a></li>
@@ -146,9 +158,9 @@
                         </ul>
                     </div>
                     <div class="col-lg-5">
-                        <h5 class="tu-footertitle">Feel free to share your question</h5>
+                        <h5 class="tu-footertitle"> {{__('app.footer_feel_free')}}</h5>
                         <ul class="tu-footerlist tu-footericonlist">
-                            <li><a href="tel:+6287777263549"><i class="icon icon-phone-call"></i><em>+971 5 77263549</em><span>( Mon to Sun 9am - 11pm GMT )</span></a></li>
+                            <li><a href="tel:+6287777263549"><i class="icon icon-phone-call"></i><em>+971 5 77263549</em></a></li>
                             <li><a href="mailto:hello@youremailid.co.uk"><i class="icon icon-mail"></i><em>info@hih71.co.uk</em></a></li>
                         </ul>
                     </div>
@@ -158,10 +170,10 @@
             <div class="tu-footercopyright">
                 <div class="container">
                     <div class="tu-footercopyright_content">
-                        <p>© 2023 All Rights Reserved.</p>
+                        <p>© 2023 {{__('app.footer_all_rights')}}</p>
                         <ul class="tu-footercopyright_list">
-                            <li><a href="how-it-work.html">Terms of use</a></li>
-                            <li><a href="how-it-work.html">Privacy policy</a></li>
+                            <li><a href="how-it-work.html">{{__('app.privacy_policy')}}</a></li>
+                            <li><a href="how-it-work.html">{{__('app.terms')}}</a></li>
                         </ul>
                     </div>
                 </div>

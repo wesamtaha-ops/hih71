@@ -5,7 +5,7 @@
 <div class="tu-boxarea">
     <div class="tu-boxsm">
         <div class="tu-boxsmtitle"> 
-            <h4>Availability</h4>
+            <h4>@lang('app.availablity')</h4>
         </div>
     </div>
     <div class="tu-box">
@@ -13,11 +13,11 @@
             <fieldset>
                 <div class="tu-themeform__wrap">
                     <div class="form-group-wrap">
-                        <label>Set your time zone</label>
+                        <label>@lang('app.set_time_zone')</label>
                     
-                        @include('components.standard.checkbox', ['name' => 'allow_express', 'id' => 'allow_express', 'label' => 'Allow Express', 'value' => 'Allow Express', 'selected' => @$teacher_info->allow_express])
+                        @include('components.standard.checkbox', ['name' => 'allow_express', 'id' => 'allow_express', 'label' => __('app.allow_express'), 'value' => 'Allow Express', 'selected' => @$teacher_info->allow_express])
 
-                        @include('components.standard.select', ['id' => 'timezone', 'name' => 'timezone', 'placeholder' => 'Choose Your TimeZone', 'options' => $timezones, 'value' => @$teacher_info->timezone])
+                        @include('components.standard.select', ['id' => 'timezone', 'name' => 'timezone', 'placeholder' => __('app.choose_time_zone'), 'options' => $timezones, 'value' => @$teacher_info->timezone])
                         
                         @include('components.calendar', ['teacher_info' => $teacher_info])
                     </div>

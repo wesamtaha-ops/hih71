@@ -1,7 +1,7 @@
 <div class="tu-boxarea">
     <div class="tu-boxsm">
         <div class="tu-boxsmtitle">
-            <h4>Personal details</h4>
+            <h4>@lang('app.personal_details')</h4>
         </div>
     </div>
     <div class="tu-box">
@@ -12,7 +12,7 @@
                         @include('components.standard.inputtext', [
                             'id' => 'full_name', 
                             'name' => 'full_name', 
-                            'placeholder' => 'Full Name', 
+                            'placeholder' => __('app.full_name'), 
                             'half' => 1, 
                             'required' => 1,
                             'value' => @\Auth::user()->name
@@ -21,7 +21,7 @@
                         @include('components.standard.inputtext', [
                             'id' => 'email', 
                             'name' => 'email', 
-                            'placeholder' => 'Email', 
+                            'placeholder' => __('app.email'), 
                             'half' => 1,
                             'disabled' => 'true', 
                             'type' => 'email', 
@@ -31,7 +31,7 @@
                         @include('components.standard.inputtext', [
                             'id' => 'phone', 
                             'name' => 'phone', 
-                            'placeholder' => 'Phone', 
+                            'placeholder' => __('app.phone'),
                             'half' => 1,
                             'value' => @\Auth::user()->phone
                         ])
@@ -40,7 +40,7 @@
                             'id' => 'gender', 
                             'name' => 'gender', 
                             'half' => 1, 
-                            'placeholder' => 'Select Gender', 
+                            'placeholder' => __('app.gender'), 
                             'value' => \Auth::user()->gender, 
                             'options' => [
                                 ['id' => 'male', 'name' => 'Male'],
@@ -51,7 +51,7 @@
                         @include('components.standard.inputtext', [
                             'id' => 'dob', 
                             'name' => 'dob', 
-                            'placeholder' => 'Date Of Birth', 
+                            'placeholder' => __('app.dob'), 
                             'half' => 1, 
                             'type' => 'date', 
                             'value' => @\Auth::user()->birthday
@@ -62,7 +62,7 @@
                                 @include('components.standard.select', [
                                     'id' => 'currency_id', 
                                     'name' => 'currency_id', 
-                                    'placeholder' => 'Select Currency', 
+                                    'placeholder' => __('app.currency'), 
                                     'half' => 1, 
                                     'value' => \Auth::user()->currency_id, 
                                     'options' => $currencies, 
@@ -73,7 +73,7 @@
                             @include('components.standard.inputtext', [
                                 'id' => 'fees', 
                                 'name' => 'fees', 
-                                'placeholder' => 'Fees', 
+                                'placeholder' => __('app.fees'), 
                                 'half' => 1, 
                                 'value' => @$teacher_info->fees,
                                 'required' => 1
@@ -82,7 +82,7 @@
                             @if(@$countries)
                                 @include('components.standard.select', ['id' => 'country_id', 
                                     'name' => 'country_id', 
-                                    'placeholder' => 'Select Nationality', 
+                                    'placeholder' => __('app.country'), 
                                     'half' => 1, 
                                     'value' => \Auth::user()->country_id, 
                                     'options' => $countries
@@ -98,7 +98,7 @@
                                             'id' => 'languages', 
                                             'half' => 1, 
                                             'name' => 'languages', 
-                                            'placeholder' => 'Select Languages', 
+                                            'placeholder' => __('app.language'), 
                                             'options' => $languages, 
                                             'value' => $info->language
                                         ])
@@ -106,7 +106,7 @@
                                             'id' => 'languages_levels', 
                                             'half' => 1, 
                                             'name' => 'languages_levels', 
-                                            'placeholder' => 'Select Levels', 
+                                            'placeholder' => __('app.level'), 
                                             'options' => $languages_levels, 
                                             'value' => $info->level
                                         ])
@@ -120,7 +120,7 @@
                                         'id' => 'languages', 
                                         'half' => 1, 
                                         'name' => 'languages', 
-                                        'placeholder' => 'Select Languages', 
+                                        'placeholder' => __('app.language'), 
                                         'options' => $languages
                                     ])
 
@@ -128,14 +128,14 @@
                                         'id' => 'languages_levels', 
                                         'half' => 1, 
                                         'name' => 'languages_levels', 
-                                        'placeholder' => 'Select Levels', 
+                                        'placeholder' =>  __('app.level'), 
                                         'options' => $languages_levels
                                     ])
                                 </div>
                             </div>
 
                             <a href="#" id="btn-add-language" class="form-group">
-                                <i class="fa fa-plus-circle" style="margin-right: 10px;"></i> Add another language
+                                <i class="fa fa-plus-circle" style="margin-right: 10px;"></i> @lang('app.add_another_language')
                             </a>
                         
                         @endif

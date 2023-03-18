@@ -2,11 +2,12 @@
     <fieldset>
         <div class="tu-themeform__wrap">
             <div class="form-group-wrap" style="margin: auto">
+                <p>@lang('app.mail_sent')</p>
                 <div class="form-group">
                     <div class="tu-placeholderholder">
                         <input id="otp" type="text" class="form-control" required="" placeholder="OTP">
                         <div class="tu-placeholder">
-                            <span>OTP</span>
+                            <span>@lang('app.otp')</span>
                             <em>*</em>
                         </div>
                     </div>
@@ -15,16 +16,16 @@
                     <div id="verify_err" class="alert alert-danger" style="width: 100%;display: none"></div>
                 </div>
                 <div class="form-group">
-                    <a href="#" id="btn_verify" class="tu-primbtn-lg"><span>Verify</span><i class="icon icon-arrow-right"></i></a>
+                    <a href="#" id="btn_verify" class="tu-primbtn-lg"><span>@lang('app.verify')</span><i class="icon icon-arrow-right"></i></a>
                 </div>
                 <div class="form-group">
                     <div class="tu-optioanl-or">
-                        <span>OR</span>
+                        <span>@lang('or')</span>
                     </div>
                 </div>
                 <div class="tu-lost-password form-group">
-                    <a class="btn" style="color: #fff; background-color: #03a9f4;" href="/login">Login now</a>
-                    <a href="/forget" class="tu-password-clr_light">Lost password?</a>
+                    <a class="btn" style="color: #fff; background-color: #03a9f4;" href="/login">@lang('app.login')</a>
+                    <a href="/forget" class="tu-password-clr_light">@lang('app.lost_password')</a>
                 </div>
             </div>
         </div>

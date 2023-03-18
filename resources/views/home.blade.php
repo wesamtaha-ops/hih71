@@ -48,7 +48,7 @@
                     <ul class="splide__list">
                         @foreach($main_topics as $topic)
                         <li class="splide__slide">
-                            <a class="tu-categories_content" href="{{route('search', ['topic_id' => $topic['id']])}}">
+                            <a class="tu-categories_content" href="{{route('category.details', ['topic_id' => $topic['id']])}}">
                                 <img src="{{asset('images/' . $topic['image'])}}" alt="img">
                                 <div class="tu-categories_title">
                                     <h6>{{$topic['name']}}</h6>
@@ -98,10 +98,8 @@
                                         </ul>
                                     </div>
                                     <div class="tu-instructors_footer">
-                                        <div class="tu-rating">
-                                            <i class="fas fa-star"></i>
-                                            <h6>5.0</h6>
-                                            <span>(66,951)</span>
+                                        <div class="tu-rating" style="justify-content: center; width: 100%">
+                                            @include('components.star', ['value' => $teacher->rate])
                                         </div>
                                     </div>
                                 </div>

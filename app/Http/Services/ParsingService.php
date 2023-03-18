@@ -25,7 +25,7 @@ class ParsingService {
         foreach($arr as $item) {
             $res[] = [
                 'id' => $item['id'],
-                'name' => $item['name_en'],
+                'name' => $item['name_' . app()->currentLocale()],
             ];
         }
 
@@ -38,7 +38,7 @@ class ParsingService {
         foreach($arr as $item) {
             $res[] = [
                 'id' => $item['id'],
-                'name' => $item['name_en'],
+                'name' => $item['name_' . app()->currentLocale()],
             ];
         }
 
@@ -51,7 +51,7 @@ class ParsingService {
         foreach($arr as $item) {
             $res[] = [
                 'id' => $item['id'],
-                'name' => $item['name_en'],
+                'name' => $item['name_' . app()->currentLocale()],
             ];
         }
 
@@ -64,7 +64,7 @@ class ParsingService {
         foreach($arr as $item) {
             $res[] = [
                 'id' => $item['id'],
-                'name' => $item['name_en'],
+                'name' => $item['name_' . app()->currentLocale()],
             ];
         }
 
@@ -78,7 +78,7 @@ class ParsingService {
         foreach($arr as $item) {
             $res[] = [
                 'id' => $item['id'],
-                'name' => $item['name_en'],
+                'name' => $item['name_' . app()->currentLocale()],
             ];
         }
 
@@ -91,7 +91,7 @@ class ParsingService {
         foreach($arr as $item) {
             $res[] = [
                 'id' => $item['id'],
-                'name' => $item['name_en'],
+                'name' => $item['name_' . app()->currentLocale()],
                 'parent' => $item['parent'],
                 'image' => $item['image']
             ];

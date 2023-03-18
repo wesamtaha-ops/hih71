@@ -60,6 +60,7 @@
                         @endif
 
                         <div class="tu-asidebox">
+                            @if(isStudent())
                             <div style="display: flex;">
                                 <h4 style="width: 100%; padding-bottom: 10px;border-bottom: 1px solid #f1f1f1">Wallet</h4>
                                 <button type="button" class="btn tu-primbtn-lg" 
@@ -68,6 +69,7 @@
                                     Top-Up Your Balance
                                 </button>
                             </div>
+                            
 
                             <div style="display: flex;">
                                 <div class="btn tu-primbtn-lg btn-table" id="btn-balance" data-type='balance' style="flex: 1; margin-right: 5px;">
@@ -75,9 +77,10 @@
                                 </div>
 
                                 <div class="btn tu-primbtn-lg btn-table" id="btn-paid" data-type='paid' style="flex: 1; margin-left: 5px;">
-                                Paid Amount {{ $paid }}
+                                    Paid Amount {{ $paid }}
                                 </div>
                             </div>
+                            @endif
 
                             <table id="table-balance" class="table" style="margin-top: 10px;">
                             <tr style="background-color: #f7f8fc;">
@@ -85,14 +88,23 @@
                                     <th>Date</th>
                                 </tr>
 
+                                @php $check_charge = false; @endphp
                                 @foreach($transfers as $transfer)
                                     @if($transfer->type == 'charge')
+                                    @php $check_charge = true; @endphp
                                     <tr>
                                         <td>{{convert_to_currency(env('DEFAULT_CURRENCY_ID'), $transfer->amount)}}</td>
                                         <td>{{$transfer->created_at->diffForHumans()}}</td>
                                     </tr>
                                     @endif
                                 @endforeach
+
+                                @if(!$check_charge)
+                                    <tr>
+                                        <td colspan="2">No data</td>
+                                    </tr>
+                                @endif
+                                
 
                             </table>
 
@@ -103,6 +115,7 @@
                                     <th>Date</th>
                                 </tr>
 
+                                @php $check_order = false; @endphp
                                 @foreach($transfers as $transfer)
                                     @if($transfer->type == 'order')
                                     <tr>
@@ -110,8 +123,15 @@
                                         <td>{{$transfer->order_id}}</td>
                                         <td>{{$transfer->created_at->diffForHumans()}}</td>
                                     </tr>
+                                    @php $check_order = true; @endphp
                                     @endif
                                 @endforeach
+
+                                @if(!$check_order)
+                                    <tr>
+                                        <td colspan="3">No data</td>
+                                    </tr>
+                                @endif
 
                             </table>
                             

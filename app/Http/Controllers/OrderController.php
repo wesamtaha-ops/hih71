@@ -110,7 +110,6 @@ class OrderController extends Controller
             'type' => 'order',
             'order_id' => $order_id,
             'approved' => '1',
-            'currency_id' => $teacher->currency_id
         ]);
 
         return redirect(route('wallet', ['success' => '1', 'message' => 'Order has been submitted successfully!']));
@@ -132,6 +131,7 @@ class OrderController extends Controller
             'fees' => $package->fees
         ];  
 
+        $fees = convert_to_default_currency($package->currency_id, $package->fees);
 
         // add order
         $order_id = Order::insertGetId($data);
@@ -139,11 +139,10 @@ class OrderController extends Controller
         // add transfer
         Transfer::insert([
             'user_id' => \Auth::id(),
-            'amount' => $package->fees,
+            'amount' => $fees,
             'type' => 'order',
             'order_id' => $order_id,
             'approved' => '1',
-            'currency_id' => $package->currency_id
         ]);
 
         return redirect(route('wallet', ['success' => '1', 'message' => 'Order has been submitted successfully!']));

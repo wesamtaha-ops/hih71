@@ -1,7 +1,7 @@
 <div class="tu-boxarea">
     <div class="tu-boxsm">
         <div class="tu-boxsmtitle">
-            <h4>Additional Information</h4>
+            <h4>@lang('app.additionanl_information')</h4>
         </div>
     </div>
     <div class="tu-box">
@@ -9,7 +9,7 @@
             <fieldset>
                 <div class="tu-themeform__wrap">
                     <div class="form-group-wrap">
-                        <label style="width: 100%">Which of the following students' level do you prefer to train or teach?</label>
+                        <label style="width: 100%">@lang('app.which_level')</label>
                         @foreach($levels as $i => $level)
                             @include('components.standard.checkbox', [
                                 'name' => 'level', 
@@ -21,7 +21,7 @@
                             ])
                         @endforeach
 
-                        <label style="width: 100%">Which Curriculum you teach? you can select more than one.</label>
+                        <label style="width: 100%">@lang('app.which_curriculum')</label>
                         @foreach($curriculums as $i => $curriculum)
                             @include('components.standard.checkbox', [
                                 'name' => 'curriculum', 

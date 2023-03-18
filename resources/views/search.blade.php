@@ -10,7 +10,7 @@
                         <div class="col-lg-12">
                             <div class="tu-listing-wrapper">
                                 <div class="tu-sort">
-                                    <h3>{{$teacher_count}} Search results</h3>
+                                    <h3>{{$teacher_count}} @lang('app.search_result')</h3>
                                     <div class="tu-sort-right-area">
                                         <!-- <div class="tu-sortby">
                                             <span>Sort by: </span>
@@ -55,7 +55,7 @@
                                 <div class="tu-aside-menu"> 
                                     <div class="tu-aside-holder">
                                         <div class="tu-asidetitle" data-bs-toggle="collapse" data-bs-target="#side2" role="button" aria-expanded="true">
-                                            <h5>Education level</h5>
+                                            <h5>@lang('app.education_level')</h5>
                                         </div>
                                         <div id="side2" class="collapse show">
                                             <div class="tu-aside-content">
@@ -80,7 +80,7 @@
                                                         @include('components.standard.select', [
                                                             'id' => 'curriculum_id', 
                                                             'name' => 'curriculum_id', 
-                                                            'placeholder' => 'Select Curriculums', 
+                                                            'placeholder' => __('app.select_curriculums'), 
                                                             'options' => $curriculums,
                                                             'value' => request()->curriculum_id
                                                         ])
@@ -88,7 +88,7 @@
                                                         @include('components.standard.select', [
                                                             'id' => 'languages', 
                                                             'name' => 'language_id', 
-                                                            'placeholder' => 'Speak Language', 
+                                                            'placeholder' => __('app.language'), 
                                                             'options' => $languages,
                                                             'value' => request()->language_id
                                                         ])
@@ -99,15 +99,15 @@
                                     
                                     <div class="tu-aside-holder">
                                         <div class="tu-asidetitle" data-bs-toggle="collapse" data-bs-target="#side1a" role="button" aria-expanded="true">
-                                            <h5>Rating</h5>
+                                            <h5>@lang('app.rating')</h5>
                                         </div>
                                         <div id="side1a" class="collapse show">
                                             <div class="tu-aside-content">
                                                 <ul class="tu-categoriesfilter">
                                                     <li>
                                                         <div class="tu-check tu-checksm">
-                                                            <input type="checkbox" id="rate" name="rate" checked>
-                                                            <label for="rate">
+                                                            <input type="checkbox" id="rate5" name="rate5" @if(request()->rate5) checked @endif>
+                                                            <label for="rate5">
                                                                 <span class="tu-stars">
                                                                     <span></span>
                                                                 </span>
@@ -119,7 +119,7 @@
                                                     </li>                                              
                                                     <li>
                                                         <div class="tu-check tu-checksm">
-                                                            <input type="checkbox" id="rate4" name="rate4">
+                                                            <input type="checkbox" id="rate4" name="rate4" @if(request()->rate4) checked @endif>
                                                             <label for="rate4">
                                                                 <span class="tu-stars tu-fourstar">
                                                                     <span></span>
@@ -132,7 +132,7 @@
                                                     </li>                                              
                                                     <li>
                                                         <div class="tu-check tu-checksm">
-                                                            <input type="checkbox" id="rate3" name="rate2" checked>
+                                                            <input type="checkbox" id="rate3" name="rate3"  @if(request()->rate3) checked @endif>
                                                             <label for="rate3">
                                                                 <span class="tu-stars tu-threestar">
                                                                     <span></span>
@@ -148,20 +148,24 @@
                                         </div>
                                     </div>
                                     <div class="tu-filterbtns">
-                                        <button class="tu-primbtn w-100" >Apply filters</button>
+                                        <button class="tu-primbtn w-100" >@lang('app.apply_filter')</button>
                                         <!-- <a href="search-listing.html" class="tu-sb-sliver">Clear all filters</a> -->
                                     </div>
                                 </div>
                             </aside>
                         </div>
                         <div class="col-lg-12 col-xl-9">
-                            @foreach($teachers as $teacher)
-                            <div class="tu-listinginfo-holder">
-                                @include('components.search.search_teacher', [
-                                    'teacher' => $teacher    
-                                ])
-                            </div>
-                            @endforeach
+                            @if(sizeOf($teachers) == 0) 
+                                <h3>@lang('no_data')</h3>
+                            @else 
+                                @foreach($teachers as $teacher)
+                                <div class="tu-listinginfo-holder">
+                                    @include('components.search.search_teacher', [
+                                        'teacher' => $teacher    
+                                    ])
+                                </div>
+                                @endforeach
+                            @endif
                             <nav class="tu-pagination">
                                 <ul>
                                     @for ($i = 1; $i < $pages_count; $i++)

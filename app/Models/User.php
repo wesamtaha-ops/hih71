@@ -57,7 +57,7 @@ class User extends Authenticatable
     public function getReviewCountAttribute()
     {
         if($this->type == 'teacher') {
-            return Review::where('teacher_id', $this->id)->count();
+            return Review::where('to_user_id', $this->id)->count();
         }
 
         return 0;
@@ -66,7 +66,7 @@ class User extends Authenticatable
     public function getReviewAvgAttribute()
     {
         if($this->type == 'teacher') {
-            return Review::where('teacher_id', $this->id)->avg('points');
+            return Review::where('to_user_id', $this->id)->avg('points');
         }
 
         return 0;

@@ -8152,7 +8152,7 @@ input.tu-showplaceholder::placeholder {
 
 .tu-rating {
     align-items: center;
-    padding: 9px 0 14px 27px;
+    padding: 9px 0 14px 9px;
 }
 
 
