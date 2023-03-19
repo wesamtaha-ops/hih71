@@ -156,7 +156,7 @@
                         </div>
                         <div class="col-lg-12 col-xl-9">
                             @if(sizeOf($teachers) == 0) 
-                                <h3>@lang('no_data')</h3>
+                                <h3>@lang('app.no_data')</h3>
                             @else 
                                 @foreach($teachers as $teacher)
                                 <div class="tu-listinginfo-holder">
