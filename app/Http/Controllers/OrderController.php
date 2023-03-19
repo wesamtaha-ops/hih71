@@ -79,11 +79,12 @@ class OrderController extends Controller
         ]);
     }
 
-    public function book_single_func(Request $request) {
+    public function book_single_func(Request $request, $teacher_id) {
 
-        $teacher = Teacher::find($request->teacher_id);
 
-        $fees = convert_to_default_currency($teacher->currency_id, $teacher->fees);
+        $teacher = User::where('id', $teacher_id)->with(['teacher'])->first();
+
+        $fees = convert_to_default_currency($teacher->currency_id, $teacher->teacher->fees);
 
         if($fees > Transfer::get_user_balance()) {
             return redirect(route('wallet', ['success' => 0, 'message' => 'You don\'t credit']));
@@ -91,14 +92,13 @@ class OrderController extends Controller
 
         $data = [
             'student_id' => \Auth::id(),
-            'teacher_id' => $request->teacher_id,
+            'teacher_id' => $teacher_id,
             'topic_id' => $request->topic,
             'date' => explode(' ', $request->time)[0],
             'time' => explode(' ', $request->time)[1],
-            'fees' => $teacher->fees,
+            'fees' => $teacher->teacher->fees,
             'currency_id' => $teacher->currency_id
         ];  
-
 
         // add order
         $order_id = Order::insertGetId($data);
