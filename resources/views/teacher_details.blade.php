@@ -32,8 +32,7 @@
                                         </div>
                                         <ul class="tu-tutorreview">
                                             <li>
-                                                <span> @include('components.star', ['value' => $reviews['avg']]) {{sprintf('%0.1f', $reviews['avg'])}}<span>/5.0</span> </i>  <em>({{$reviews['count']}})</em></span>
-                                                
+                                                <span> @include('components.star', ['value' => $teacher->rate]) {{sprintf('%0.1f', $teacher->rate)}}<span>/5.0</span> </i>  <em>({{$reviews['count']}})</em></span>
                                             </li>
                                         </ul>	
                                         <div class="tu-detailitem">
