@@ -81,7 +81,7 @@ class OrderController extends Controller
 
     public function book_single_func(Request $request) {
 
-        $teacher = Teacher::find($request->teacher_id)->first();
+        $teacher = Teacher::find($request->teacher_id);
 
         $fees = convert_to_default_currency($teacher->currency_id, $teacher->fees);
 
