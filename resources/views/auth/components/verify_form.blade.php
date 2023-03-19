@@ -24,8 +24,8 @@
                     </div>
                 </div>
                 <div class="tu-lost-password form-group">
-                    <a class="btn" style="color: #fff; background-color: #03a9f4;" href="/login">@lang('app.login')</a>
-                    <a href="/forget" class="tu-password-clr_light">@lang('app.lost_password')</a>
+                    <a class="btn" style="color: #fff; background-color: #03a9f4;" href="{{route('login')}}">@lang('app.login')</a>
+                    <a href="{{route('forget')}}" class="tu-password-clr_light">@lang('app.lost_password')</a>
                 </div>
             </div>
         </div>

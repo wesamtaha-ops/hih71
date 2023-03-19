@@ -14,9 +14,9 @@
                     <!-- <i class="icon icon-check-circle tu-greenclr" data-tippy-trigger="mouseenter" data-tippy-html="#tu-verifed" data-tippy-interactive="true" data-tippy-placement="top"></i> -->
                 </h5>
                     <div class="tu-listing-location">
-                        @if($teacher->review_count > 0)
-                            <span>{{sprintf('%0.1f', $teacher->review_avg)}} <i class="fa-solid fa-star"></i><em>({{ $teacher->review_count}})</em></span>
-                        @endif
+                        
+                            <span> @include('components.star', ['value' => $teacher->rate]) {{sprintf('%0.1f', $teacher->rate)}}<span>/5.0</span> </i>  <em>({{$teacher->review_count}})</em></span>
+                        
                     </div>
                 </div>
             </div>
