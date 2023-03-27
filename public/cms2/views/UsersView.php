@@ -129,7 +129,7 @@ loadjs.ready(["wrapper", "head"], function () {
         <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_users_image"><?= $Page->image->caption() ?></span></td>
         <td data-name="image"<?= $Page->image->cellAttributes() ?>>
 <span id="el_users_image">
-<span<?= $Page->image->viewAttributes() ?>>
+<span>
 <?= GetFileViewTag($Page->image, $Page->image->getViewValue(), false) ?>
 </span>
 </span>
@@ -242,6 +242,17 @@ loadjs.ready(["wrapper", "head"], function () {
 <span id="el_users_remember_token">
 <span<?= $Page->remember_token->viewAttributes() ?>>
 <?= $Page->remember_token->getViewValue() ?></span>
+</span>
+</td>
+    </tr>
+<?php } ?>
+<?php if ($Page->rate->Visible) { // rate ?>
+    <tr id="r_rate"<?= $Page->rate->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_users_rate"><?= $Page->rate->caption() ?></span></td>
+        <td data-name="rate"<?= $Page->rate->cellAttributes() ?>>
+<span id="el_users_rate">
+<span<?= $Page->rate->viewAttributes() ?>>
+<?= $Page->rate->getViewValue() ?></span>
 </span>
 </td>
     </tr>

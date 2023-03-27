@@ -141,7 +141,7 @@ class UsersList extends Users
     public function __construct()
     {
         parent::__construct();
-        global $Language, $DashboardReport, $DebugTimer;
+        global $Language, $DashboardReport, $DebugTimer, $UserTable;
         $this->FormActionName = Config("FORM_ROW_ACTION_NAME");
         $this->FormBlankRowName = Config("FORM_BLANK_ROW_NAME");
         $this->FormKeyCountName = Config("FORM_KEY_COUNT_NAME");
@@ -196,6 +196,9 @@ class UsersList extends Users
 
         // Open connection
         $GLOBALS["Conn"] ??= $this->getConnection();
+
+        // User table object
+        $UserTable = Container("usertable");
 
         // List options
         $this->ListOptions = new ListOptions(["Tag" => "td", "TableVar" => $this->TableVar]);
@@ -650,20 +653,21 @@ class UsersList extends Users
         $this->_password->Visible = false;
         $this->phone->setVisibility();
         $this->gender->setVisibility();
-        $this->birthday->setVisibility();
+        $this->birthday->Visible = false;
         $this->image->setVisibility();
         $this->country_id->setVisibility();
         $this->city->setVisibility();
-        $this->currency_id->setVisibility();
+        $this->currency_id->Visible = false;
         $this->type->setVisibility();
-        $this->is_verified->setVisibility();
+        $this->is_verified->Visible = false;
         $this->is_approved->setVisibility();
         $this->is_blocked->setVisibility();
         $this->otp->setVisibility();
-        $this->slug->setVisibility();
+        $this->slug->Visible = false;
         $this->remember_token->Visible = false;
         $this->created_at->Visible = false;
         $this->updated_at->Visible = false;
+        $this->rate->Visible = false;
 
         // Set lookup cache
         if (!in_array($this->PageID, Config("LOOKUP_CACHE_PAGE_IDS"))) {
@@ -857,7 +861,7 @@ class UsersList extends Users
             if ($this->isGridAdd() || $this->isGridEdit()) {
                 $item = $this->ListOptions["griddelete"];
                 if ($item) {
-                    $item->Visible = true;
+                    $item->Visible = $Security->canDelete();
                 }
             }
         }
@@ -956,6 +960,9 @@ class UsersList extends Users
 
         // Build filter
         $filter = "";
+        if (!$Security->canList()) {
+            $filter = "(0=1)"; // Filter all records
+        }
         AddFilter($filter, $this->DbDetailFilter);
         AddFilter($filter, $this->SearchWhere);
 
@@ -1004,6 +1011,9 @@ class UsersList extends Users
 
             // Set no record found message
             if ((EmptyValue($this->CurrentAction) || $this->isSearch()) && $this->TotalRecords == 0) {
+                if (!$Security->canList()) {
+                    $this->setWarningMessage(DeniedMessage());
+                }
                 if ($this->SearchWhere == "0=101") {
                     $this->setWarningMessage($Language->phrase("EnterSearchCriteria"));
                 } else {
@@ -1398,9 +1408,6 @@ class UsersList extends Users
         if ($CurrentForm->hasValue("x_gender") && $CurrentForm->hasValue("o_gender") && $this->gender->CurrentValue != $this->gender->DefaultValue) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_birthday") && $CurrentForm->hasValue("o_birthday") && $this->birthday->CurrentValue != $this->birthday->DefaultValue) {
-            return false;
-        }
         if (!EmptyValue($this->image->Upload->Value)) {
             return false;
         }
@@ -1410,13 +1417,7 @@ class UsersList extends Users
         if ($CurrentForm->hasValue("x_city") && $CurrentForm->hasValue("o_city") && $this->city->CurrentValue != $this->city->DefaultValue) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_currency_id") && $CurrentForm->hasValue("o_currency_id") && $this->currency_id->CurrentValue != $this->currency_id->DefaultValue) {
-            return false;
-        }
         if ($CurrentForm->hasValue("x_type") && $CurrentForm->hasValue("o_type") && $this->type->CurrentValue != $this->type->DefaultValue) {
-            return false;
-        }
-        if ($CurrentForm->hasValue("x_is_verified") && $CurrentForm->hasValue("o_is_verified") && ConvertToBool($this->is_verified->CurrentValue) != ConvertToBool($this->is_verified->DefaultValue)) {
             return false;
         }
         if ($CurrentForm->hasValue("x_is_approved") && $CurrentForm->hasValue("o_is_approved") && ConvertToBool($this->is_approved->CurrentValue) != ConvertToBool($this->is_approved->DefaultValue)) {
@@ -1426,9 +1427,6 @@ class UsersList extends Users
             return false;
         }
         if ($CurrentForm->hasValue("x_otp") && $CurrentForm->hasValue("o_otp") && $this->otp->CurrentValue != $this->otp->DefaultValue) {
-            return false;
-        }
-        if ($CurrentForm->hasValue("x_slug") && $CurrentForm->hasValue("o_slug") && $this->slug->CurrentValue != $this->slug->DefaultValue) {
             return false;
         }
         return true;
@@ -1521,17 +1519,13 @@ class UsersList extends Users
         $this->_email->clearErrorMessage();
         $this->phone->clearErrorMessage();
         $this->gender->clearErrorMessage();
-        $this->birthday->clearErrorMessage();
         $this->image->clearErrorMessage();
         $this->country_id->clearErrorMessage();
         $this->city->clearErrorMessage();
-        $this->currency_id->clearErrorMessage();
         $this->type->clearErrorMessage();
-        $this->is_verified->clearErrorMessage();
         $this->is_approved->clearErrorMessage();
         $this->is_blocked->clearErrorMessage();
         $this->otp->clearErrorMessage();
-        $this->slug->clearErrorMessage();
     }
 
     // Get list of filters
@@ -1560,6 +1554,7 @@ class UsersList extends Users
         $filterList = Concat($filterList, $this->otp->AdvancedSearch->toJson(), ","); // Field otp
         $filterList = Concat($filterList, $this->slug->AdvancedSearch->toJson(), ","); // Field slug
         $filterList = Concat($filterList, $this->remember_token->AdvancedSearch->toJson(), ","); // Field remember_token
+        $filterList = Concat($filterList, $this->rate->AdvancedSearch->toJson(), ","); // Field rate
         if ($this->BasicSearch->Keyword != "") {
             $wrk = "\"" . Config("TABLE_BASIC_SEARCH") . "\":\"" . JsEncode($this->BasicSearch->Keyword) . "\",\"" . Config("TABLE_BASIC_SEARCH_TYPE") . "\":\"" . JsEncode($this->BasicSearch->Type) . "\"";
             $filterList = Concat($filterList, $wrk, ",");
@@ -1743,6 +1738,14 @@ class UsersList extends Users
         $this->remember_token->AdvancedSearch->SearchValue2 = @$filter["y_remember_token"];
         $this->remember_token->AdvancedSearch->SearchOperator2 = @$filter["w_remember_token"];
         $this->remember_token->AdvancedSearch->save();
+
+        // Field rate
+        $this->rate->AdvancedSearch->SearchValue = @$filter["x_rate"];
+        $this->rate->AdvancedSearch->SearchOperator = @$filter["z_rate"];
+        $this->rate->AdvancedSearch->SearchCondition = @$filter["v_rate"];
+        $this->rate->AdvancedSearch->SearchValue2 = @$filter["y_rate"];
+        $this->rate->AdvancedSearch->SearchOperator2 = @$filter["w_rate"];
+        $this->rate->AdvancedSearch->save();
         $this->BasicSearch->setKeyword(@$filter[Config("TABLE_BASIC_SEARCH")]);
         $this->BasicSearch->setType(@$filter[Config("TABLE_BASIC_SEARCH_TYPE")]);
     }
@@ -1752,6 +1755,9 @@ class UsersList extends Users
     {
         global $Security;
         $where = "";
+        if (!$Security->canSearch()) {
+            return "";
+        }
         $this->buildSearchSql($where, $this->id, $default, false); // id
         $this->buildSearchSql($where, $this->name, $default, false); // name
         $this->buildSearchSql($where, $this->_email, $default, false); // email
@@ -1770,6 +1776,7 @@ class UsersList extends Users
         $this->buildSearchSql($where, $this->otp, $default, false); // otp
         $this->buildSearchSql($where, $this->slug, $default, false); // slug
         $this->buildSearchSql($where, $this->remember_token, $default, false); // remember_token
+        $this->buildSearchSql($where, $this->rate, $default, false); // rate
 
         // Set up search command
         if (!$default && $where != "" && in_array($this->Command, ["", "reset", "resetall"])) {
@@ -1794,6 +1801,7 @@ class UsersList extends Users
             $this->otp->AdvancedSearch->save(); // otp
             $this->slug->AdvancedSearch->save(); // slug
             $this->remember_token->AdvancedSearch->save(); // remember_token
+            $this->rate->AdvancedSearch->save(); // rate
 
             // Clear rules for QueryBuilder
             $this->setSessionRules("");
@@ -1869,6 +1877,9 @@ class UsersList extends Users
     public function queryBuilderWhere($fieldName = "")
     {
         global $Security;
+        if (!$Security->canSearch()) {
+            return "";
+        }
 
         // Get rules by query builder
         $rules = Post("rules") ?? $this->getSessionRules();
@@ -1979,15 +1990,6 @@ class UsersList extends Users
             $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->gender->caption() . "</span>" . $captionSuffix . $filter . "</div>";
         }
 
-        // Field birthday
-        $filter = $this->queryBuilderWhere("birthday");
-        if (!$filter) {
-            $this->buildSearchSql($filter, $this->birthday, false, false);
-        }
-        if ($filter != "") {
-            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->birthday->caption() . "</span>" . $captionSuffix . $filter . "</div>";
-        }
-
         // Field image
         $filter = $this->queryBuilderWhere("image");
         if (!$filter) {
@@ -2015,15 +2017,6 @@ class UsersList extends Users
             $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->city->caption() . "</span>" . $captionSuffix . $filter . "</div>";
         }
 
-        // Field currency_id
-        $filter = $this->queryBuilderWhere("currency_id");
-        if (!$filter) {
-            $this->buildSearchSql($filter, $this->currency_id, false, false);
-        }
-        if ($filter != "") {
-            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->currency_id->caption() . "</span>" . $captionSuffix . $filter . "</div>";
-        }
-
         // Field type
         $filter = $this->queryBuilderWhere("type");
         if (!$filter) {
@@ -2031,15 +2024,6 @@ class UsersList extends Users
         }
         if ($filter != "") {
             $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->type->caption() . "</span>" . $captionSuffix . $filter . "</div>";
-        }
-
-        // Field is_verified
-        $filter = $this->queryBuilderWhere("is_verified");
-        if (!$filter) {
-            $this->buildSearchSql($filter, $this->is_verified, false, false);
-        }
-        if ($filter != "") {
-            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->is_verified->caption() . "</span>" . $captionSuffix . $filter . "</div>";
         }
 
         // Field is_approved
@@ -2068,15 +2052,6 @@ class UsersList extends Users
         if ($filter != "") {
             $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->otp->caption() . "</span>" . $captionSuffix . $filter . "</div>";
         }
-
-        // Field slug
-        $filter = $this->queryBuilderWhere("slug");
-        if (!$filter) {
-            $this->buildSearchSql($filter, $this->slug, false, false);
-        }
-        if ($filter != "") {
-            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->slug->caption() . "</span>" . $captionSuffix . $filter . "</div>";
-        }
         if ($this->BasicSearch->Keyword != "") {
             $filterList .= "<div><span class=\"" . $captionClass . "\">" . $Language->phrase("BasicSearchKeyword") . "</span>" . $captionSuffix . $this->BasicSearch->Keyword . "</div>";
         }
@@ -2097,6 +2072,9 @@ class UsersList extends Users
     {
         global $Security;
         $searchStr = "";
+        if (!$Security->canSearch()) {
+            return "";
+        }
 
         // Fields to search
         $searchFlds = [];
@@ -2191,6 +2169,9 @@ class UsersList extends Users
         if ($this->remember_token->AdvancedSearch->issetSession()) {
             return true;
         }
+        if ($this->rate->AdvancedSearch->issetSession()) {
+            return true;
+        }
         return false;
     }
 
@@ -2244,6 +2225,7 @@ class UsersList extends Users
         $this->otp->AdvancedSearch->unsetSession();
         $this->slug->AdvancedSearch->unsetSession();
         $this->remember_token->AdvancedSearch->unsetSession();
+        $this->rate->AdvancedSearch->unsetSession();
     }
 
     // Restore all search parameters
@@ -2273,6 +2255,7 @@ class UsersList extends Users
         $this->otp->AdvancedSearch->load();
         $this->slug->AdvancedSearch->load();
         $this->remember_token->AdvancedSearch->load();
+        $this->rate->AdvancedSearch->load();
     }
 
     // Set up sort parameters
@@ -2295,17 +2278,13 @@ class UsersList extends Users
             $this->updateSort($this->_email); // email
             $this->updateSort($this->phone); // phone
             $this->updateSort($this->gender); // gender
-            $this->updateSort($this->birthday); // birthday
             $this->updateSort($this->image); // image
             $this->updateSort($this->country_id); // country_id
             $this->updateSort($this->city); // city
-            $this->updateSort($this->currency_id); // currency_id
             $this->updateSort($this->type); // type
-            $this->updateSort($this->is_verified); // is_verified
             $this->updateSort($this->is_approved); // is_approved
             $this->updateSort($this->is_blocked); // is_blocked
             $this->updateSort($this->otp); // otp
-            $this->updateSort($this->slug); // slug
             $this->setStartRecordNumber(1); // Reset start position
         }
 
@@ -2351,6 +2330,7 @@ class UsersList extends Users
                 $this->remember_token->setSort("");
                 $this->created_at->setSort("");
                 $this->updated_at->setSort("");
+                $this->rate->setSort("");
             }
 
             // Reset start position
@@ -2499,7 +2479,11 @@ class UsersList extends Users
                 $options = &$this->ListOptions;
                 $options->UseButtonGroup = true; // Use button group for grid delete button
                 $opt = $options["griddelete"];
-                $opt->Body = "<a class=\"ew-grid-link ew-grid-delete\" title=\"" . HtmlTitle($Language->phrase("DeleteLink")) . "\" data-caption=\"" . HtmlTitle($Language->phrase("DeleteLink")) . "\" data-ew-action=\"delete-grid-row\" data-rowindex=\"" . $this->RowIndex . "\">" . $Language->phrase("DeleteLink") . "</a>";
+                if (!$Security->canDelete() && is_numeric($this->RowIndex) && ($this->RowAction == "" || $this->RowAction == "edit")) { // Do not allow delete existing record
+                    $opt->Body = "&nbsp;";
+                } else {
+                    $opt->Body = "<a class=\"ew-grid-link ew-grid-delete\" title=\"" . HtmlTitle($Language->phrase("DeleteLink")) . "\" data-caption=\"" . HtmlTitle($Language->phrase("DeleteLink")) . "\" data-ew-action=\"delete-grid-row\" data-rowindex=\"" . $this->RowIndex . "\">" . $Language->phrase("DeleteLink") . "</a>";
+                }
             }
         }
         $pageUrl = $this->pageUrl(false);
@@ -2754,17 +2738,13 @@ class UsersList extends Users
             $option->add("email", $this->createColumnOption("email"));
             $option->add("phone", $this->createColumnOption("phone"));
             $option->add("gender", $this->createColumnOption("gender"));
-            $option->add("birthday", $this->createColumnOption("birthday"));
             $option->add("image", $this->createColumnOption("image"));
             $option->add("country_id", $this->createColumnOption("country_id"));
             $option->add("city", $this->createColumnOption("city"));
-            $option->add("currency_id", $this->createColumnOption("currency_id"));
             $option->add("type", $this->createColumnOption("type"));
-            $option->add("is_verified", $this->createColumnOption("is_verified"));
             $option->add("is_approved", $this->createColumnOption("is_approved"));
             $option->add("is_blocked", $this->createColumnOption("is_blocked"));
             $option->add("otp", $this->createColumnOption("otp"));
-            $option->add("slug", $this->createColumnOption("slug"));
         }
 
         // Set up options default
@@ -3161,6 +3141,8 @@ class UsersList extends Users
         $this->is_approved->OldValue = $this->is_approved->DefaultValue;
         $this->is_blocked->DefaultValue = $this->is_blocked->getDefault(); // PHP
         $this->is_blocked->OldValue = $this->is_blocked->DefaultValue;
+        $this->rate->DefaultValue = $this->rate->getDefault(); // PHP
+        $this->rate->OldValue = $this->rate->DefaultValue;
     }
 
     // Load basic search values
@@ -3329,6 +3311,14 @@ class UsersList extends Users
                 $this->Command = "search";
             }
         }
+
+        // rate
+        if ($this->rate->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->rate->AdvancedSearch->SearchValue != "" || $this->rate->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
         return $hasValue;
     }
 
@@ -3397,20 +3387,6 @@ class UsersList extends Users
             $this->gender->setOldValue($CurrentForm->getValue("o_gender"));
         }
 
-        // Check field name 'birthday' first before field var 'x_birthday'
-        $val = $CurrentForm->hasValue("birthday") ? $CurrentForm->getValue("birthday") : $CurrentForm->getValue("x_birthday");
-        if (!$this->birthday->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->birthday->Visible = false; // Disable update for API request
-            } else {
-                $this->birthday->setFormValue($val, true, $validate);
-            }
-            $this->birthday->CurrentValue = UnFormatDateTime($this->birthday->CurrentValue, $this->birthday->formatPattern());
-        }
-        if ($CurrentForm->hasValue("o_birthday")) {
-            $this->birthday->setOldValue($CurrentForm->getValue("o_birthday"));
-        }
-
         // Check field name 'country_id' first before field var 'x_country_id'
         $val = $CurrentForm->hasValue("country_id") ? $CurrentForm->getValue("country_id") : $CurrentForm->getValue("x_country_id");
         if (!$this->country_id->IsDetailKey) {
@@ -3437,19 +3413,6 @@ class UsersList extends Users
             $this->city->setOldValue($CurrentForm->getValue("o_city"));
         }
 
-        // Check field name 'currency_id' first before field var 'x_currency_id'
-        $val = $CurrentForm->hasValue("currency_id") ? $CurrentForm->getValue("currency_id") : $CurrentForm->getValue("x_currency_id");
-        if (!$this->currency_id->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->currency_id->Visible = false; // Disable update for API request
-            } else {
-                $this->currency_id->setFormValue($val);
-            }
-        }
-        if ($CurrentForm->hasValue("o_currency_id")) {
-            $this->currency_id->setOldValue($CurrentForm->getValue("o_currency_id"));
-        }
-
         // Check field name 'type' first before field var 'x_type'
         $val = $CurrentForm->hasValue("type") ? $CurrentForm->getValue("type") : $CurrentForm->getValue("x_type");
         if (!$this->type->IsDetailKey) {
@@ -3461,19 +3424,6 @@ class UsersList extends Users
         }
         if ($CurrentForm->hasValue("o_type")) {
             $this->type->setOldValue($CurrentForm->getValue("o_type"));
-        }
-
-        // Check field name 'is_verified' first before field var 'x_is_verified'
-        $val = $CurrentForm->hasValue("is_verified") ? $CurrentForm->getValue("is_verified") : $CurrentForm->getValue("x_is_verified");
-        if (!$this->is_verified->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->is_verified->Visible = false; // Disable update for API request
-            } else {
-                $this->is_verified->setFormValue($val);
-            }
-        }
-        if ($CurrentForm->hasValue("o_is_verified")) {
-            $this->is_verified->setOldValue($CurrentForm->getValue("o_is_verified"));
         }
 
         // Check field name 'is_approved' first before field var 'x_is_approved'
@@ -3514,19 +3464,6 @@ class UsersList extends Users
         if ($CurrentForm->hasValue("o_otp")) {
             $this->otp->setOldValue($CurrentForm->getValue("o_otp"));
         }
-
-        // Check field name 'slug' first before field var 'x_slug'
-        $val = $CurrentForm->hasValue("slug") ? $CurrentForm->getValue("slug") : $CurrentForm->getValue("x_slug");
-        if (!$this->slug->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->slug->Visible = false; // Disable update for API request
-            } else {
-                $this->slug->setFormValue($val);
-            }
-        }
-        if ($CurrentForm->hasValue("o_slug")) {
-            $this->slug->setOldValue($CurrentForm->getValue("o_slug"));
-        }
 		$this->image->OldUploadPath = $this->image->getUploadPath(); // PHP
 		$this->image->UploadPath = $this->image->OldUploadPath;
         $this->getUploadFiles(); // Get upload files
@@ -3543,17 +3480,12 @@ class UsersList extends Users
         $this->_email->CurrentValue = $this->_email->FormValue;
         $this->phone->CurrentValue = $this->phone->FormValue;
         $this->gender->CurrentValue = $this->gender->FormValue;
-        $this->birthday->CurrentValue = $this->birthday->FormValue;
-        $this->birthday->CurrentValue = UnFormatDateTime($this->birthday->CurrentValue, $this->birthday->formatPattern());
         $this->country_id->CurrentValue = $this->country_id->FormValue;
         $this->city->CurrentValue = $this->city->FormValue;
-        $this->currency_id->CurrentValue = $this->currency_id->FormValue;
         $this->type->CurrentValue = $this->type->FormValue;
-        $this->is_verified->CurrentValue = $this->is_verified->FormValue;
         $this->is_approved->CurrentValue = $this->is_approved->FormValue;
         $this->is_blocked->CurrentValue = $this->is_blocked->FormValue;
         $this->otp->CurrentValue = $this->otp->FormValue;
-        $this->slug->CurrentValue = $this->slug->FormValue;
     }
 
     // Load recordset
@@ -3666,6 +3598,7 @@ class UsersList extends Users
         $this->remember_token->setDbValue($row['remember_token']);
         $this->created_at->setDbValue($row['created_at']);
         $this->updated_at->setDbValue($row['updated_at']);
+        $this->rate->setDbValue($row['rate']);
     }
 
     // Return a row with default values
@@ -3693,6 +3626,7 @@ class UsersList extends Users
         $row['remember_token'] = $this->remember_token->DefaultValue;
         $row['created_at'] = $this->created_at->DefaultValue;
         $row['updated_at'] = $this->updated_at->DefaultValue;
+        $row['rate'] = $this->rate->DefaultValue;
         return $row;
     }
 
@@ -3779,6 +3713,8 @@ class UsersList extends Users
         // updated_at
         $this->updated_at->CellCssStyle = "white-space: nowrap;";
 
+        // rate
+
         // View row
         if ($this->RowType == ROWTYPE_VIEW) {
             // id
@@ -3807,6 +3743,10 @@ class UsersList extends Users
             // image
             $this->image->UploadPath = $this->image->getUploadPath(); // PHP
             if (!EmptyValue($this->image->Upload->DbValue)) {
+                $this->image->ImageWidth = 100;
+                $this->image->ImageHeight = 0;
+                $this->image->ImageAlt = $this->image->alt();
+                $this->image->ImageCssClass = "ew-image";
                 $this->image->ViewValue = $this->image->Upload->DbValue;
             } else {
                 $this->image->ViewValue = "";
@@ -3898,6 +3838,10 @@ class UsersList extends Users
             // remember_token
             $this->remember_token->ViewValue = $this->remember_token->CurrentValue;
 
+            // rate
+            $this->rate->ViewValue = $this->rate->CurrentValue;
+            $this->rate->ViewValue = FormatNumber($this->rate->ViewValue, $this->rate->formatPattern());
+
             // id
             $this->id->HrefValue = "";
             $this->id->TooltipValue = "";
@@ -3918,14 +3862,26 @@ class UsersList extends Users
             $this->gender->HrefValue = "";
             $this->gender->TooltipValue = "";
 
-            // birthday
-            $this->birthday->HrefValue = "";
-            $this->birthday->TooltipValue = "";
-
             // image
-            $this->image->HrefValue = "";
+            $this->image->UploadPath = $this->image->getUploadPath(); // PHP
+            if (!EmptyValue($this->image->Upload->DbValue)) {
+                $this->image->HrefValue = GetFileUploadUrl($this->image, $this->image->htmlDecode($this->image->Upload->DbValue)); // Add prefix/suffix
+                $this->image->LinkAttrs["target"] = ""; // Add target
+                if ($this->isExport()) {
+                    $this->image->HrefValue = FullUrl($this->image->HrefValue, "href");
+                }
+            } else {
+                $this->image->HrefValue = "";
+            }
             $this->image->ExportHrefValue = $this->image->UploadPath . $this->image->Upload->DbValue;
             $this->image->TooltipValue = "";
+            if ($this->image->UseColorbox) {
+                if (EmptyValue($this->image->TooltipValue)) {
+                    $this->image->LinkAttrs["title"] = $Language->phrase("ViewImageGallery");
+                }
+                $this->image->LinkAttrs["data-rel"] = "users_x" . $this->RowCount . "_image";
+                $this->image->LinkAttrs->appendClass("ew-lightbox");
+            }
 
             // country_id
             $this->country_id->HrefValue = "";
@@ -3935,17 +3891,9 @@ class UsersList extends Users
             $this->city->HrefValue = "";
             $this->city->TooltipValue = "";
 
-            // currency_id
-            $this->currency_id->HrefValue = "";
-            $this->currency_id->TooltipValue = "";
-
             // type
             $this->type->HrefValue = "";
             $this->type->TooltipValue = "";
-
-            // is_verified
-            $this->is_verified->HrefValue = "";
-            $this->is_verified->TooltipValue = "";
 
             // is_approved
             $this->is_approved->HrefValue = "";
@@ -3958,10 +3906,6 @@ class UsersList extends Users
             // otp
             $this->otp->HrefValue = "";
             $this->otp->TooltipValue = "";
-
-            // slug
-            $this->slug->HrefValue = "";
-            $this->slug->TooltipValue = "";
         } elseif ($this->RowType == ROWTYPE_ADD) {
             // id
 
@@ -3994,15 +3938,14 @@ class UsersList extends Users
             $this->gender->EditValue = $this->gender->options(true);
             $this->gender->PlaceHolder = RemoveHtml($this->gender->caption());
 
-            // birthday
-            $this->birthday->setupEditAttributes();
-            $this->birthday->EditValue = HtmlEncode(FormatDateTime($this->birthday->CurrentValue, $this->birthday->formatPattern()));
-            $this->birthday->PlaceHolder = RemoveHtml($this->birthday->caption());
-
             // image
             $this->image->setupEditAttributes();
             $this->image->UploadPath = $this->image->getUploadPath(); // PHP
             if (!EmptyValue($this->image->Upload->DbValue)) {
+                $this->image->ImageWidth = 100;
+                $this->image->ImageHeight = 0;
+                $this->image->ImageAlt = $this->image->alt();
+                $this->image->ImageCssClass = "ew-image";
                 $this->image->EditValue = $this->image->Upload->DbValue;
             } else {
                 $this->image->EditValue = "";
@@ -4053,40 +3996,9 @@ class UsersList extends Users
             $this->city->EditValue = HtmlEncode($this->city->CurrentValue);
             $this->city->PlaceHolder = RemoveHtml($this->city->caption());
 
-            // currency_id
-            $this->currency_id->setupEditAttributes();
-            $curVal = trim(strval($this->currency_id->CurrentValue));
-            if ($curVal != "") {
-                $this->currency_id->ViewValue = $this->currency_id->lookupCacheOption($curVal);
-            } else {
-                $this->currency_id->ViewValue = $this->currency_id->Lookup !== null && is_array($this->currency_id->lookupOptions()) ? $curVal : null;
-            }
-            if ($this->currency_id->ViewValue !== null) { // Load from cache
-                $this->currency_id->EditValue = array_values($this->currency_id->lookupOptions());
-            } else { // Lookup from database
-                if ($curVal == "") {
-                    $filterWrk = "0=1";
-                } else {
-                    $filterWrk = SearchFilter("`id`", "=", $this->currency_id->CurrentValue, DATATYPE_NUMBER, "");
-                }
-                $sqlWrk = $this->currency_id->Lookup->getSql(true, $filterWrk, '', $this, false, true);
-                $conn = Conn();
-                $config = $conn->getConfiguration();
-                $config->setResultCacheImpl($this->Cache);
-                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
-                $ari = count($rswrk);
-                $arwrk = $rswrk;
-                $this->currency_id->EditValue = $arwrk;
-            }
-            $this->currency_id->PlaceHolder = RemoveHtml($this->currency_id->caption());
-
             // type
             $this->type->EditValue = $this->type->options(false);
             $this->type->PlaceHolder = RemoveHtml($this->type->caption());
-
-            // is_verified
-            $this->is_verified->EditValue = $this->is_verified->options(false);
-            $this->is_verified->PlaceHolder = RemoveHtml($this->is_verified->caption());
 
             // is_approved
             $this->is_approved->EditValue = $this->is_approved->options(false);
@@ -4103,14 +4015,6 @@ class UsersList extends Users
             }
             $this->otp->EditValue = HtmlEncode($this->otp->CurrentValue);
             $this->otp->PlaceHolder = RemoveHtml($this->otp->caption());
-
-            // slug
-            $this->slug->setupEditAttributes();
-            if (!$this->slug->Raw) {
-                $this->slug->CurrentValue = HtmlDecode($this->slug->CurrentValue);
-            }
-            $this->slug->EditValue = HtmlEncode($this->slug->CurrentValue);
-            $this->slug->PlaceHolder = RemoveHtml($this->slug->caption());
 
             // Add refer script
 
@@ -4129,11 +4033,17 @@ class UsersList extends Users
             // gender
             $this->gender->HrefValue = "";
 
-            // birthday
-            $this->birthday->HrefValue = "";
-
             // image
-            $this->image->HrefValue = "";
+            $this->image->UploadPath = $this->image->getUploadPath(); // PHP
+            if (!EmptyValue($this->image->Upload->DbValue)) {
+                $this->image->HrefValue = GetFileUploadUrl($this->image, $this->image->htmlDecode($this->image->Upload->DbValue)); // Add prefix/suffix
+                $this->image->LinkAttrs["target"] = ""; // Add target
+                if ($this->isExport()) {
+                    $this->image->HrefValue = FullUrl($this->image->HrefValue, "href");
+                }
+            } else {
+                $this->image->HrefValue = "";
+            }
             $this->image->ExportHrefValue = $this->image->UploadPath . $this->image->Upload->DbValue;
 
             // country_id
@@ -4142,14 +4052,8 @@ class UsersList extends Users
             // city
             $this->city->HrefValue = "";
 
-            // currency_id
-            $this->currency_id->HrefValue = "";
-
             // type
             $this->type->HrefValue = "";
-
-            // is_verified
-            $this->is_verified->HrefValue = "";
 
             // is_approved
             $this->is_approved->HrefValue = "";
@@ -4159,9 +4063,6 @@ class UsersList extends Users
 
             // otp
             $this->otp->HrefValue = "";
-
-            // slug
-            $this->slug->HrefValue = "";
         } elseif ($this->RowType == ROWTYPE_EDIT) {
             // id
             $this->id->setupEditAttributes();
@@ -4196,15 +4097,14 @@ class UsersList extends Users
             $this->gender->EditValue = $this->gender->options(true);
             $this->gender->PlaceHolder = RemoveHtml($this->gender->caption());
 
-            // birthday
-            $this->birthday->setupEditAttributes();
-            $this->birthday->EditValue = HtmlEncode(FormatDateTime($this->birthday->CurrentValue, $this->birthday->formatPattern()));
-            $this->birthday->PlaceHolder = RemoveHtml($this->birthday->caption());
-
             // image
             $this->image->setupEditAttributes();
             $this->image->UploadPath = $this->image->getUploadPath(); // PHP
             if (!EmptyValue($this->image->Upload->DbValue)) {
+                $this->image->ImageWidth = 100;
+                $this->image->ImageHeight = 0;
+                $this->image->ImageAlt = $this->image->alt();
+                $this->image->ImageCssClass = "ew-image";
                 $this->image->EditValue = $this->image->Upload->DbValue;
             } else {
                 $this->image->EditValue = "";
@@ -4255,40 +4155,9 @@ class UsersList extends Users
             $this->city->EditValue = HtmlEncode($this->city->CurrentValue);
             $this->city->PlaceHolder = RemoveHtml($this->city->caption());
 
-            // currency_id
-            $this->currency_id->setupEditAttributes();
-            $curVal = trim(strval($this->currency_id->CurrentValue));
-            if ($curVal != "") {
-                $this->currency_id->ViewValue = $this->currency_id->lookupCacheOption($curVal);
-            } else {
-                $this->currency_id->ViewValue = $this->currency_id->Lookup !== null && is_array($this->currency_id->lookupOptions()) ? $curVal : null;
-            }
-            if ($this->currency_id->ViewValue !== null) { // Load from cache
-                $this->currency_id->EditValue = array_values($this->currency_id->lookupOptions());
-            } else { // Lookup from database
-                if ($curVal == "") {
-                    $filterWrk = "0=1";
-                } else {
-                    $filterWrk = SearchFilter("`id`", "=", $this->currency_id->CurrentValue, DATATYPE_NUMBER, "");
-                }
-                $sqlWrk = $this->currency_id->Lookup->getSql(true, $filterWrk, '', $this, false, true);
-                $conn = Conn();
-                $config = $conn->getConfiguration();
-                $config->setResultCacheImpl($this->Cache);
-                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
-                $ari = count($rswrk);
-                $arwrk = $rswrk;
-                $this->currency_id->EditValue = $arwrk;
-            }
-            $this->currency_id->PlaceHolder = RemoveHtml($this->currency_id->caption());
-
             // type
             $this->type->EditValue = $this->type->options(false);
             $this->type->PlaceHolder = RemoveHtml($this->type->caption());
-
-            // is_verified
-            $this->is_verified->EditValue = $this->is_verified->options(false);
-            $this->is_verified->PlaceHolder = RemoveHtml($this->is_verified->caption());
 
             // is_approved
             $this->is_approved->EditValue = $this->is_approved->options(false);
@@ -4305,14 +4174,6 @@ class UsersList extends Users
             }
             $this->otp->EditValue = HtmlEncode($this->otp->CurrentValue);
             $this->otp->PlaceHolder = RemoveHtml($this->otp->caption());
-
-            // slug
-            $this->slug->setupEditAttributes();
-            if (!$this->slug->Raw) {
-                $this->slug->CurrentValue = HtmlDecode($this->slug->CurrentValue);
-            }
-            $this->slug->EditValue = HtmlEncode($this->slug->CurrentValue);
-            $this->slug->PlaceHolder = RemoveHtml($this->slug->caption());
 
             // Edit refer script
 
@@ -4331,11 +4192,17 @@ class UsersList extends Users
             // gender
             $this->gender->HrefValue = "";
 
-            // birthday
-            $this->birthday->HrefValue = "";
-
             // image
-            $this->image->HrefValue = "";
+            $this->image->UploadPath = $this->image->getUploadPath(); // PHP
+            if (!EmptyValue($this->image->Upload->DbValue)) {
+                $this->image->HrefValue = GetFileUploadUrl($this->image, $this->image->htmlDecode($this->image->Upload->DbValue)); // Add prefix/suffix
+                $this->image->LinkAttrs["target"] = ""; // Add target
+                if ($this->isExport()) {
+                    $this->image->HrefValue = FullUrl($this->image->HrefValue, "href");
+                }
+            } else {
+                $this->image->HrefValue = "";
+            }
             $this->image->ExportHrefValue = $this->image->UploadPath . $this->image->Upload->DbValue;
 
             // country_id
@@ -4344,14 +4211,8 @@ class UsersList extends Users
             // city
             $this->city->HrefValue = "";
 
-            // currency_id
-            $this->currency_id->HrefValue = "";
-
             // type
             $this->type->HrefValue = "";
-
-            // is_verified
-            $this->is_verified->HrefValue = "";
 
             // is_approved
             $this->is_approved->HrefValue = "";
@@ -4361,9 +4222,6 @@ class UsersList extends Users
 
             // otp
             $this->otp->HrefValue = "";
-
-            // slug
-            $this->slug->HrefValue = "";
         } elseif ($this->RowType == ROWTYPE_SEARCH) {
             // id
             $this->id->setupEditAttributes();
@@ -4399,11 +4257,6 @@ class UsersList extends Users
             $this->gender->EditValue = $this->gender->options(true);
             $this->gender->PlaceHolder = RemoveHtml($this->gender->caption());
 
-            // birthday
-            $this->birthday->setupEditAttributes();
-            $this->birthday->EditValue = HtmlEncode(FormatDateTime(UnFormatDateTime($this->birthday->AdvancedSearch->SearchValue, $this->birthday->formatPattern()), $this->birthday->formatPattern()));
-            $this->birthday->PlaceHolder = RemoveHtml($this->birthday->caption());
-
             // image
             $this->image->setupEditAttributes();
             if (!$this->image->Raw) {
@@ -4424,17 +4277,9 @@ class UsersList extends Users
             $this->city->EditValue = HtmlEncode($this->city->AdvancedSearch->SearchValue);
             $this->city->PlaceHolder = RemoveHtml($this->city->caption());
 
-            // currency_id
-            $this->currency_id->setupEditAttributes();
-            $this->currency_id->PlaceHolder = RemoveHtml($this->currency_id->caption());
-
             // type
             $this->type->EditValue = $this->type->options(false);
             $this->type->PlaceHolder = RemoveHtml($this->type->caption());
-
-            // is_verified
-            $this->is_verified->EditValue = $this->is_verified->options(false);
-            $this->is_verified->PlaceHolder = RemoveHtml($this->is_verified->caption());
 
             // is_approved
             $this->is_approved->EditValue = $this->is_approved->options(false);
@@ -4451,14 +4296,6 @@ class UsersList extends Users
             }
             $this->otp->EditValue = HtmlEncode($this->otp->AdvancedSearch->SearchValue);
             $this->otp->PlaceHolder = RemoveHtml($this->otp->caption());
-
-            // slug
-            $this->slug->setupEditAttributes();
-            if (!$this->slug->Raw) {
-                $this->slug->AdvancedSearch->SearchValue = HtmlDecode($this->slug->AdvancedSearch->SearchValue);
-            }
-            $this->slug->EditValue = HtmlEncode($this->slug->AdvancedSearch->SearchValue);
-            $this->slug->PlaceHolder = RemoveHtml($this->slug->caption());
         }
         if ($this->RowType == ROWTYPE_ADD || $this->RowType == ROWTYPE_EDIT || $this->RowType == ROWTYPE_SEARCH) { // Add/Edit/Search row
             $this->setupFieldTitles();
@@ -4525,14 +4362,6 @@ class UsersList extends Users
                 $this->gender->addErrorMessage(str_replace("%s", $this->gender->caption(), $this->gender->RequiredErrorMessage));
             }
         }
-        if ($this->birthday->Required) {
-            if (!$this->birthday->IsDetailKey && EmptyValue($this->birthday->FormValue)) {
-                $this->birthday->addErrorMessage(str_replace("%s", $this->birthday->caption(), $this->birthday->RequiredErrorMessage));
-            }
-        }
-        if (!CheckDate($this->birthday->FormValue, $this->birthday->formatPattern())) {
-            $this->birthday->addErrorMessage($this->birthday->getErrorMessage(false));
-        }
         if ($this->image->Required) {
             if ($this->image->Upload->FileName == "" && !$this->image->Upload->KeepFile) {
                 $this->image->addErrorMessage(str_replace("%s", $this->image->caption(), $this->image->RequiredErrorMessage));
@@ -4548,19 +4377,9 @@ class UsersList extends Users
                 $this->city->addErrorMessage(str_replace("%s", $this->city->caption(), $this->city->RequiredErrorMessage));
             }
         }
-        if ($this->currency_id->Required) {
-            if (!$this->currency_id->IsDetailKey && EmptyValue($this->currency_id->FormValue)) {
-                $this->currency_id->addErrorMessage(str_replace("%s", $this->currency_id->caption(), $this->currency_id->RequiredErrorMessage));
-            }
-        }
         if ($this->type->Required) {
             if ($this->type->FormValue == "") {
                 $this->type->addErrorMessage(str_replace("%s", $this->type->caption(), $this->type->RequiredErrorMessage));
-            }
-        }
-        if ($this->is_verified->Required) {
-            if ($this->is_verified->FormValue == "") {
-                $this->is_verified->addErrorMessage(str_replace("%s", $this->is_verified->caption(), $this->is_verified->RequiredErrorMessage));
             }
         }
         if ($this->is_approved->Required) {
@@ -4576,11 +4395,6 @@ class UsersList extends Users
         if ($this->otp->Required) {
             if (!$this->otp->IsDetailKey && EmptyValue($this->otp->FormValue)) {
                 $this->otp->addErrorMessage(str_replace("%s", $this->otp->caption(), $this->otp->RequiredErrorMessage));
-            }
-        }
-        if ($this->slug->Required) {
-            if (!$this->slug->IsDetailKey && EmptyValue($this->slug->FormValue)) {
-                $this->slug->addErrorMessage(str_replace("%s", $this->slug->caption(), $this->slug->RequiredErrorMessage));
             }
         }
 
@@ -4600,6 +4414,10 @@ class UsersList extends Users
     protected function deleteRows()
     {
         global $Language, $Security;
+        if (!$Security->canDelete()) {
+            $this->setFailureMessage($Language->phrase("NoDeletePermission")); // No delete permission
+            return false;
+        }
         $sql = $this->getCurrentSql();
         $conn = $this->getConnection();
         $rows = $conn->fetchAllAssociative($sql);
@@ -4697,9 +4515,6 @@ class UsersList extends Users
         // gender
         $this->gender->setDbValueDef($rsnew, $this->gender->CurrentValue, "", $this->gender->ReadOnly);
 
-        // birthday
-        $this->birthday->setDbValueDef($rsnew, UnFormatDateTime($this->birthday->CurrentValue, $this->birthday->formatPattern()), null, $this->birthday->ReadOnly);
-
         // image
         if ($this->image->Visible && !$this->image->ReadOnly && !$this->image->Upload->KeepFile) {
             $this->image->Upload->DbValue = $rsold['image']; // Get original value
@@ -4716,14 +4531,8 @@ class UsersList extends Users
         // city
         $this->city->setDbValueDef($rsnew, $this->city->CurrentValue, null, $this->city->ReadOnly);
 
-        // currency_id
-        $this->currency_id->setDbValueDef($rsnew, $this->currency_id->CurrentValue, null, $this->currency_id->ReadOnly);
-
         // type
         $this->type->setDbValueDef($rsnew, $this->type->CurrentValue, "", $this->type->ReadOnly);
-
-        // is_verified
-        $this->is_verified->setDbValueDef($rsnew, strval($this->is_verified->CurrentValue) == "1" ? "1" : "0", 0, $this->is_verified->ReadOnly);
 
         // is_approved
         $this->is_approved->setDbValueDef($rsnew, strval($this->is_approved->CurrentValue) == "1" ? "1" : "0", 0, $this->is_approved->ReadOnly);
@@ -4733,9 +4542,6 @@ class UsersList extends Users
 
         // otp
         $this->otp->setDbValueDef($rsnew, $this->otp->CurrentValue, "", $this->otp->ReadOnly);
-
-        // slug
-        $this->slug->setDbValueDef($rsnew, $this->slug->CurrentValue, null, $this->slug->ReadOnly);
 
         // Update current values
         $this->setCurrentValues($rsnew);
@@ -4907,17 +4713,13 @@ class UsersList extends Users
         $hash .= GetFieldHash($row['email']); // email
         $hash .= GetFieldHash($row['phone']); // phone
         $hash .= GetFieldHash($row['gender']); // gender
-        $hash .= GetFieldHash($row['birthday']); // birthday
         $hash .= GetFieldHash($row['image']); // image
         $hash .= GetFieldHash($row['country_id']); // country_id
         $hash .= GetFieldHash($row['city']); // city
-        $hash .= GetFieldHash($row['currency_id']); // currency_id
         $hash .= GetFieldHash($row['type']); // type
-        $hash .= GetFieldHash($row['is_verified']); // is_verified
         $hash .= GetFieldHash($row['is_approved']); // is_approved
         $hash .= GetFieldHash($row['is_blocked']); // is_blocked
         $hash .= GetFieldHash($row['otp']); // otp
-        $hash .= GetFieldHash($row['slug']); // slug
         return md5($hash);
     }
 
@@ -4941,9 +4743,6 @@ class UsersList extends Users
         // gender
         $this->gender->setDbValueDef($rsnew, $this->gender->CurrentValue, "", strval($this->gender->CurrentValue) == "");
 
-        // birthday
-        $this->birthday->setDbValueDef($rsnew, UnFormatDateTime($this->birthday->CurrentValue, $this->birthday->formatPattern()), null, false);
-
         // image
         if ($this->image->Visible && !$this->image->Upload->KeepFile) {
             $this->image->Upload->DbValue = ""; // No need to delete old file
@@ -4960,14 +4759,8 @@ class UsersList extends Users
         // city
         $this->city->setDbValueDef($rsnew, $this->city->CurrentValue, null, false);
 
-        // currency_id
-        $this->currency_id->setDbValueDef($rsnew, $this->currency_id->CurrentValue, null, false);
-
         // type
         $this->type->setDbValueDef($rsnew, $this->type->CurrentValue, "", strval($this->type->CurrentValue) == "");
-
-        // is_verified
-        $this->is_verified->setDbValueDef($rsnew, strval($this->is_verified->CurrentValue) == "1" ? "1" : "0", 0, strval($this->is_verified->CurrentValue) == "");
 
         // is_approved
         $this->is_approved->setDbValueDef($rsnew, strval($this->is_approved->CurrentValue) == "1" ? "1" : "0", 0, strval($this->is_approved->CurrentValue) == "");
@@ -4977,9 +4770,6 @@ class UsersList extends Users
 
         // otp
         $this->otp->setDbValueDef($rsnew, $this->otp->CurrentValue, "", false);
-
-        // slug
-        $this->slug->setDbValueDef($rsnew, $this->slug->CurrentValue, null, false);
         if ($this->image->Visible && !$this->image->Upload->KeepFile) {
             $this->image->UploadPath = $this->image->getUploadPath(); // PHP
             $oldFiles = EmptyValue($this->image->Upload->DbValue) ? [] : [$this->image->htmlDecode($this->image->Upload->DbValue)];
@@ -5130,6 +4920,7 @@ class UsersList extends Users
         $this->otp->AdvancedSearch->load();
         $this->slug->AdvancedSearch->load();
         $this->remember_token->AdvancedSearch->load();
+        $this->rate->AdvancedSearch->load();
     }
 
     // Get export HTML tag
@@ -5231,6 +5022,9 @@ class UsersList extends Users
         $item = &$this->ExportOptions->addGroupOption();
         $item->Body = "";
         $item->Visible = false;
+        if (!$Security->canExport()) { // Export not allowed
+            $this->ExportOptions->hideAllOptions();
+        }
     }
 
     // Set up search options
@@ -5255,6 +5049,15 @@ class UsersList extends Users
         }
         $item->Visible = ($this->SearchWhere != $this->DefaultSearchWhere && $this->SearchWhere != "0=101");
 
+        // Advanced search button
+        $item = &$this->SearchOptions->add("advancedsearch");
+        if ($this->ModalSearch && !IsMobile()) {
+            $item->Body = "<a class=\"btn btn-default ew-advanced-search\" title=\"" . $Language->phrase("AdvancedSearch", true) . "\" data-table=\"users\" data-caption=\"" . $Language->phrase("AdvancedSearch", true) . "\" data-ew-action=\"modal\" data-url=\"UsersSearch\" data-btn=\"SearchBtn\">" . $Language->phrase("AdvancedSearch", false) . "</a>";
+        } else {
+            $item->Body = "<a class=\"btn btn-default ew-advanced-search\" title=\"" . $Language->phrase("AdvancedSearch", true) . "\" data-caption=\"" . $Language->phrase("AdvancedSearch", true) . "\" href=\"UsersSearch\">" . $Language->phrase("AdvancedSearch", false) . "</a>";
+        }
+        $item->Visible = true;
+
         // Button group for search
         $this->SearchOptions->UseDropDownButton = false;
         $this->SearchOptions->UseButtonGroup = true;
@@ -5268,6 +5071,10 @@ class UsersList extends Users
         // Hide search options
         if ($this->isExport() || $this->CurrentAction && $this->CurrentAction != "search") {
             $this->SearchOptions->hideAllOptions();
+        }
+        if (!$Security->canSearch()) {
+            $this->SearchOptions->hideAllOptions();
+            $this->FilterOptions->hideAllOptions();
         }
     }
 

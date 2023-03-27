@@ -38,7 +38,8 @@ loadjs.ready(["wrapper", "head"], function () {
             ["is_blocked", [fields.is_blocked.visible && fields.is_blocked.required ? ew.Validators.required(fields.is_blocked.caption) : null], fields.is_blocked.isInvalid],
             ["otp", [fields.otp.visible && fields.otp.required ? ew.Validators.required(fields.otp.caption) : null], fields.otp.isInvalid],
             ["slug", [fields.slug.visible && fields.slug.required ? ew.Validators.required(fields.slug.caption) : null], fields.slug.isInvalid],
-            ["remember_token", [fields.remember_token.visible && fields.remember_token.required ? ew.Validators.required(fields.remember_token.caption) : null], fields.remember_token.isInvalid]
+            ["remember_token", [fields.remember_token.visible && fields.remember_token.required ? ew.Validators.required(fields.remember_token.caption) : null], fields.remember_token.isInvalid],
+            ["rate", [fields.rate.visible && fields.rate.required ? ew.Validators.required(fields.rate.caption) : null, ew.Validators.integer], fields.rate.isInvalid]
         ])
 
         // Form_CustomValidate
@@ -512,6 +513,18 @@ loadjs.ready("fusersadd", function() {
 <input type="<?= $Page->remember_token->getInputTextType() ?>" name="x_remember_token" id="x_remember_token" data-table="users" data-field="x_remember_token" value="<?= $Page->remember_token->EditValue ?>" size="30" maxlength="100" placeholder="<?= HtmlEncode($Page->remember_token->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->remember_token->formatPattern()) ?>"<?= $Page->remember_token->editAttributes() ?> aria-describedby="x_remember_token_help">
 <?= $Page->remember_token->getCustomMessage() ?>
 <div class="invalid-feedback"><?= $Page->remember_token->getErrorMessage() ?></div>
+</span>
+</div></div>
+    </div>
+<?php } ?>
+<?php if ($Page->rate->Visible) { // rate ?>
+    <div id="r_rate"<?= $Page->rate->rowAttributes() ?>>
+        <label id="elh_users_rate" for="x_rate" class="<?= $Page->LeftColumnClass ?>"><?= $Page->rate->caption() ?><?= $Page->rate->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
+        <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->rate->cellAttributes() ?>>
+<span id="el_users_rate">
+<input type="<?= $Page->rate->getInputTextType() ?>" name="x_rate" id="x_rate" data-table="users" data-field="x_rate" value="<?= $Page->rate->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->rate->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->rate->formatPattern()) ?>"<?= $Page->rate->editAttributes() ?> aria-describedby="x_rate_help">
+<?= $Page->rate->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->rate->getErrorMessage() ?></div>
 </span>
 </div></div>
     </div>

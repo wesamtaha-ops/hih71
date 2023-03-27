@@ -17,6 +17,7 @@ class AdvancedSecurity
     public $CurrentUserLevelID = -2; // User Level (Anonymous by default)
     public $CurrentUserLevel; // Permissions
     public $CurrentUserID;
+    protected $AnoymousUserLevelChecked = false; // Dynamic User Level security
     private $isLoggedIn = false;
     private $isSysAdmin = false;
     private $userName;
@@ -461,6 +462,7 @@ class AdvancedSecurity
     public function validateUser(&$usr, &$pwd, $autologin, $provider = "", $securitycode = "")
     {
         global $Language, $UserProfile;
+        global $UserTable;
         $valid = false;
         $customValid = false;
         $providerValid = false;
@@ -516,11 +518,77 @@ class AdvancedSecurity
                 $this->setCurrentUserName($Language->phrase("UserAdministrator")); // Load user name
                 $this->setSessionUserLevelID(-1); // System Administrator
                 $this->setSessionUserID(-1); // System Administrator
+                $this->setupUserLevel();
             }
         }
-        if ($customValid) {
-            $row = null;
-            $customValid = $this->userValidated($row) !== false;
+
+        // Check other users
+        if (!$valid) {
+            $filter = GetUserFilter(Config("LOGIN_USERNAME_FIELD_NAME"), $usr);
+
+            // User table object
+            $UserTable = Container("usertable");
+
+            // Set up filter (WHERE Clause)
+            $sql = $UserTable->getSql($filter);
+            if ($row = Conn($UserTable->Dbid)->fetchAssociative($sql)) {
+                $valid = $customValid || ComparePassword(GetUserInfo(Config("LOGIN_PASSWORD_FIELD_NAME"), $row), $pwd);
+                if ($valid) {
+                    // Check two factor authentication
+                    if (Config("USE_TWO_FACTOR_AUTHENTICATION")) {
+                        // Check API login
+                        if (IsApi()) {
+                            if (SameText(Config("TWO_FACTOR_AUTHENTICATION_TYPE"), "google") && (Config("FORCE_TWO_FACTOR_AUTHENTICATION") || $UserProfile->hasUserSecret($usr, true))) { // Verify security code for Google Authenticator
+                                if (!$UserProfile->verify2FACode($usr, $securitycode)) {
+                                    return false;
+                                }
+                            }
+                        } elseif (Config("FORCE_TWO_FACTOR_AUTHENTICATION") && !$UserProfile->hasUserSecret($usr, true)) { // Non API, go to 2fa page
+                            return $valid;
+                        }
+                    }
+                    $this->isLoggedIn = true;
+                    $_SESSION[SESSION_STATUS] = "login";
+                    $this->isSysAdmin = false;
+                    $_SESSION[SESSION_SYS_ADMIN] = 0; // Non System Administrator
+                    $this->setCurrentUserName(GetUserInfo(Config("LOGIN_USERNAME_FIELD_NAME"), $row)); // Load user name
+                    $this->setSessionUserID(GetUserInfo(Config("USER_ID_FIELD_NAME"), $row)); // Load User ID
+                    if (GetUserInfo(Config("USER_LEVEL_FIELD_NAME"), $row) === null) {
+                        $this->setSessionUserLevelID(0);
+                    } else {
+                        $this->setSessionUserLevelID(GetUserInfo(Config("USER_LEVEL_FIELD_NAME"), $row)); // Load User Level
+                    }
+                    $this->setupUserLevel();
+
+                    // Call User Validated event
+                    $UserProfile->assign($row);
+                    $UserProfile->delete(Config("LOGIN_PASSWORD_FIELD_NAME")); // Delete password
+                    $valid = $this->userValidated($row) !== false; // For backward compatibility
+
+                    // Set up User Email field
+                    if (!EmptyValue(Config("USER_EMAIL_FIELD_NAME"))) {
+                        $UserProfile->set(Config("USER_EMAIL_FIELD_NAME"), $row[Config("USER_EMAIL_FIELD_NAME")]);
+                    }
+
+                    // Set up User Image field
+                    if (!EmptyValue(Config("USER_IMAGE_FIELD_NAME"))) {
+                        $imageField = $UserTable->Fields[Config("USER_IMAGE_FIELD_NAME")];
+                        if ($imageField->hasMethod("getUploadPath")) {
+                            $imageField->UploadPath = $imageField->getUploadPath();
+                        }
+                        $image = GetFileImage($imageField, $row[Config("USER_IMAGE_FIELD_NAME")], Config("USER_IMAGE_SIZE"), Config("USER_IMAGE_SIZE"), Config("USER_IMAGE_CROP"));
+                        $UserProfile->set(Config("USER_PROFILE_IMAGE"), base64_encode($image)); // Save as base64 encoded
+                    }
+                }
+            } else { // User not found in user table
+                if ($customValid) { // Grant default permissions
+                    $this->setSessionUserID($usr); // User name as User ID
+                    $this->setSessionUserLevelID(-2); // Anonymous User Level
+                    $this->setupUserLevel();
+                    $row = null;
+                    $customValid = $this->userValidated($row) !== false;
+                }
+            }
         }
         $UserProfile->save();
         if ($customValid) {
@@ -556,19 +624,134 @@ class AdvancedSecurity
         }
     }
 
-    // User Level security (Anonymous)
+    // Get User Level settings from database
     public function setupUserLevel()
     {
-        // Load user level from user level settings
-        global $USER_LEVELS, $USER_LEVEL_PRIVS;
-        $this->UserLevel = $USER_LEVELS;
-        $this->UserLevelPriv = $USER_LEVEL_PRIVS;
+        $this->setupUserLevelEx(); // Load all user levels
+
+        // User Level loaded event
+        $this->userLevelLoaded();
 
         // Check permissions
         $this->checkPermissions();
 
         // Save the User Level to Session variable
         $this->saveUserLevel();
+    }
+
+    // Get all User Level settings from database
+    public function setupUserLevelEx()
+    {
+        global $Language, $Page;
+        global $USER_LEVELS, $USER_LEVEL_PRIVS, $USER_LEVEL_TABLES;
+
+        // Load user level from user level settings first
+        $this->UserLevel = $USER_LEVELS;
+        $this->UserLevelPriv = $USER_LEVEL_PRIVS;
+        $arTable = $USER_LEVEL_TABLES;
+
+        // Add Anonymous user level
+        $conn = Conn(Config("USER_LEVEL_DBID"));
+        if (!$this->AnoymousUserLevelChecked) {
+            $sql = "SELECT COUNT(*) FROM " . Config("USER_LEVEL_TABLE") . " WHERE " . Config("USER_LEVEL_ID_FIELD") . " = -2";
+            if (ExecuteScalar($sql, $conn) == 0) {
+                $sql = "INSERT INTO " . Config("USER_LEVEL_TABLE") .
+                    " (" . Config("USER_LEVEL_ID_FIELD") . ", " . Config("USER_LEVEL_NAME_FIELD") . ") VALUES (-2, '" . AdjustSql($Language->phrase("UserAnonymous"), Config("USER_LEVEL_DBID")) . "')";
+                $conn->executeStatement($sql);
+            }
+        }
+
+        // Get the User Level definitions
+        $sql = "SELECT " . Config("USER_LEVEL_ID_FIELD") . ", " . Config("USER_LEVEL_NAME_FIELD") . " FROM " . Config("USER_LEVEL_TABLE");
+        $this->UserLevel = $conn->fetchAllNumeric($sql);
+
+        // Add Anonymous user privileges
+        $conn = Conn(Config("USER_LEVEL_PRIV_DBID"));
+        if (!$this->AnoymousUserLevelChecked) {
+            $sql = "SELECT COUNT(*) FROM " . Config("USER_LEVEL_PRIV_TABLE") . " WHERE " . Config("USER_LEVEL_PRIV_USER_LEVEL_ID_FIELD") . " = -2";
+            if (ExecuteScalar($sql, $conn) == 0) {
+                $wrkUserLevel = $USER_LEVELS;
+                $wrkUserLevelPriv = $USER_LEVEL_PRIVS;
+                $wrkTable = $USER_LEVEL_TABLES;
+                foreach ($wrkTable as $table) {
+                    $wrkPriv = 0;
+                    foreach ($wrkUserLevelPriv as $userpriv) {
+                        if (@$userpriv[0] == @$table[4] . @$table[0] && @$userpriv[1] == -2) {
+                            $wrkPriv = @$userpriv[2];
+                            break;
+                        }
+                    }
+                    $sql = "INSERT INTO " . Config("USER_LEVEL_PRIV_TABLE") .
+                        " (" . Config("USER_LEVEL_PRIV_USER_LEVEL_ID_FIELD") . ", " . Config("USER_LEVEL_PRIV_TABLE_NAME_FIELD") . ", " . Config("USER_LEVEL_PRIV_PRIV_FIELD") .
+                        ") VALUES (-2, '" . AdjustSql(@$table[4] . @$table[0], Config("USER_LEVEL_PRIV_DBID")) . "', " . $wrkPriv . ")";
+                    $conn->executeStatement($sql);
+                }
+            }
+            $this->AnoymousUserLevelChecked = true;
+        }
+
+        // Get the User Level privileges
+        $userPrivSql = "SELECT " . Config("USER_LEVEL_PRIV_TABLE_NAME_FIELD") . ", " . Config("USER_LEVEL_PRIV_USER_LEVEL_ID_FIELD") . ", " . Config("USER_LEVEL_PRIV_PRIV_FIELD") . " FROM " . Config("USER_LEVEL_PRIV_TABLE");
+        if (!IsApi() && !$this->isAdmin() && count($this->UserLevelID) > 0) {
+            $userPrivSql .= " WHERE " . Config("USER_LEVEL_PRIV_USER_LEVEL_ID_FIELD") . " IN (" . $this->userLevelList() . ")";
+            $_SESSION[SESSION_USER_LEVEL_LIST_LOADED] = $this->userLevelList(); // Save last loaded list
+        } else {
+            $_SESSION[SESSION_USER_LEVEL_LIST_LOADED] = ""; // Save last loaded list
+        }
+        $this->UserLevelPriv = $conn->fetchAllNumeric($userPrivSql);
+
+        // Update User Level privileges record if necessary
+        $projectID = CurrentProjectID();
+        $relatedProjectID = Config("RELATED_PROJECT_ID");
+        $reloadUserPriv = 0;
+
+        // Update tables with report maker prefix
+        if ($relatedProjectID) {
+            $sql = "SELECT COUNT(*) FROM " . Config("USER_LEVEL_PRIV_TABLE") . " WHERE EXISTS(SELECT * FROM " .
+                Config("USER_LEVEL_PRIV_TABLE") . " WHERE " . Config("USER_LEVEL_PRIV_TABLE_NAME_FIELD") . " LIKE '" . AdjustSql($relatedProjectID, Config("USER_LEVEL_PRIV_DBID")) . "%')";
+            if (ExecuteScalar($sql, $conn) > 0) {
+                $ar = array_map(fn($t) => "'" . AdjustSql($relatedProjectID . $t[0], Config("USER_LEVEL_PRIV_DBID")) . "'", $arTable);
+                $sql = "UPDATE " . Config("USER_LEVEL_PRIV_TABLE") . " SET " .
+                    Config("USER_LEVEL_PRIV_TABLE_NAME_FIELD") . " = " . $conn->getDatabasePlatform()->getConcatExpression("'" . AdjustSql($projectID, Config("USER_LEVEL_PRIV_DBID")) . "'", Config("USER_LEVEL_PRIV_TABLE_NAME_FIELD")) . " WHERE " .
+                    Config("USER_LEVEL_PRIV_TABLE_NAME_FIELD") . " IN (" . implode(",", $ar) . ")";
+                $reloadUserPriv += $conn->executeStatement($sql);
+            }
+        }
+
+        // Reload the User Level privileges
+        if ($reloadUserPriv) {
+            $this->UserLevelPriv = $conn->fetchAllNumeric($userPrivSql);
+        }
+
+        // Warn user if user level not setup
+        if (count($this->UserLevelPriv) == 0 && $this->isAdmin() && $Page != null && Session(SESSION_USER_LEVEL_MSG) == "") {
+            $Page->setFailureMessage($Language->phrase("NoUserLevel"));
+            $_SESSION[SESSION_USER_LEVEL_MSG] = "1"; // Show only once
+            $Page->terminate("UserlevelsList");
+        }
+        return true;
+    }
+
+    // Update user level permissions
+    public function updatePermissions($userLevel, $privs)
+    {
+        $c = Conn(Config("USER_LEVEL_PRIV_DBID"));
+        foreach ($privs as $table => $priv) {
+            if (is_numeric($priv)) {
+                $sql = "SELECT * FROM " . Config("USER_LEVEL_PRIV_TABLE") . " WHERE " .
+                    Config("USER_LEVEL_PRIV_TABLE_NAME_FIELD") . " = '" . AdjustSql($table, Config("USER_LEVEL_PRIV_DBID")) . "' AND " .
+                    Config("USER_LEVEL_PRIV_USER_LEVEL_ID_FIELD") . " = " . $userLevel;
+                if ($c->fetchAssociative($sql)) {
+                    $sql = "UPDATE " . Config("USER_LEVEL_PRIV_TABLE") . " SET " . Config("USER_LEVEL_PRIV_PRIV_FIELD") . " = " . $priv . " WHERE " .
+                        Config("USER_LEVEL_PRIV_TABLE_NAME_FIELD") . " = '" . AdjustSql($table, Config("USER_LEVEL_PRIV_DBID")) . "' AND " .
+                        Config("USER_LEVEL_PRIV_USER_LEVEL_ID_FIELD") . " = " . $userLevel;
+                    $c->executeStatement($sql);
+                } else {
+                    $sql = "INSERT INTO " . Config("USER_LEVEL_PRIV_TABLE") . " (" . Config("USER_LEVEL_PRIV_TABLE_NAME_FIELD") . ", " . Config("USER_LEVEL_PRIV_USER_LEVEL_ID_FIELD") . ", " . Config("USER_LEVEL_PRIV_PRIV_FIELD") . ") VALUES ('" . AdjustSql($table, Config("USER_LEVEL_PRIV_DBID")) . "', " . $userLevel . ", " . $priv . ")";
+                    $c->executeStatement($sql);
+                }
+            }
+        }
     }
 
     // Check permissions
@@ -708,7 +891,11 @@ class AdvancedSecurity
     protected function currentUserLevelPriv($tableName)
     {
         if ($this->isLoggedIn()) {
-            return ALLOW_ALL;
+            $priv = 0;
+            foreach ($this->UserLevelID as $userLevelID) {
+                $priv |= $this->getUserLevelPrivEx($tableName, $userLevelID);
+            }
+            return $priv;
         } else { // Anonymous
             return $this->getUserLevelPrivEx($tableName, -2);
         }
@@ -986,6 +1173,12 @@ class AdvancedSecurity
     public function isAdmin()
     {
         $isAdmin = $this->isSysAdmin();
+        if (!$isAdmin) {
+            $isAdmin = $this->CurrentUserLevelID == -1 || $this->hasUserLevelID(-1) || $this->canAdmin();
+        }
+        if (!$isAdmin) {
+            $isAdmin = $this->CurrentUserID == -1 || in_array(-1, $this->UserID);
+        }
         return $isAdmin;
     }
 
@@ -1014,7 +1207,7 @@ class AdvancedSecurity
         global $UserTable;
         $info = null;
         if (Config("USER_TABLE") && !$this->isSysAdmin()) {
-            $filter = GetUserFilter(Config("LOGIN_USERNAME_FIELD_NAME"), $this->currentUserName());
+            $filter = GetUserFilter(Config("USER_ID_FIELD_NAME"), $this->CurrentUserID);
             if ($filter != "") {
                 $sql = $UserTable->getSql($filter);
                 if ($row = ExecuteRow($sql, $UserTable->Dbid)) {
@@ -1023,6 +1216,101 @@ class AdvancedSecurity
             }
         }
         return $info;
+    }
+
+    // Get User ID by user name
+    public function getUserIDByUserName($userName)
+    {
+        global $UserTable;
+        if (strval($userName) != "") {
+            $filter = GetUserFilter(Config("LOGIN_USERNAME_FIELD_NAME"), $userName);
+            $sql = $UserTable->getSql($filter);
+            if ($row = Conn($UserTable->Dbid)->fetchAssociative($sql)) {
+                $userID = GetUserInfo(Config("USER_ID_FIELD_NAME"), $row);
+                return $userID;
+            }
+        }
+        return "";
+    }
+
+    // Load User ID
+    public function loadUserID()
+    {
+        global $UserTable;
+        $this->UserID = [];
+        if (strval($this->CurrentUserID) == "") {
+            // Handle empty User ID here
+        } elseif ($this->CurrentUserID != "-1") {
+            // Get first level
+            $this->addUserID($this->CurrentUserID);
+            $UserTable = Container("usertable");
+            $filter = "";
+            if (method_exists($UserTable, "getUserIDFilter")) {
+                $filter = $UserTable->getUserIDFilter($this->CurrentUserID);
+            }
+            $sql = $UserTable->getSql($filter);
+            $rows = Conn($UserTable->Dbid)->executeQuery($sql)->fetchAll();
+            foreach ($rows as $row) {
+                $this->addUserID(GetUserInfo(Config("USER_ID_FIELD_NAME"), $row));
+            }
+        }
+    }
+
+    // Add user name
+    public function addUserName($userName)
+    {
+        $this->addUserID($this->getUserIDByUserName($userName));
+    }
+
+    // Add User ID
+    public function addUserID($userId)
+    {
+        if (strval($userId) == "") {
+            return;
+        }
+        if (!is_numeric($userId)) {
+            return;
+        }
+        $userId = trim($userId);
+        if (!in_array($userId, $this->UserID)) {
+            $this->UserID[] = $userId;
+        }
+    }
+
+    // Delete user name
+    public function deleteUserName($userName)
+    {
+        $this->deleteUserID($this->getUserIDByUserName($userName));
+    }
+
+    // Delete User ID
+    public function deleteUserID($userId)
+    {
+        if (strval($userId) == "") {
+            return;
+        }
+        if (!is_numeric($userId)) {
+            return;
+        }
+        $cnt = count($this->UserID);
+        for ($i = 0; $i < $cnt; $i++) {
+            if (SameString($this->UserID[$i], $userId)) {
+                unset($this->UserID[$i]);
+                break;
+            }
+        }
+    }
+
+    // User ID list
+    public function userIDList()
+    {
+        return implode(", ", array_map(fn($userId) => QuotedValue($userId, DATATYPE_NUMBER, Config("USER_TABLE_DBID")), $this->UserID));
+    }
+
+    // List of allowed User IDs for this user
+    public function isValidUserID($userId)
+    {
+        return strval($userId) !== "" && in_array(trim($userId), $this->UserID);
     }
 
     // UserID Loading event

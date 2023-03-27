@@ -117,7 +117,7 @@ class LevelsAdd extends Levels
     public function __construct()
     {
         parent::__construct();
-        global $Language, $DashboardReport, $DebugTimer;
+        global $Language, $DashboardReport, $DebugTimer, $UserTable;
         $this->TableVar = 'levels';
         $this->TableName = 'levels';
 
@@ -148,6 +148,9 @@ class LevelsAdd extends Levels
 
         // Open connection
         $GLOBALS["Conn"] ??= $this->getConnection();
+
+        // User table object
+        $UserTable = Container("usertable");
     }
 
     // Get content from stream

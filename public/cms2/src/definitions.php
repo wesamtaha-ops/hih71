@@ -42,7 +42,15 @@ return [
     "languages_levels" => \DI\create(LanguagesLevels::class),
     "levels" => \DI\create(Levels::class),
     "orders" => \DI\create(Orders::class),
+    "reviews" => \DI\create(Reviews::class),
+    "teachers_packages" => \DI\create(TeachersPackages::class),
     "topics" => \DI\create(Topics::class),
     "transfers" => \DI\create(Transfers::class),
     "users" => \DI\create(Users::class),
+    "admin_panel_users" => \DI\create(AdminPanelUsers::class),
+    "userlevelpermissions" => \DI\create(Userlevelpermissions::class),
+    "userlevels" => \DI\create(Userlevels::class),
+
+    // User table
+    "usertable" => \DI\get("admin_panel_users"),
 ];

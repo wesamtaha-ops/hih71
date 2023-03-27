@@ -141,7 +141,7 @@ class OrdersList extends Orders
     public function __construct()
     {
         parent::__construct();
-        global $Language, $DashboardReport, $DebugTimer;
+        global $Language, $DashboardReport, $DebugTimer, $UserTable;
         $this->FormActionName = Config("FORM_ROW_ACTION_NAME");
         $this->FormBlankRowName = Config("FORM_BLANK_ROW_NAME");
         $this->FormKeyCountName = Config("FORM_KEY_COUNT_NAME");
@@ -196,6 +196,9 @@ class OrdersList extends Orders
 
         // Open connection
         $GLOBALS["Conn"] ??= $this->getConnection();
+
+        // User table object
+        $UserTable = Container("usertable");
 
         // List options
         $this->ListOptions = new ListOptions(["Tag" => "td", "TableVar" => $this->TableVar]);
@@ -845,7 +848,7 @@ class OrdersList extends Orders
             if ($this->isGridAdd() || $this->isGridEdit()) {
                 $item = $this->ListOptions["griddelete"];
                 if ($item) {
-                    $item->Visible = true;
+                    $item->Visible = $Security->canDelete();
                 }
             }
         }
@@ -944,6 +947,9 @@ class OrdersList extends Orders
 
         // Build filter
         $filter = "";
+        if (!$Security->canList()) {
+            $filter = "(0=1)"; // Filter all records
+        }
         AddFilter($filter, $this->DbDetailFilter);
         AddFilter($filter, $this->SearchWhere);
 
@@ -992,6 +998,9 @@ class OrdersList extends Orders
 
             // Set no record found message
             if ((EmptyValue($this->CurrentAction) || $this->isSearch()) && $this->TotalRecords == 0) {
+                if (!$Security->canList()) {
+                    $this->setWarningMessage(DeniedMessage());
+                }
                 if ($this->SearchWhere == "0=101") {
                     $this->setWarningMessage($Language->phrase("EnterSearchCriteria"));
                 } else {
@@ -1105,6 +1114,7 @@ class OrdersList extends Orders
     // Exit inline mode
     protected function clearInlineMode()
     {
+        $this->fees->FormValue = ""; // Clear form value
         $this->LastAction = $this->CurrentAction; // Save last action
         $this->CurrentAction = ""; // Clear action
         $_SESSION[SESSION_INLINE_MODE] = ""; // Clear inline mode
@@ -1657,6 +1667,9 @@ class OrdersList extends Orders
     {
         global $Security;
         $where = "";
+        if (!$Security->canSearch()) {
+            return "";
+        }
         $this->buildSearchSql($where, $this->id, $default, false); // id
         $this->buildSearchSql($where, $this->student_id, $default, false); // student_id
         $this->buildSearchSql($where, $this->teacher_id, $default, false); // teacher_id
@@ -1760,6 +1773,9 @@ class OrdersList extends Orders
     public function queryBuilderWhere($fieldName = "")
     {
         global $Security;
+        if (!$Security->canSearch()) {
+            return "";
+        }
 
         // Get rules by query builder
         $rules = Post("rules") ?? $this->getSessionRules();
@@ -1943,6 +1959,9 @@ class OrdersList extends Orders
     {
         global $Security;
         $searchStr = "";
+        if (!$Security->canSearch()) {
+            return "";
+        }
 
         // Fields to search
         $searchFlds = [];
@@ -2268,7 +2287,11 @@ class OrdersList extends Orders
                 $options = &$this->ListOptions;
                 $options->UseButtonGroup = true; // Use button group for grid delete button
                 $opt = $options["griddelete"];
-                $opt->Body = "<a class=\"ew-grid-link ew-grid-delete\" title=\"" . HtmlTitle($Language->phrase("DeleteLink")) . "\" data-caption=\"" . HtmlTitle($Language->phrase("DeleteLink")) . "\" data-ew-action=\"delete-grid-row\" data-rowindex=\"" . $this->RowIndex . "\">" . $Language->phrase("DeleteLink") . "</a>";
+                if (!$Security->canDelete() && is_numeric($this->RowIndex) && ($this->RowAction == "" || $this->RowAction == "edit")) { // Do not allow delete existing record
+                    $opt->Body = "&nbsp;";
+                } else {
+                    $opt->Body = "<a class=\"ew-grid-link ew-grid-delete\" title=\"" . HtmlTitle($Language->phrase("DeleteLink")) . "\" data-caption=\"" . HtmlTitle($Language->phrase("DeleteLink")) . "\" data-ew-action=\"delete-grid-row\" data-rowindex=\"" . $this->RowIndex . "\">" . $Language->phrase("DeleteLink") . "</a>";
+                }
             }
         }
         $pageUrl = $this->pageUrl(false);
@@ -3357,6 +3380,7 @@ class OrdersList extends Orders
 
             // fees
             $this->fees->ViewValue = $this->fees->CurrentValue;
+            $this->fees->ViewValue = FormatNumber($this->fees->ViewValue, $this->fees->formatPattern());
 
             // currency_id
             $curVal = strval($this->currency_id->CurrentValue);
@@ -3539,7 +3563,7 @@ class OrdersList extends Orders
             $this->fees->EditValue = HtmlEncode($this->fees->CurrentValue);
             $this->fees->PlaceHolder = RemoveHtml($this->fees->caption());
             if (strval($this->fees->EditValue) != "" && is_numeric($this->fees->EditValue)) {
-                $this->fees->EditValue = $this->fees->EditValue;
+                $this->fees->EditValue = FormatNumber($this->fees->EditValue, null);
             }
 
             // currency_id
@@ -3728,7 +3752,7 @@ class OrdersList extends Orders
             $this->fees->EditValue = HtmlEncode($this->fees->CurrentValue);
             $this->fees->PlaceHolder = RemoveHtml($this->fees->caption());
             if (strval($this->fees->EditValue) != "" && is_numeric($this->fees->EditValue)) {
-                $this->fees->EditValue = $this->fees->EditValue;
+                $this->fees->EditValue = FormatNumber($this->fees->EditValue, null);
             }
 
             // currency_id
@@ -3949,7 +3973,7 @@ class OrdersList extends Orders
                 $this->fees->addErrorMessage(str_replace("%s", $this->fees->caption(), $this->fees->RequiredErrorMessage));
             }
         }
-        if (!CheckInteger($this->fees->FormValue)) {
+        if (!CheckNumber($this->fees->FormValue)) {
             $this->fees->addErrorMessage($this->fees->getErrorMessage(false));
         }
         if ($this->currency_id->Required) {
@@ -3992,6 +4016,10 @@ class OrdersList extends Orders
     protected function deleteRows()
     {
         global $Language, $Security;
+        if (!$Security->canDelete()) {
+            $this->setFailureMessage($Language->phrase("NoDeletePermission")); // No delete permission
+            return false;
+        }
         $sql = $this->getCurrentSql();
         $conn = $this->getConnection();
         $rows = $conn->fetchAllAssociative($sql);
@@ -4361,6 +4389,9 @@ class OrdersList extends Orders
         $item = &$this->ExportOptions->addGroupOption();
         $item->Body = "";
         $item->Visible = false;
+        if (!$Security->canExport()) { // Export not allowed
+            $this->ExportOptions->hideAllOptions();
+        }
     }
 
     // Set up search options
@@ -4385,6 +4416,15 @@ class OrdersList extends Orders
         }
         $item->Visible = ($this->SearchWhere != $this->DefaultSearchWhere && $this->SearchWhere != "0=101");
 
+        // Advanced search button
+        $item = &$this->SearchOptions->add("advancedsearch");
+        if ($this->ModalSearch && !IsMobile()) {
+            $item->Body = "<a class=\"btn btn-default ew-advanced-search\" title=\"" . $Language->phrase("AdvancedSearch", true) . "\" data-table=\"orders\" data-caption=\"" . $Language->phrase("AdvancedSearch", true) . "\" data-ew-action=\"modal\" data-url=\"OrdersSearch\" data-btn=\"SearchBtn\">" . $Language->phrase("AdvancedSearch", false) . "</a>";
+        } else {
+            $item->Body = "<a class=\"btn btn-default ew-advanced-search\" title=\"" . $Language->phrase("AdvancedSearch", true) . "\" data-caption=\"" . $Language->phrase("AdvancedSearch", true) . "\" href=\"OrdersSearch\">" . $Language->phrase("AdvancedSearch", false) . "</a>";
+        }
+        $item->Visible = true;
+
         // Button group for search
         $this->SearchOptions->UseDropDownButton = false;
         $this->SearchOptions->UseButtonGroup = true;
@@ -4398,6 +4438,10 @@ class OrdersList extends Orders
         // Hide search options
         if ($this->isExport() || $this->CurrentAction && $this->CurrentAction != "search") {
             $this->SearchOptions->hideAllOptions();
+        }
+        if (!$Security->canSearch()) {
+            $this->SearchOptions->hideAllOptions();
+            $this->FilterOptions->hideAllOptions();
         }
     }
 

@@ -108,6 +108,15 @@ if (count($providers) > 0) {
 <?php
 }
 ?>
+<div class="login-page-links text-center mt-3"></div>
+<script type="text/html" class="ew-js-template"<?php if (!$Page->IsModal) { ?> data-name="login-page" data-seq="10"<?php } ?> data-data="login" data-target=".login-page-links">
+{{if canResetPassword && resetPassword}}
+<a class="card-link me-2"{{props resetPassword}} data-{{:key}}="{{>prop}}"{{/props}}>{{:resetPasswordText}}</a>
+{{/if}}
+{{if canRegister && register}}
+<a class="card-link me-2"{{props register}} data-{{:key}}="{{>prop}}"{{/props}}>{{:registerText}}</a>
+{{/if}}
+</script>
 </form>
         </div><!-- ./card-body -->
     </div><!-- ./card -->

@@ -117,7 +117,7 @@ class LanguagesLevelsDelete extends LanguagesLevels
     public function __construct()
     {
         parent::__construct();
-        global $Language, $DashboardReport, $DebugTimer;
+        global $Language, $DashboardReport, $DebugTimer, $UserTable;
         $this->TableVar = 'languages_levels';
         $this->TableName = 'languages_levels';
 
@@ -148,6 +148,9 @@ class LanguagesLevelsDelete extends LanguagesLevels
 
         // Open connection
         $GLOBALS["Conn"] ??= $this->getConnection();
+
+        // User table object
+        $UserTable = Container("usertable");
     }
 
     // Get content from stream
@@ -642,6 +645,10 @@ class LanguagesLevelsDelete extends LanguagesLevels
     protected function deleteRows()
     {
         global $Language, $Security;
+        if (!$Security->canDelete()) {
+            $this->setFailureMessage($Language->phrase("NoDeletePermission")); // No delete permission
+            return false;
+        }
         $sql = $this->getCurrentSql();
         $conn = $this->getConnection();
         $rows = $conn->fetchAllAssociative($sql);

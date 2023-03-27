@@ -142,7 +142,7 @@ $CONFIG = [
 
     // General
     "UNFORMAT_YEAR" => 50, // Unformat year
-    "RANDOM_KEY" => 'Z1ah3EwEsE4fPTaA', // Random key for encryption
+    "RANDOM_KEY" => 'gJQp8Uvn5EyTsDv9', // Random key for encryption
     "ENCRYPTION_KEY" => '', // Encryption key for data protection
     "PROJECT_STYLESHEET_FILENAME" => "css/hih71.css", // Project stylesheet file name
     "USE_COMPRESSED_STYLESHEET" => true, // Compressed stylesheet
@@ -286,7 +286,7 @@ $CONFIG = [
      * first before calculating hash. Otherwise, existing users will not be able
      * to login. Hashed password is irreversible, it will be reset during password recovery.
      */
-    "ENCRYPTED_PASSWORD" => false, // Use encrypted password
+    "ENCRYPTED_PASSWORD" => true, // Use encrypted password
     "CASE_SENSITIVE_PASSWORD" => false, // Case-sensitive password
 
     // Session timeout time
@@ -393,16 +393,35 @@ $CONFIG = [
     "USE_MODAL_RESET_PASSWORD" => false, // Use modal reset password
     "RESET_PASSWORD_TIME_LIMIT" => 60, // Reset password time limit (minutes)
 
+    /**
+     * Dynamic User Level settings
+     */
+
+    // User level definition table/field names
+    "USER_LEVEL_DBID" => "DB",
+    "USER_LEVEL_TABLE" => "`userlevels`",
+    "USER_LEVEL_ID_FIELD" => "`UserLevelID`",
+    "USER_LEVEL_NAME_FIELD" => "`UserLevelName`",
+
+    // User Level privileges table/field names
+    "USER_LEVEL_PRIV_DBID" => "DB",
+    "USER_LEVEL_PRIV_TABLE" => "`userlevelpermissions`",
+    "USER_LEVEL_PRIV_TABLE_NAME_FIELD" => "`TableName`",
+    "USER_LEVEL_PRIV_TABLE_NAME_FIELD_2" => "TableName",
+    "USER_LEVEL_PRIV_TABLE_NAME_FIELD_SIZE" => 191, // Max key length 767/4 = 191 bytes
+    "USER_LEVEL_PRIV_USER_LEVEL_ID_FIELD" => "`UserLevelID`",
+    "USER_LEVEL_PRIV_PRIV_FIELD" => "`Permission`",
+
     // Default User ID allowed permissions
     "DEFAULT_USER_ID_ALLOW_SECURITY" => 360,
 
     // User table/field names
-    "USER_TABLE_NAME" => "",
-    "LOGIN_USERNAME_FIELD_NAME" => "",
-    "LOGIN_PASSWORD_FIELD_NAME" => "",
-    "USER_ID_FIELD_NAME" => "",
+    "USER_TABLE_NAME" => "admin_panel_users",
+    "LOGIN_USERNAME_FIELD_NAME" => "username",
+    "LOGIN_PASSWORD_FIELD_NAME" => "password",
+    "USER_ID_FIELD_NAME" => "id",
     "PARENT_USER_ID_FIELD_NAME" => "",
-    "USER_LEVEL_FIELD_NAME" => "",
+    "USER_LEVEL_FIELD_NAME" => "user_level",
     "USER_PROFILE_FIELD_NAME" => "",
     "REGISTER_ACTIVATE_FIELD_NAME" => "",
     "USER_EMAIL_FIELD_NAME" => "",
@@ -412,10 +431,10 @@ $CONFIG = [
     "USER_IMAGE_CROP" => true,
 
     // User table filters
-    "USER_TABLE_DBID" => "",
-    "USER_TABLE" => "",
-    "USER_NAME_FILTER" => "",
-    "USER_ID_FILTER" => "",
+    "USER_TABLE_DBID" => "DB",
+    "USER_TABLE" => "`admin_panel_users`",
+    "USER_NAME_FILTER" => "(`username` = '%u')",
+    "USER_ID_FILTER" => "(`id` = %u)",
     "USER_EMAIL_FILTER" => "",
     "USER_ACTIVATE_FILTER" => "",
 

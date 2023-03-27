@@ -37,4 +37,10 @@ class TransfersController extends ControllerBase
     {
         return $this->runPage($request, $response, $args, "TransfersDelete");
     }
+
+    // search
+    public function search(Request $request, Response $response, array $args): Response
+    {
+        return $this->runPage($request, $response, $args, "TransfersSearch");
+    }
 }

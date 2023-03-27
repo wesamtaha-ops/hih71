@@ -117,7 +117,7 @@ class CurrenciesAdd extends Currencies
     public function __construct()
     {
         parent::__construct();
-        global $Language, $DashboardReport, $DebugTimer;
+        global $Language, $DashboardReport, $DebugTimer, $UserTable;
         $this->TableVar = 'currencies';
         $this->TableName = 'currencies';
 
@@ -148,6 +148,9 @@ class CurrenciesAdd extends Currencies
 
         // Open connection
         $GLOBALS["Conn"] ??= $this->getConnection();
+
+        // User table object
+        $UserTable = Container("usertable");
     }
 
     // Get content from stream

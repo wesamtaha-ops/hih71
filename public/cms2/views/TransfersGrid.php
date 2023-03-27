@@ -26,7 +26,6 @@ loadjs.ready(["wrapper", "head"], function () {
             ["id", [fields.id.visible && fields.id.required ? ew.Validators.required(fields.id.caption) : null], fields.id.isInvalid],
             ["user_id", [fields.user_id.visible && fields.user_id.required ? ew.Validators.required(fields.user_id.caption) : null], fields.user_id.isInvalid],
             ["amount", [fields.amount.visible && fields.amount.required ? ew.Validators.required(fields.amount.caption) : null, ew.Validators.integer], fields.amount.isInvalid],
-            ["currency_id", [fields.currency_id.visible && fields.currency_id.required ? ew.Validators.required(fields.currency_id.caption) : null], fields.currency_id.isInvalid],
             ["type", [fields.type.visible && fields.type.required ? ew.Validators.required(fields.type.caption) : null], fields.type.isInvalid],
             ["order_id", [fields.order_id.visible && fields.order_id.required ? ew.Validators.required(fields.order_id.caption) : null], fields.order_id.isInvalid],
             ["approved", [fields.approved.visible && fields.approved.required ? ew.Validators.required(fields.approved.caption) : null], fields.approved.isInvalid],
@@ -37,7 +36,7 @@ loadjs.ready(["wrapper", "head"], function () {
         .setEmptyRow(
             function (rowIndex) {
                 let fobj = this.getForm(),
-                    fields = [["user_id",false],["amount",false],["currency_id",false],["type",false],["order_id",false],["approved",true],["verification_code",false]];
+                    fields = [["user_id",false],["amount",false],["type",false],["order_id",false],["approved",true],["verification_code",false]];
                 if (fields.some(field => ew.valueChanged(fobj, rowIndex, ...field)))
                     return false;
                 return true;
@@ -58,7 +57,6 @@ loadjs.ready(["wrapper", "head"], function () {
         // Dynamic selection lists
         .setLists({
             "user_id": <?= $Grid->user_id->toClientList($Grid) ?>,
-            "currency_id": <?= $Grid->currency_id->toClientList($Grid) ?>,
             "type": <?= $Grid->type->toClientList($Grid) ?>,
             "order_id": <?= $Grid->order_id->toClientList($Grid) ?>,
             "approved": <?= $Grid->approved->toClientList($Grid) ?>,
@@ -101,9 +99,6 @@ $Grid->ListOptions->render("header", "left");
 <?php } ?>
 <?php if ($Grid->amount->Visible) { // amount ?>
         <th data-name="amount" class="<?= $Grid->amount->headerCellClass() ?>"><div id="elh_transfers_amount" class="transfers_amount"><?= $Grid->renderFieldHeader($Grid->amount) ?></div></th>
-<?php } ?>
-<?php if ($Grid->currency_id->Visible) { // currency_id ?>
-        <th data-name="currency_id" class="<?= $Grid->currency_id->headerCellClass() ?>"><div id="elh_transfers_currency_id" class="transfers_currency_id"><?= $Grid->renderFieldHeader($Grid->currency_id) ?></div></th>
 <?php } ?>
 <?php if ($Grid->type->Visible) { // type ?>
         <th data-name="type" class="<?= $Grid->type->headerCellClass() ?>"><div id="elh_transfers_type" class="transfers_type"><?= $Grid->renderFieldHeader($Grid->type) ?></div></th>
@@ -297,97 +292,6 @@ loadjs.ready("ftransfersgrid", function() {
 <?php if ($Grid->isConfirm()) { ?>
 <input type="hidden" data-table="transfers" data-field="x_amount" data-hidden="1" name="ftransfersgrid$x<?= $Grid->RowIndex ?>_amount" id="ftransfersgrid$x<?= $Grid->RowIndex ?>_amount" value="<?= HtmlEncode($Grid->amount->FormValue) ?>">
 <input type="hidden" data-table="transfers" data-field="x_amount" data-hidden="1" data-old name="ftransfersgrid$o<?= $Grid->RowIndex ?>_amount" id="ftransfersgrid$o<?= $Grid->RowIndex ?>_amount" value="<?= HtmlEncode($Grid->amount->OldValue) ?>">
-<?php } ?>
-<?php } ?>
-</td>
-    <?php } ?>
-    <?php if ($Grid->currency_id->Visible) { // currency_id ?>
-        <td data-name="currency_id"<?= $Grid->currency_id->cellAttributes() ?>>
-<?php if ($Grid->RowType == ROWTYPE_ADD) { // Add record ?>
-<span id="el<?= $Grid->RowCount ?>_transfers_currency_id" class="el_transfers_currency_id">
-    <select
-        id="x<?= $Grid->RowIndex ?>_currency_id"
-        name="x<?= $Grid->RowIndex ?>_currency_id"
-        class="form-select ew-select<?= $Grid->currency_id->isInvalidClass() ?>"
-        <?php if (!$Grid->currency_id->IsNativeSelect) { ?>
-        data-select2-id="ftransfersgrid_x<?= $Grid->RowIndex ?>_currency_id"
-        <?php } ?>
-        data-table="transfers"
-        data-field="x_currency_id"
-        data-value-separator="<?= $Grid->currency_id->displayValueSeparatorAttribute() ?>"
-        data-placeholder="<?= HtmlEncode($Grid->currency_id->getPlaceHolder()) ?>"
-        <?= $Grid->currency_id->editAttributes() ?>>
-        <?= $Grid->currency_id->selectOptionListHtml("x{$Grid->RowIndex}_currency_id") ?>
-    </select>
-    <div class="invalid-feedback"><?= $Grid->currency_id->getErrorMessage() ?></div>
-<?= $Grid->currency_id->Lookup->getParamTag($Grid, "p_x" . $Grid->RowIndex . "_currency_id") ?>
-<?php if (!$Grid->currency_id->IsNativeSelect) { ?>
-<script>
-loadjs.ready("ftransfersgrid", function() {
-    var options = { name: "x<?= $Grid->RowIndex ?>_currency_id", selectId: "ftransfersgrid_x<?= $Grid->RowIndex ?>_currency_id" },
-        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
-    options.closeOnSelect = !options.multiple;
-    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
-    if (ftransfersgrid.lists.currency_id?.lookupOptions.length) {
-        options.data = { id: "x<?= $Grid->RowIndex ?>_currency_id", form: "ftransfersgrid" };
-    } else {
-        options.ajax = { id: "x<?= $Grid->RowIndex ?>_currency_id", form: "ftransfersgrid", limit: ew.LOOKUP_PAGE_SIZE };
-    }
-    options.minimumResultsForSearch = Infinity;
-    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.transfers.fields.currency_id.selectOptions);
-    ew.createSelect(options);
-});
-</script>
-<?php } ?>
-</span>
-<input type="hidden" data-table="transfers" data-field="x_currency_id" data-hidden="1" data-old name="o<?= $Grid->RowIndex ?>_currency_id" id="o<?= $Grid->RowIndex ?>_currency_id" value="<?= HtmlEncode($Grid->currency_id->OldValue) ?>">
-<?php } ?>
-<?php if ($Grid->RowType == ROWTYPE_EDIT) { // Edit record ?>
-<span id="el<?= $Grid->RowCount ?>_transfers_currency_id" class="el_transfers_currency_id">
-    <select
-        id="x<?= $Grid->RowIndex ?>_currency_id"
-        name="x<?= $Grid->RowIndex ?>_currency_id"
-        class="form-select ew-select<?= $Grid->currency_id->isInvalidClass() ?>"
-        <?php if (!$Grid->currency_id->IsNativeSelect) { ?>
-        data-select2-id="ftransfersgrid_x<?= $Grid->RowIndex ?>_currency_id"
-        <?php } ?>
-        data-table="transfers"
-        data-field="x_currency_id"
-        data-value-separator="<?= $Grid->currency_id->displayValueSeparatorAttribute() ?>"
-        data-placeholder="<?= HtmlEncode($Grid->currency_id->getPlaceHolder()) ?>"
-        <?= $Grid->currency_id->editAttributes() ?>>
-        <?= $Grid->currency_id->selectOptionListHtml("x{$Grid->RowIndex}_currency_id") ?>
-    </select>
-    <div class="invalid-feedback"><?= $Grid->currency_id->getErrorMessage() ?></div>
-<?= $Grid->currency_id->Lookup->getParamTag($Grid, "p_x" . $Grid->RowIndex . "_currency_id") ?>
-<?php if (!$Grid->currency_id->IsNativeSelect) { ?>
-<script>
-loadjs.ready("ftransfersgrid", function() {
-    var options = { name: "x<?= $Grid->RowIndex ?>_currency_id", selectId: "ftransfersgrid_x<?= $Grid->RowIndex ?>_currency_id" },
-        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
-    options.closeOnSelect = !options.multiple;
-    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
-    if (ftransfersgrid.lists.currency_id?.lookupOptions.length) {
-        options.data = { id: "x<?= $Grid->RowIndex ?>_currency_id", form: "ftransfersgrid" };
-    } else {
-        options.ajax = { id: "x<?= $Grid->RowIndex ?>_currency_id", form: "ftransfersgrid", limit: ew.LOOKUP_PAGE_SIZE };
-    }
-    options.minimumResultsForSearch = Infinity;
-    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.transfers.fields.currency_id.selectOptions);
-    ew.createSelect(options);
-});
-</script>
-<?php } ?>
-</span>
-<?php } ?>
-<?php if ($Grid->RowType == ROWTYPE_VIEW) { // View record ?>
-<span id="el<?= $Grid->RowCount ?>_transfers_currency_id" class="el_transfers_currency_id">
-<span<?= $Grid->currency_id->viewAttributes() ?>>
-<?= $Grid->currency_id->getViewValue() ?></span>
-</span>
-<?php if ($Grid->isConfirm()) { ?>
-<input type="hidden" data-table="transfers" data-field="x_currency_id" data-hidden="1" name="ftransfersgrid$x<?= $Grid->RowIndex ?>_currency_id" id="ftransfersgrid$x<?= $Grid->RowIndex ?>_currency_id" value="<?= HtmlEncode($Grid->currency_id->FormValue) ?>">
-<input type="hidden" data-table="transfers" data-field="x_currency_id" data-hidden="1" data-old name="ftransfersgrid$o<?= $Grid->RowIndex ?>_currency_id" id="ftransfersgrid$o<?= $Grid->RowIndex ?>_currency_id" value="<?= HtmlEncode($Grid->currency_id->OldValue) ?>">
 <?php } ?>
 <?php } ?>
 </td>

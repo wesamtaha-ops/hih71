@@ -65,9 +65,6 @@ $Page->showMessage();
 <?php if ($Page->gender->Visible) { // gender ?>
         <th class="<?= $Page->gender->headerCellClass() ?>"><span id="elh_users_gender" class="users_gender"><?= $Page->gender->caption() ?></span></th>
 <?php } ?>
-<?php if ($Page->birthday->Visible) { // birthday ?>
-        <th class="<?= $Page->birthday->headerCellClass() ?>"><span id="elh_users_birthday" class="users_birthday"><?= $Page->birthday->caption() ?></span></th>
-<?php } ?>
 <?php if ($Page->image->Visible) { // image ?>
         <th class="<?= $Page->image->headerCellClass() ?>"><span id="elh_users_image" class="users_image"><?= $Page->image->caption() ?></span></th>
 <?php } ?>
@@ -77,14 +74,8 @@ $Page->showMessage();
 <?php if ($Page->city->Visible) { // city ?>
         <th class="<?= $Page->city->headerCellClass() ?>"><span id="elh_users_city" class="users_city"><?= $Page->city->caption() ?></span></th>
 <?php } ?>
-<?php if ($Page->currency_id->Visible) { // currency_id ?>
-        <th class="<?= $Page->currency_id->headerCellClass() ?>"><span id="elh_users_currency_id" class="users_currency_id"><?= $Page->currency_id->caption() ?></span></th>
-<?php } ?>
 <?php if ($Page->type->Visible) { // type ?>
         <th class="<?= $Page->type->headerCellClass() ?>"><span id="elh_users_type" class="users_type"><?= $Page->type->caption() ?></span></th>
-<?php } ?>
-<?php if ($Page->is_verified->Visible) { // is_verified ?>
-        <th class="<?= $Page->is_verified->headerCellClass() ?>"><span id="elh_users_is_verified" class="users_is_verified"><?= $Page->is_verified->caption() ?></span></th>
 <?php } ?>
 <?php if ($Page->is_approved->Visible) { // is_approved ?>
         <th class="<?= $Page->is_approved->headerCellClass() ?>"><span id="elh_users_is_approved" class="users_is_approved"><?= $Page->is_approved->caption() ?></span></th>
@@ -94,9 +85,6 @@ $Page->showMessage();
 <?php } ?>
 <?php if ($Page->otp->Visible) { // otp ?>
         <th class="<?= $Page->otp->headerCellClass() ?>"><span id="elh_users_otp" class="users_otp"><?= $Page->otp->caption() ?></span></th>
-<?php } ?>
-<?php if ($Page->slug->Visible) { // slug ?>
-        <th class="<?= $Page->slug->headerCellClass() ?>"><span id="elh_users_slug" class="users_slug"><?= $Page->slug->caption() ?></span></th>
 <?php } ?>
     </tr>
     </thead>
@@ -159,18 +147,10 @@ while (!$Page->Recordset->EOF) {
 </span>
 </td>
 <?php } ?>
-<?php if ($Page->birthday->Visible) { // birthday ?>
-        <td<?= $Page->birthday->cellAttributes() ?>>
-<span id="el<?= $Page->RowCount ?>_users_birthday" class="el_users_birthday">
-<span<?= $Page->birthday->viewAttributes() ?>>
-<?= $Page->birthday->getViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
 <?php if ($Page->image->Visible) { // image ?>
         <td<?= $Page->image->cellAttributes() ?>>
 <span id="el<?= $Page->RowCount ?>_users_image" class="el_users_image">
-<span<?= $Page->image->viewAttributes() ?>>
+<span>
 <?= GetFileViewTag($Page->image, $Page->image->getViewValue(), false) ?>
 </span>
 </span>
@@ -192,27 +172,11 @@ while (!$Page->Recordset->EOF) {
 </span>
 </td>
 <?php } ?>
-<?php if ($Page->currency_id->Visible) { // currency_id ?>
-        <td<?= $Page->currency_id->cellAttributes() ?>>
-<span id="el<?= $Page->RowCount ?>_users_currency_id" class="el_users_currency_id">
-<span<?= $Page->currency_id->viewAttributes() ?>>
-<?= $Page->currency_id->getViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
 <?php if ($Page->type->Visible) { // type ?>
         <td<?= $Page->type->cellAttributes() ?>>
 <span id="el<?= $Page->RowCount ?>_users_type" class="el_users_type">
 <span<?= $Page->type->viewAttributes() ?>>
 <?= $Page->type->getViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
-<?php if ($Page->is_verified->Visible) { // is_verified ?>
-        <td<?= $Page->is_verified->cellAttributes() ?>>
-<span id="el<?= $Page->RowCount ?>_users_is_verified" class="el_users_is_verified">
-<span<?= $Page->is_verified->viewAttributes() ?>>
-<?= $Page->is_verified->getViewValue() ?></span>
 </span>
 </td>
 <?php } ?>
@@ -237,14 +201,6 @@ while (!$Page->Recordset->EOF) {
 <span id="el<?= $Page->RowCount ?>_users_otp" class="el_users_otp">
 <span<?= $Page->otp->viewAttributes() ?>>
 <?= $Page->otp->getViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
-<?php if ($Page->slug->Visible) { // slug ?>
-        <td<?= $Page->slug->cellAttributes() ?>>
-<span id="el<?= $Page->RowCount ?>_users_slug" class="el_users_slug">
-<span<?= $Page->slug->viewAttributes() ?>>
-<?= $Page->slug->getViewValue() ?></span>
 </span>
 </td>
 <?php } ?>

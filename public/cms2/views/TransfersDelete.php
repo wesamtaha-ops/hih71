@@ -59,9 +59,6 @@ $Page->showMessage();
 <?php if ($Page->amount->Visible) { // amount ?>
         <th class="<?= $Page->amount->headerCellClass() ?>"><span id="elh_transfers_amount" class="transfers_amount"><?= $Page->amount->caption() ?></span></th>
 <?php } ?>
-<?php if ($Page->currency_id->Visible) { // currency_id ?>
-        <th class="<?= $Page->currency_id->headerCellClass() ?>"><span id="elh_transfers_currency_id" class="transfers_currency_id"><?= $Page->currency_id->caption() ?></span></th>
-<?php } ?>
 <?php if ($Page->type->Visible) { // type ?>
         <th class="<?= $Page->type->headerCellClass() ?>"><span id="elh_transfers_type" class="transfers_type"><?= $Page->type->caption() ?></span></th>
 <?php } ?>
@@ -116,14 +113,6 @@ while (!$Page->Recordset->EOF) {
 <span id="el<?= $Page->RowCount ?>_transfers_amount" class="el_transfers_amount">
 <span<?= $Page->amount->viewAttributes() ?>>
 <?= $Page->amount->getViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
-<?php if ($Page->currency_id->Visible) { // currency_id ?>
-        <td<?= $Page->currency_id->cellAttributes() ?>>
-<span id="el<?= $Page->RowCount ?>_transfers_currency_id" class="el_transfers_currency_id">
-<span<?= $Page->currency_id->viewAttributes() ?>>
-<?= $Page->currency_id->getViewValue() ?></span>
 </span>
 </td>
 <?php } ?>

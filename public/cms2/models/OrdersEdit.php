@@ -117,7 +117,7 @@ class OrdersEdit extends Orders
     public function __construct()
     {
         parent::__construct();
-        global $Language, $DashboardReport, $DebugTimer;
+        global $Language, $DashboardReport, $DebugTimer, $UserTable;
         $this->TableVar = 'orders';
         $this->TableName = 'orders';
 
@@ -148,6 +148,9 @@ class OrdersEdit extends Orders
 
         // Open connection
         $GLOBALS["Conn"] ??= $this->getConnection();
+
+        // User table object
+        $UserTable = Container("usertable");
     }
 
     // Get content from stream
@@ -1145,6 +1148,7 @@ class OrdersEdit extends Orders
 
             // fees
             $this->fees->ViewValue = $this->fees->CurrentValue;
+            $this->fees->ViewValue = FormatNumber($this->fees->ViewValue, $this->fees->formatPattern());
 
             // currency_id
             $curVal = strval($this->currency_id->CurrentValue);
@@ -1318,7 +1322,7 @@ class OrdersEdit extends Orders
             $this->fees->EditValue = HtmlEncode($this->fees->CurrentValue);
             $this->fees->PlaceHolder = RemoveHtml($this->fees->caption());
             if (strval($this->fees->EditValue) != "" && is_numeric($this->fees->EditValue)) {
-                $this->fees->EditValue = $this->fees->EditValue;
+                $this->fees->EditValue = FormatNumber($this->fees->EditValue, null);
             }
 
             // currency_id
@@ -1462,7 +1466,7 @@ class OrdersEdit extends Orders
                 $this->fees->addErrorMessage(str_replace("%s", $this->fees->caption(), $this->fees->RequiredErrorMessage));
             }
         }
-        if (!CheckInteger($this->fees->FormValue)) {
+        if (!CheckNumber($this->fees->FormValue)) {
             $this->fees->addErrorMessage($this->fees->getErrorMessage(false));
         }
         if ($this->currency_id->Required) {

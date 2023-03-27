@@ -39,7 +39,6 @@ loadjs.ready(["wrapper", "head"], function () {
             ["id", [fields.id.visible && fields.id.required ? ew.Validators.required(fields.id.caption) : null], fields.id.isInvalid],
             ["user_id", [fields.user_id.visible && fields.user_id.required ? ew.Validators.required(fields.user_id.caption) : null], fields.user_id.isInvalid],
             ["amount", [fields.amount.visible && fields.amount.required ? ew.Validators.required(fields.amount.caption) : null, ew.Validators.integer], fields.amount.isInvalid],
-            ["currency_id", [fields.currency_id.visible && fields.currency_id.required ? ew.Validators.required(fields.currency_id.caption) : null], fields.currency_id.isInvalid],
             ["type", [fields.type.visible && fields.type.required ? ew.Validators.required(fields.type.caption) : null], fields.type.isInvalid],
             ["order_id", [fields.order_id.visible && fields.order_id.required ? ew.Validators.required(fields.order_id.caption) : null], fields.order_id.isInvalid],
             ["approved", [fields.approved.visible && fields.approved.required ? ew.Validators.required(fields.approved.caption) : null], fields.approved.isInvalid],
@@ -60,7 +59,6 @@ loadjs.ready(["wrapper", "head"], function () {
         // Dynamic selection lists
         .setLists({
             "user_id": <?= $Page->user_id->toClientList($Page) ?>,
-            "currency_id": <?= $Page->currency_id->toClientList($Page) ?>,
             "type": <?= $Page->type->toClientList($Page) ?>,
             "order_id": <?= $Page->order_id->toClientList($Page) ?>,
             "approved": <?= $Page->approved->toClientList($Page) ?>,
@@ -157,50 +155,6 @@ loadjs.ready("ftransfersedit", function() {
 <input type="<?= $Page->amount->getInputTextType() ?>" name="x_amount" id="x_amount" data-table="transfers" data-field="x_amount" value="<?= $Page->amount->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->amount->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->amount->formatPattern()) ?>"<?= $Page->amount->editAttributes() ?> aria-describedby="x_amount_help">
 <?= $Page->amount->getCustomMessage() ?>
 <div class="invalid-feedback"><?= $Page->amount->getErrorMessage() ?></div>
-</span>
-</div></div>
-    </div>
-<?php } ?>
-<?php if ($Page->currency_id->Visible) { // currency_id ?>
-    <div id="r_currency_id"<?= $Page->currency_id->rowAttributes() ?>>
-        <label id="elh_transfers_currency_id" for="x_currency_id" class="<?= $Page->LeftColumnClass ?>"><?= $Page->currency_id->caption() ?><?= $Page->currency_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
-        <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->currency_id->cellAttributes() ?>>
-<span id="el_transfers_currency_id">
-    <select
-        id="x_currency_id"
-        name="x_currency_id"
-        class="form-select ew-select<?= $Page->currency_id->isInvalidClass() ?>"
-        <?php if (!$Page->currency_id->IsNativeSelect) { ?>
-        data-select2-id="ftransfersedit_x_currency_id"
-        <?php } ?>
-        data-table="transfers"
-        data-field="x_currency_id"
-        data-value-separator="<?= $Page->currency_id->displayValueSeparatorAttribute() ?>"
-        data-placeholder="<?= HtmlEncode($Page->currency_id->getPlaceHolder()) ?>"
-        <?= $Page->currency_id->editAttributes() ?>>
-        <?= $Page->currency_id->selectOptionListHtml("x_currency_id") ?>
-    </select>
-    <?= $Page->currency_id->getCustomMessage() ?>
-    <div class="invalid-feedback"><?= $Page->currency_id->getErrorMessage() ?></div>
-<?= $Page->currency_id->Lookup->getParamTag($Page, "p_x_currency_id") ?>
-<?php if (!$Page->currency_id->IsNativeSelect) { ?>
-<script>
-loadjs.ready("ftransfersedit", function() {
-    var options = { name: "x_currency_id", selectId: "ftransfersedit_x_currency_id" },
-        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
-    options.closeOnSelect = !options.multiple;
-    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
-    if (ftransfersedit.lists.currency_id?.lookupOptions.length) {
-        options.data = { id: "x_currency_id", form: "ftransfersedit" };
-    } else {
-        options.ajax = { id: "x_currency_id", form: "ftransfersedit", limit: ew.LOOKUP_PAGE_SIZE };
-    }
-    options.minimumResultsForSearch = Infinity;
-    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.transfers.fields.currency_id.selectOptions);
-    ew.createSelect(options);
-});
-</script>
-<?php } ?>
 </span>
 </div></div>
     </div>

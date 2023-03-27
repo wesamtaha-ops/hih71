@@ -117,7 +117,7 @@ class UsersEdit extends Users
     public function __construct()
     {
         parent::__construct();
-        global $Language, $DashboardReport, $DebugTimer;
+        global $Language, $DashboardReport, $DebugTimer, $UserTable;
         $this->TableVar = 'users';
         $this->TableName = 'users';
 
@@ -148,6 +148,9 @@ class UsersEdit extends Users
 
         // Open connection
         $GLOBALS["Conn"] ??= $this->getConnection();
+
+        // User table object
+        $UserTable = Container("usertable");
     }
 
     // Get content from stream
@@ -481,6 +484,7 @@ class UsersEdit extends Users
         $this->remember_token->setVisibility();
         $this->created_at->Visible = false;
         $this->updated_at->Visible = false;
+        $this->rate->setVisibility();
 
         // Set lookup cache
         if (!in_array($this->PageID, Config("LOOKUP_CACHE_PAGE_IDS"))) {
@@ -940,6 +944,16 @@ class UsersEdit extends Users
                 $this->remember_token->setFormValue($val);
             }
         }
+
+        // Check field name 'rate' first before field var 'x_rate'
+        $val = $CurrentForm->hasValue("rate") ? $CurrentForm->getValue("rate") : $CurrentForm->getValue("x_rate");
+        if (!$this->rate->IsDetailKey) {
+            if (IsApi() && $val === null) {
+                $this->rate->Visible = false; // Disable update for API request
+            } else {
+                $this->rate->setFormValue($val, true, $validate);
+            }
+        }
 		$this->image->OldUploadPath = $this->image->getUploadPath(); // PHP
 		$this->image->UploadPath = $this->image->OldUploadPath;
         $this->getUploadFiles(); // Get upload files
@@ -967,6 +981,7 @@ class UsersEdit extends Users
         $this->otp->CurrentValue = $this->otp->FormValue;
         $this->slug->CurrentValue = $this->slug->FormValue;
         $this->remember_token->CurrentValue = $this->remember_token->FormValue;
+        $this->rate->CurrentValue = $this->rate->FormValue;
     }
 
     // Load recordset
@@ -1076,6 +1091,7 @@ class UsersEdit extends Users
         $this->remember_token->setDbValue($row['remember_token']);
         $this->created_at->setDbValue($row['created_at']);
         $this->updated_at->setDbValue($row['updated_at']);
+        $this->rate->setDbValue($row['rate']);
     }
 
     // Return a row with default values
@@ -1103,6 +1119,7 @@ class UsersEdit extends Users
         $row['remember_token'] = $this->remember_token->DefaultValue;
         $row['created_at'] = $this->created_at->DefaultValue;
         $row['updated_at'] = $this->updated_at->DefaultValue;
+        $row['rate'] = $this->rate->DefaultValue;
         return $row;
     }
 
@@ -1200,6 +1217,9 @@ class UsersEdit extends Users
         // updated_at
         $this->updated_at->RowCssClass = "row";
 
+        // rate
+        $this->rate->RowCssClass = "row";
+
         // View row
         if ($this->RowType == ROWTYPE_VIEW) {
             // id
@@ -1231,6 +1251,10 @@ class UsersEdit extends Users
             // image
             $this->image->UploadPath = $this->image->getUploadPath(); // PHP
             if (!EmptyValue($this->image->Upload->DbValue)) {
+                $this->image->ImageWidth = 100;
+                $this->image->ImageHeight = 0;
+                $this->image->ImageAlt = $this->image->alt();
+                $this->image->ImageCssClass = "ew-image";
                 $this->image->ViewValue = $this->image->Upload->DbValue;
             } else {
                 $this->image->ViewValue = "";
@@ -1322,6 +1346,10 @@ class UsersEdit extends Users
             // remember_token
             $this->remember_token->ViewValue = $this->remember_token->CurrentValue;
 
+            // rate
+            $this->rate->ViewValue = $this->rate->CurrentValue;
+            $this->rate->ViewValue = FormatNumber($this->rate->ViewValue, $this->rate->formatPattern());
+
             // id
             $this->id->HrefValue = "";
 
@@ -1344,7 +1372,16 @@ class UsersEdit extends Users
             $this->birthday->HrefValue = "";
 
             // image
-            $this->image->HrefValue = "";
+            $this->image->UploadPath = $this->image->getUploadPath(); // PHP
+            if (!EmptyValue($this->image->Upload->DbValue)) {
+                $this->image->HrefValue = GetFileUploadUrl($this->image, $this->image->htmlDecode($this->image->Upload->DbValue)); // Add prefix/suffix
+                $this->image->LinkAttrs["target"] = ""; // Add target
+                if ($this->isExport()) {
+                    $this->image->HrefValue = FullUrl($this->image->HrefValue, "href");
+                }
+            } else {
+                $this->image->HrefValue = "";
+            }
             $this->image->ExportHrefValue = $this->image->UploadPath . $this->image->Upload->DbValue;
 
             // country_id
@@ -1376,6 +1413,9 @@ class UsersEdit extends Users
 
             // remember_token
             $this->remember_token->HrefValue = "";
+
+            // rate
+            $this->rate->HrefValue = "";
         } elseif ($this->RowType == ROWTYPE_EDIT) {
             // id
             $this->id->setupEditAttributes();
@@ -1427,6 +1467,10 @@ class UsersEdit extends Users
             $this->image->setupEditAttributes();
             $this->image->UploadPath = $this->image->getUploadPath(); // PHP
             if (!EmptyValue($this->image->Upload->DbValue)) {
+                $this->image->ImageWidth = 100;
+                $this->image->ImageHeight = 0;
+                $this->image->ImageAlt = $this->image->alt();
+                $this->image->ImageCssClass = "ew-image";
                 $this->image->EditValue = $this->image->Upload->DbValue;
             } else {
                 $this->image->EditValue = "";
@@ -1540,6 +1584,14 @@ class UsersEdit extends Users
             $this->remember_token->EditValue = HtmlEncode($this->remember_token->CurrentValue);
             $this->remember_token->PlaceHolder = RemoveHtml($this->remember_token->caption());
 
+            // rate
+            $this->rate->setupEditAttributes();
+            $this->rate->EditValue = HtmlEncode($this->rate->CurrentValue);
+            $this->rate->PlaceHolder = RemoveHtml($this->rate->caption());
+            if (strval($this->rate->EditValue) != "" && is_numeric($this->rate->EditValue)) {
+                $this->rate->EditValue = FormatNumber($this->rate->EditValue, null);
+            }
+
             // Edit refer script
 
             // id
@@ -1564,7 +1616,16 @@ class UsersEdit extends Users
             $this->birthday->HrefValue = "";
 
             // image
-            $this->image->HrefValue = "";
+            $this->image->UploadPath = $this->image->getUploadPath(); // PHP
+            if (!EmptyValue($this->image->Upload->DbValue)) {
+                $this->image->HrefValue = GetFileUploadUrl($this->image, $this->image->htmlDecode($this->image->Upload->DbValue)); // Add prefix/suffix
+                $this->image->LinkAttrs["target"] = ""; // Add target
+                if ($this->isExport()) {
+                    $this->image->HrefValue = FullUrl($this->image->HrefValue, "href");
+                }
+            } else {
+                $this->image->HrefValue = "";
+            }
             $this->image->ExportHrefValue = $this->image->UploadPath . $this->image->Upload->DbValue;
 
             // country_id
@@ -1596,6 +1657,9 @@ class UsersEdit extends Users
 
             // remember_token
             $this->remember_token->HrefValue = "";
+
+            // rate
+            $this->rate->HrefValue = "";
         }
         if ($this->RowType == ROWTYPE_ADD || $this->RowType == ROWTYPE_EDIT || $this->RowType == ROWTYPE_SEARCH) { // Add/Edit/Search row
             $this->setupFieldTitles();
@@ -1710,6 +1774,14 @@ class UsersEdit extends Users
                 $this->remember_token->addErrorMessage(str_replace("%s", $this->remember_token->caption(), $this->remember_token->RequiredErrorMessage));
             }
         }
+        if ($this->rate->Required) {
+            if (!$this->rate->IsDetailKey && EmptyValue($this->rate->FormValue)) {
+                $this->rate->addErrorMessage(str_replace("%s", $this->rate->caption(), $this->rate->RequiredErrorMessage));
+            }
+        }
+        if (!CheckInteger($this->rate->FormValue)) {
+            $this->rate->addErrorMessage($this->rate->getErrorMessage(false));
+        }
 
         // Validate detail grid
         $detailTblVar = explode(",", $this->getCurrentDetailTable());
@@ -1812,6 +1884,9 @@ class UsersEdit extends Users
 
         // remember_token
         $this->remember_token->setDbValueDef($rsnew, $this->remember_token->CurrentValue, null, $this->remember_token->ReadOnly);
+
+        // rate
+        $this->rate->setDbValueDef($rsnew, $this->rate->CurrentValue, 0, $this->rate->ReadOnly);
 
         // Update current values
         $this->setCurrentValues($rsnew);
@@ -1950,7 +2025,9 @@ class UsersEdit extends Users
             if ($editRow) {
                 $detailPage = Container("TransfersGrid");
                 if (in_array("transfers", $detailTblVar) && $detailPage->DetailEdit) {
+                    $Security->loadCurrentUserLevel($this->ProjectID . "transfers"); // Load user level of detail table
                     $editRow = $detailPage->gridUpdate();
+                    $Security->loadCurrentUserLevel($this->ProjectID . $this->TableName); // Restore user level of master table
                 }
             }
 

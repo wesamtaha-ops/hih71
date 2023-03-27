@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ew-language version="19.7.0" id="en-US" name="English (US)" desc="English (US)" author="e.World Technology Limited" date="2023/2/26">
+<ew-language version="19.7.0" id="en-US" name="English (US)" desc="English (US)" author="e.World Technology Limited" date="2023/3/27">
   <!--
     IMPORTANT NOTES:
     1. Language ID must be RFC 4646 language tags (which use hyphen, not underscore), e.g. en-US, fr-CA, fr-FR,
@@ -1160,6 +1160,15 @@
     <menu id="25">
       <phrase id="menutext" value="oauth refresh tokens" />
     </menu>
+    <menu id="26">
+      <phrase id="menutext" value="Admin Panel Users" />
+    </menu>
+    <menu id="27">
+      <phrase id="menutext" value="userlevelpermissions" />
+    </menu>
+    <menu id="28">
+      <phrase id="menutext" value="Users Levels" />
+    </menu>
     <menu id="1">
       <phrase id="menutext" value="conversations" />
     </menu>
@@ -1179,7 +1188,7 @@
       <phrase id="menutext" value="Languages" />
     </menu>
     <menu id="7">
-      <phrase id="menutext" value="languages levels" />
+      <phrase id="menutext" value="Languages levels" />
     </menu>
     <menu id="8">
       <phrase id="menutext" value="Education Levels" />
@@ -1215,13 +1224,16 @@
       <phrase id="menutext" value="teachers levels" />
     </menu>
     <menu id="19">
-      <phrase id="menutext" value="Packages" />
+      <phrase id="menutext" value="Courses" />
     </menu>
     <menu id="20">
       <phrase id="menutext" value="Topics" />
     </menu>
     <menu id="21">
       <phrase id="menutext" value="Trainings" />
+    </menu>
+    <menu id="29">
+      <phrase id="menutext" value="Reviews Center" />
     </menu>
     <menu id="24">
       <phrase id="menutext" value="Registred Users" />
@@ -1496,6 +1508,40 @@
         <phrase id="fldcaption" value="package id" />
       </field>
     </table>
+    <table id="reviews">
+      <phrase id="tblcaption" value="reviews" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="from_user_id">
+        <phrase id="fldcaption" value="from user id" />
+      </field>
+      <field id="to_user_id">
+        <phrase id="fldcaption" value="to user id" />
+      </field>
+      <field id="points">
+        <phrase id="fldcaption" value="points" />
+      </field>
+      <field id="details">
+        <phrase id="fldcaption" value="details" />
+      </field>
+      <field id="review">
+        <phrase id="fldcaption" value="review" />
+      </field>
+      <field id="approved">
+        <phrase id="fldcaption" value="approved" />
+        <phrase id="fldtagvalue1" value="1" />
+        <phrase id="fldtagcaption1" value="Yes" />
+        <phrase id="fldtagvalue2" value="0" />
+        <phrase id="fldtagcaption2" value="No" />
+      </field>
+      <field id="created_at">
+        <phrase id="fldcaption" value="created at" />
+      </field>
+      <field id="updated_at">
+        <phrase id="fldcaption" value="updated at" />
+      </field>
+    </table>
     <table id="students">
       <phrase id="tblcaption" value="Students" />
       <field id="user_id">
@@ -1582,9 +1628,6 @@
       </field>
       <field id="fees">
         <phrase id="fldcaption" value="fees" />
-      </field>
-      <field id="currency_id">
-        <phrase id="fldcaption" value="currency id" />
       </field>
       <field id="created_at">
         <phrase id="fldcaption" value="created at" />
@@ -1757,9 +1800,6 @@
       <field id="amount">
         <phrase id="fldcaption" value="amount" />
       </field>
-      <field id="currency_id">
-        <phrase id="fldcaption" value="currency id" />
-      </field>
       <field id="type">
         <phrase id="fldcaption" value="type" />
         <phrase id="fldtagvalue1" value="order" />
@@ -1791,6 +1831,10 @@
       <phrase id="tblcaption" value="Registred Users" />
       <field id="id">
         <phrase id="fldcaption" value="id" />
+        <phrase id="fldtagvalue1" value="male" />
+        <phrase id="fldtagcaption1" value="Male" />
+        <phrase id="fldtagvalue2" value="female" />
+        <phrase id="fldtagcaption2" value="Female" />
       </field>
       <field id="name">
         <phrase id="fldcaption" value="name" />
@@ -1810,7 +1854,7 @@
       <field id="gender">
         <phrase id="fldcaption" value="gender" />
         <phrase id="fldtagvalue1" value="male" />
-        <phrase id="fldtagcaption1" value="male" />
+        <phrase id="fldtagcaption1" value="Male" />
         <phrase id="fldtagvalue2" value="female" />
         <phrase id="fldtagcaption2" value="female" />
       </field>
@@ -1832,9 +1876,9 @@
       <field id="type">
         <phrase id="fldcaption" value="type" />
         <phrase id="fldtagvalue1" value="student" />
-        <phrase id="fldtagcaption1" value="student" />
+        <phrase id="fldtagcaption1" value="Student" />
         <phrase id="fldtagvalue2" value="teacher" />
-        <phrase id="fldtagcaption2" value="teacher" />
+        <phrase id="fldtagcaption2" value="Teacher" />
         <phrase id="fldtagvalue3" value="user" />
         <phrase id="fldtagcaption3" value="user" />
       </field>
@@ -1873,6 +1917,51 @@
       </field>
       <field id="updated_at">
         <phrase id="fldcaption" value="updated at" />
+      </field>
+      <field id="rate">
+        <phrase id="fldcaption" value="rate" />
+      </field>
+    </table>
+    <table id="admin_panel_users">
+      <phrase id="tblcaption" value="admin panel users" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="_username">
+        <phrase id="fldcaption" value="username" />
+      </field>
+      <field id="_password">
+        <phrase id="fldcaption" value="password" />
+      </field>
+      <field id="user_level">
+        <phrase id="fldcaption" value="user level" />
+        <phrase id="fldtagvalue1" value="-2" />
+        <phrase id="fldtagcaption1" value="Anonymous" />
+        <phrase id="fldtagvalue2" value="-1" />
+        <phrase id="fldtagcaption2" value="Administrator" />
+        <phrase id="fldtagvalue3" value="0" />
+        <phrase id="fldtagcaption3" value="Default" />
+      </field>
+    </table>
+    <table id="userlevelpermissions">
+      <phrase id="tblcaption" value="userlevelpermissions" />
+      <field id="userlevelid">
+        <phrase id="fldcaption" value="User Level ID" />
+      </field>
+      <field id="_tablename">
+        <phrase id="fldcaption" value="Table Name" />
+      </field>
+      <field id="_permission">
+        <phrase id="fldcaption" value="Permission" />
+      </field>
+    </table>
+    <table id="userlevels">
+      <phrase id="tblcaption" value="userlevels" />
+      <field id="userlevelid">
+        <phrase id="fldcaption" value="User Level ID" />
+      </field>
+      <field id="userlevelname">
+        <phrase id="fldcaption" value="User Level Name" />
       </field>
     </table>
   </project>
