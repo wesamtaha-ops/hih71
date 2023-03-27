@@ -39,7 +39,7 @@ class Logout
     public $RenderingView = false;
 
     // CSS class/style
-    public $CurrentPageName = "UsersDelete";
+    public $CurrentPageName = "logout";
 
     // Page headings
     public $Heading = "";
@@ -97,7 +97,7 @@ class Logout
     // Constructor
     public function __construct()
     {
-        global $Language, $DashboardReport, $DebugTimer;
+        global $Language, $DashboardReport, $DebugTimer, $UserTable;
 
         // Table CSS class
         $this->TableClass = "table table-striped table-bordered table-hover table-sm ew-view-table";
@@ -116,6 +116,9 @@ class Logout
 
         // Open connection
         $GLOBALS["Conn"] ??= GetConnection();
+
+        // User table object
+        $UserTable = Container("usertable");
     }
 
     // Get content from stream

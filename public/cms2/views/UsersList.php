@@ -30,24 +30,20 @@ loadjs.ready(["wrapper", "head"], function () {
             ["_email", [fields._email.visible && fields._email.required ? ew.Validators.required(fields._email.caption) : null], fields._email.isInvalid],
             ["phone", [fields.phone.visible && fields.phone.required ? ew.Validators.required(fields.phone.caption) : null], fields.phone.isInvalid],
             ["gender", [fields.gender.visible && fields.gender.required ? ew.Validators.required(fields.gender.caption) : null], fields.gender.isInvalid],
-            ["birthday", [fields.birthday.visible && fields.birthday.required ? ew.Validators.required(fields.birthday.caption) : null, ew.Validators.datetime(fields.birthday.clientFormatPattern)], fields.birthday.isInvalid],
             ["image", [fields.image.visible && fields.image.required ? ew.Validators.fileRequired(fields.image.caption) : null], fields.image.isInvalid],
             ["country_id", [fields.country_id.visible && fields.country_id.required ? ew.Validators.required(fields.country_id.caption) : null], fields.country_id.isInvalid],
             ["city", [fields.city.visible && fields.city.required ? ew.Validators.required(fields.city.caption) : null], fields.city.isInvalid],
-            ["currency_id", [fields.currency_id.visible && fields.currency_id.required ? ew.Validators.required(fields.currency_id.caption) : null], fields.currency_id.isInvalid],
             ["type", [fields.type.visible && fields.type.required ? ew.Validators.required(fields.type.caption) : null], fields.type.isInvalid],
-            ["is_verified", [fields.is_verified.visible && fields.is_verified.required ? ew.Validators.required(fields.is_verified.caption) : null], fields.is_verified.isInvalid],
             ["is_approved", [fields.is_approved.visible && fields.is_approved.required ? ew.Validators.required(fields.is_approved.caption) : null], fields.is_approved.isInvalid],
             ["is_blocked", [fields.is_blocked.visible && fields.is_blocked.required ? ew.Validators.required(fields.is_blocked.caption) : null], fields.is_blocked.isInvalid],
-            ["otp", [fields.otp.visible && fields.otp.required ? ew.Validators.required(fields.otp.caption) : null], fields.otp.isInvalid],
-            ["slug", [fields.slug.visible && fields.slug.required ? ew.Validators.required(fields.slug.caption) : null], fields.slug.isInvalid]
+            ["otp", [fields.otp.visible && fields.otp.required ? ew.Validators.required(fields.otp.caption) : null], fields.otp.isInvalid]
         ])
 
         // Check empty row
         .setEmptyRow(
             function (rowIndex) {
                 let fobj = this.getForm(),
-                    fields = [["name",false],["_email",false],["phone",false],["gender",false],["birthday",false],["image",false],["country_id",false],["city",false],["currency_id",false],["type",false],["is_verified",true],["is_approved",true],["is_blocked",true],["otp",false],["slug",false]];
+                    fields = [["name",false],["_email",false],["phone",false],["gender",false],["image",false],["country_id",false],["city",false],["type",false],["is_approved",true],["is_blocked",true],["otp",false]];
                 if (fields.some(field => ew.valueChanged(fobj, rowIndex, ...field)))
                     return false;
                 return true;
@@ -69,9 +65,7 @@ loadjs.ready(["wrapper", "head"], function () {
         .setLists({
             "gender": <?= $Page->gender->toClientList($Page) ?>,
             "country_id": <?= $Page->country_id->toClientList($Page) ?>,
-            "currency_id": <?= $Page->currency_id->toClientList($Page) ?>,
             "type": <?= $Page->type->toClientList($Page) ?>,
-            "is_verified": <?= $Page->is_verified->toClientList($Page) ?>,
             "is_approved": <?= $Page->is_approved->toClientList($Page) ?>,
             "is_blocked": <?= $Page->is_blocked->toClientList($Page) ?>,
         })
@@ -133,17 +127,13 @@ loadjs.ready(["wrapper", "head"], function () {
             ["_email", [], fields._email.isInvalid],
             ["phone", [], fields.phone.isInvalid],
             ["gender", [], fields.gender.isInvalid],
-            ["birthday", [], fields.birthday.isInvalid],
             ["image", [], fields.image.isInvalid],
             ["country_id", [], fields.country_id.isInvalid],
             ["city", [], fields.city.isInvalid],
-            ["currency_id", [], fields.currency_id.isInvalid],
             ["type", [], fields.type.isInvalid],
-            ["is_verified", [], fields.is_verified.isInvalid],
             ["is_approved", [], fields.is_approved.isInvalid],
             ["is_blocked", [], fields.is_blocked.isInvalid],
-            ["otp", [], fields.otp.isInvalid],
-            ["slug", [], fields.slug.isInvalid]
+            ["otp", [], fields.otp.isInvalid]
         ])
         // Validate form
         .setValidate(
@@ -379,9 +369,6 @@ $Page->ListOptions->render("header", "left");
 <?php if ($Page->gender->Visible) { // gender ?>
         <th data-name="gender" class="<?= $Page->gender->headerCellClass() ?>"><div id="elh_users_gender" class="users_gender"><?= $Page->renderFieldHeader($Page->gender) ?></div></th>
 <?php } ?>
-<?php if ($Page->birthday->Visible) { // birthday ?>
-        <th data-name="birthday" class="<?= $Page->birthday->headerCellClass() ?>"><div id="elh_users_birthday" class="users_birthday"><?= $Page->renderFieldHeader($Page->birthday) ?></div></th>
-<?php } ?>
 <?php if ($Page->image->Visible) { // image ?>
         <th data-name="image" class="<?= $Page->image->headerCellClass() ?>"><div id="elh_users_image" class="users_image"><?= $Page->renderFieldHeader($Page->image) ?></div></th>
 <?php } ?>
@@ -391,14 +378,8 @@ $Page->ListOptions->render("header", "left");
 <?php if ($Page->city->Visible) { // city ?>
         <th data-name="city" class="<?= $Page->city->headerCellClass() ?>"><div id="elh_users_city" class="users_city"><?= $Page->renderFieldHeader($Page->city) ?></div></th>
 <?php } ?>
-<?php if ($Page->currency_id->Visible) { // currency_id ?>
-        <th data-name="currency_id" class="<?= $Page->currency_id->headerCellClass() ?>"><div id="elh_users_currency_id" class="users_currency_id"><?= $Page->renderFieldHeader($Page->currency_id) ?></div></th>
-<?php } ?>
 <?php if ($Page->type->Visible) { // type ?>
         <th data-name="type" class="<?= $Page->type->headerCellClass() ?>"><div id="elh_users_type" class="users_type"><?= $Page->renderFieldHeader($Page->type) ?></div></th>
-<?php } ?>
-<?php if ($Page->is_verified->Visible) { // is_verified ?>
-        <th data-name="is_verified" class="<?= $Page->is_verified->headerCellClass() ?>"><div id="elh_users_is_verified" class="users_is_verified"><?= $Page->renderFieldHeader($Page->is_verified) ?></div></th>
 <?php } ?>
 <?php if ($Page->is_approved->Visible) { // is_approved ?>
         <th data-name="is_approved" class="<?= $Page->is_approved->headerCellClass() ?>"><div id="elh_users_is_approved" class="users_is_approved"><?= $Page->renderFieldHeader($Page->is_approved) ?></div></th>
@@ -408,9 +389,6 @@ $Page->ListOptions->render("header", "left");
 <?php } ?>
 <?php if ($Page->otp->Visible) { // otp ?>
         <th data-name="otp" class="<?= $Page->otp->headerCellClass() ?>"><div id="elh_users_otp" class="users_otp"><?= $Page->renderFieldHeader($Page->otp) ?></div></th>
-<?php } ?>
-<?php if ($Page->slug->Visible) { // slug ?>
-        <th data-name="slug" class="<?= $Page->slug->headerCellClass() ?>"><div id="elh_users_slug" class="users_slug"><?= $Page->renderFieldHeader($Page->slug) ?></div></th>
 <?php } ?>
 <?php
 // Render list options (header, right)
@@ -616,85 +594,6 @@ loadjs.ready("<?= $Page->FormName ?>", function() {
 <?php } ?>
 </td>
     <?php } ?>
-    <?php if ($Page->birthday->Visible) { // birthday ?>
-        <td data-name="birthday"<?= $Page->birthday->cellAttributes() ?>>
-<?php if ($Page->RowType == ROWTYPE_ADD) { // Add record ?>
-<span id="el<?= $Page->RowCount ?>_users_birthday" class="el_users_birthday">
-<input type="<?= $Page->birthday->getInputTextType() ?>" name="x<?= $Page->RowIndex ?>_birthday" id="x<?= $Page->RowIndex ?>_birthday" data-table="users" data-field="x_birthday" value="<?= $Page->birthday->EditValue ?>" placeholder="<?= HtmlEncode($Page->birthday->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->birthday->formatPattern()) ?>"<?= $Page->birthday->editAttributes() ?>>
-<div class="invalid-feedback"><?= $Page->birthday->getErrorMessage() ?></div>
-<?php if (!$Page->birthday->ReadOnly && !$Page->birthday->Disabled && !isset($Page->birthday->EditAttrs["readonly"]) && !isset($Page->birthday->EditAttrs["disabled"])) { ?>
-<script>
-loadjs.ready(["<?= $Page->FormName ?>", "datetimepicker"], function () {
-    let format = "<?= DateFormat(0) ?>",
-        options = {
-            localization: {
-                locale: ew.LANGUAGE_ID + "-u-nu-" + ew.getNumberingSystem(),
-                format,
-                ...ew.language.phrase("datetimepicker")
-            },
-            display: {
-                icons: {
-                    previous: ew.IS_RTL ? "fa-solid fa-chevron-right" : "fa-solid fa-chevron-left",
-                    next: ew.IS_RTL ? "fa-solid fa-chevron-left" : "fa-solid fa-chevron-right"
-                },
-                components: {
-                    hours: !!format.match(/h/i),
-                    minutes: !!format.match(/m/),
-                    seconds: !!format.match(/s/i),
-                    useTwentyfourHour: !!format.match(/H/)
-                },
-                theme: ew.isDark() ? "dark" : "auto"
-            }
-        };
-    ew.createDateTimePicker("<?= $Page->FormName ?>", "x<?= $Page->RowIndex ?>_birthday", ew.deepAssign({"useCurrent":false,"display":{"sideBySide":false}}, options));
-});
-</script>
-<?php } ?>
-</span>
-<input type="hidden" data-table="users" data-field="x_birthday" data-hidden="1" data-old name="o<?= $Page->RowIndex ?>_birthday" id="o<?= $Page->RowIndex ?>_birthday" value="<?= HtmlEncode($Page->birthday->OldValue) ?>">
-<?php } ?>
-<?php if ($Page->RowType == ROWTYPE_EDIT) { // Edit record ?>
-<span id="el<?= $Page->RowCount ?>_users_birthday" class="el_users_birthday">
-<input type="<?= $Page->birthday->getInputTextType() ?>" name="x<?= $Page->RowIndex ?>_birthday" id="x<?= $Page->RowIndex ?>_birthday" data-table="users" data-field="x_birthday" value="<?= $Page->birthday->EditValue ?>" placeholder="<?= HtmlEncode($Page->birthday->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->birthday->formatPattern()) ?>"<?= $Page->birthday->editAttributes() ?>>
-<div class="invalid-feedback"><?= $Page->birthday->getErrorMessage() ?></div>
-<?php if (!$Page->birthday->ReadOnly && !$Page->birthday->Disabled && !isset($Page->birthday->EditAttrs["readonly"]) && !isset($Page->birthday->EditAttrs["disabled"])) { ?>
-<script>
-loadjs.ready(["<?= $Page->FormName ?>", "datetimepicker"], function () {
-    let format = "<?= DateFormat(0) ?>",
-        options = {
-            localization: {
-                locale: ew.LANGUAGE_ID + "-u-nu-" + ew.getNumberingSystem(),
-                format,
-                ...ew.language.phrase("datetimepicker")
-            },
-            display: {
-                icons: {
-                    previous: ew.IS_RTL ? "fa-solid fa-chevron-right" : "fa-solid fa-chevron-left",
-                    next: ew.IS_RTL ? "fa-solid fa-chevron-left" : "fa-solid fa-chevron-right"
-                },
-                components: {
-                    hours: !!format.match(/h/i),
-                    minutes: !!format.match(/m/),
-                    seconds: !!format.match(/s/i),
-                    useTwentyfourHour: !!format.match(/H/)
-                },
-                theme: ew.isDark() ? "dark" : "auto"
-            }
-        };
-    ew.createDateTimePicker("<?= $Page->FormName ?>", "x<?= $Page->RowIndex ?>_birthday", ew.deepAssign({"useCurrent":false,"display":{"sideBySide":false}}, options));
-});
-</script>
-<?php } ?>
-</span>
-<?php } ?>
-<?php if ($Page->RowType == ROWTYPE_VIEW) { // View record ?>
-<span id="el<?= $Page->RowCount ?>_users_birthday" class="el_users_birthday">
-<span<?= $Page->birthday->viewAttributes() ?>>
-<?= $Page->birthday->getViewValue() ?></span>
-</span>
-<?php } ?>
-</td>
-    <?php } ?>
     <?php if ($Page->image->Visible) { // image ?>
         <td data-name="image"<?= $Page->image->cellAttributes() ?>>
 <?php if ($Page->RowType == ROWTYPE_ADD) { // Add record ?>
@@ -756,7 +655,7 @@ loadjs.ready(["<?= $Page->FormName ?>", "datetimepicker"], function () {
 <?php } ?>
 <?php if ($Page->RowType == ROWTYPE_VIEW) { // View record ?>
 <span id="el<?= $Page->RowCount ?>_users_image" class="el_users_image">
-<span<?= $Page->image->viewAttributes() ?>>
+<span>
 <?= GetFileViewTag($Page->image, $Page->image->getViewValue(), false) ?>
 </span>
 </span>
@@ -873,93 +772,6 @@ loadjs.ready("<?= $Page->FormName ?>", function() {
 <?php } ?>
 </td>
     <?php } ?>
-    <?php if ($Page->currency_id->Visible) { // currency_id ?>
-        <td data-name="currency_id"<?= $Page->currency_id->cellAttributes() ?>>
-<?php if ($Page->RowType == ROWTYPE_ADD) { // Add record ?>
-<span id="el<?= $Page->RowCount ?>_users_currency_id" class="el_users_currency_id">
-    <select
-        id="x<?= $Page->RowIndex ?>_currency_id"
-        name="x<?= $Page->RowIndex ?>_currency_id"
-        class="form-select ew-select<?= $Page->currency_id->isInvalidClass() ?>"
-        <?php if (!$Page->currency_id->IsNativeSelect) { ?>
-        data-select2-id="<?= $Page->FormName ?>_x<?= $Page->RowIndex ?>_currency_id"
-        <?php } ?>
-        data-table="users"
-        data-field="x_currency_id"
-        data-value-separator="<?= $Page->currency_id->displayValueSeparatorAttribute() ?>"
-        data-placeholder="<?= HtmlEncode($Page->currency_id->getPlaceHolder()) ?>"
-        <?= $Page->currency_id->editAttributes() ?>>
-        <?= $Page->currency_id->selectOptionListHtml("x{$Page->RowIndex}_currency_id") ?>
-    </select>
-    <div class="invalid-feedback"><?= $Page->currency_id->getErrorMessage() ?></div>
-<?= $Page->currency_id->Lookup->getParamTag($Page, "p_x" . $Page->RowIndex . "_currency_id") ?>
-<?php if (!$Page->currency_id->IsNativeSelect) { ?>
-<script>
-loadjs.ready("<?= $Page->FormName ?>", function() {
-    var options = { name: "x<?= $Page->RowIndex ?>_currency_id", selectId: "<?= $Page->FormName ?>_x<?= $Page->RowIndex ?>_currency_id" },
-        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
-    options.closeOnSelect = !options.multiple;
-    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
-    if (<?= $Page->FormName ?>.lists.currency_id?.lookupOptions.length) {
-        options.data = { id: "x<?= $Page->RowIndex ?>_currency_id", form: "<?= $Page->FormName ?>" };
-    } else {
-        options.ajax = { id: "x<?= $Page->RowIndex ?>_currency_id", form: "<?= $Page->FormName ?>", limit: ew.LOOKUP_PAGE_SIZE };
-    }
-    options.minimumResultsForSearch = Infinity;
-    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.users.fields.currency_id.selectOptions);
-    ew.createSelect(options);
-});
-</script>
-<?php } ?>
-</span>
-<input type="hidden" data-table="users" data-field="x_currency_id" data-hidden="1" data-old name="o<?= $Page->RowIndex ?>_currency_id" id="o<?= $Page->RowIndex ?>_currency_id" value="<?= HtmlEncode($Page->currency_id->OldValue) ?>">
-<?php } ?>
-<?php if ($Page->RowType == ROWTYPE_EDIT) { // Edit record ?>
-<span id="el<?= $Page->RowCount ?>_users_currency_id" class="el_users_currency_id">
-    <select
-        id="x<?= $Page->RowIndex ?>_currency_id"
-        name="x<?= $Page->RowIndex ?>_currency_id"
-        class="form-select ew-select<?= $Page->currency_id->isInvalidClass() ?>"
-        <?php if (!$Page->currency_id->IsNativeSelect) { ?>
-        data-select2-id="<?= $Page->FormName ?>_x<?= $Page->RowIndex ?>_currency_id"
-        <?php } ?>
-        data-table="users"
-        data-field="x_currency_id"
-        data-value-separator="<?= $Page->currency_id->displayValueSeparatorAttribute() ?>"
-        data-placeholder="<?= HtmlEncode($Page->currency_id->getPlaceHolder()) ?>"
-        <?= $Page->currency_id->editAttributes() ?>>
-        <?= $Page->currency_id->selectOptionListHtml("x{$Page->RowIndex}_currency_id") ?>
-    </select>
-    <div class="invalid-feedback"><?= $Page->currency_id->getErrorMessage() ?></div>
-<?= $Page->currency_id->Lookup->getParamTag($Page, "p_x" . $Page->RowIndex . "_currency_id") ?>
-<?php if (!$Page->currency_id->IsNativeSelect) { ?>
-<script>
-loadjs.ready("<?= $Page->FormName ?>", function() {
-    var options = { name: "x<?= $Page->RowIndex ?>_currency_id", selectId: "<?= $Page->FormName ?>_x<?= $Page->RowIndex ?>_currency_id" },
-        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
-    options.closeOnSelect = !options.multiple;
-    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
-    if (<?= $Page->FormName ?>.lists.currency_id?.lookupOptions.length) {
-        options.data = { id: "x<?= $Page->RowIndex ?>_currency_id", form: "<?= $Page->FormName ?>" };
-    } else {
-        options.ajax = { id: "x<?= $Page->RowIndex ?>_currency_id", form: "<?= $Page->FormName ?>", limit: ew.LOOKUP_PAGE_SIZE };
-    }
-    options.minimumResultsForSearch = Infinity;
-    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.users.fields.currency_id.selectOptions);
-    ew.createSelect(options);
-});
-</script>
-<?php } ?>
-</span>
-<?php } ?>
-<?php if ($Page->RowType == ROWTYPE_VIEW) { // View record ?>
-<span id="el<?= $Page->RowCount ?>_users_currency_id" class="el_users_currency_id">
-<span<?= $Page->currency_id->viewAttributes() ?>>
-<?= $Page->currency_id->getViewValue() ?></span>
-</span>
-<?php } ?>
-</td>
-    <?php } ?>
     <?php if ($Page->type->Visible) { // type ?>
         <td data-name="type"<?= $Page->type->cellAttributes() ?>>
 <?php if ($Page->RowType == ROWTYPE_ADD) { // Add record ?>
@@ -1017,67 +829,6 @@ loadjs.ready("<?= $Page->FormName ?>", function() {
 <span id="el<?= $Page->RowCount ?>_users_type" class="el_users_type">
 <span<?= $Page->type->viewAttributes() ?>>
 <?= $Page->type->getViewValue() ?></span>
-</span>
-<?php } ?>
-</td>
-    <?php } ?>
-    <?php if ($Page->is_verified->Visible) { // is_verified ?>
-        <td data-name="is_verified"<?= $Page->is_verified->cellAttributes() ?>>
-<?php if ($Page->RowType == ROWTYPE_ADD) { // Add record ?>
-<span id="el<?= $Page->RowCount ?>_users_is_verified" class="el_users_is_verified">
-<template id="tp_x<?= $Page->RowIndex ?>_is_verified">
-    <div class="form-check">
-        <input type="radio" class="form-check-input" data-table="users" data-field="x_is_verified" name="x<?= $Page->RowIndex ?>_is_verified" id="x<?= $Page->RowIndex ?>_is_verified"<?= $Page->is_verified->editAttributes() ?>>
-        <label class="form-check-label"></label>
-    </div>
-</template>
-<div id="dsl_x<?= $Page->RowIndex ?>_is_verified" class="ew-item-list"></div>
-<selection-list hidden
-    id="x<?= $Page->RowIndex ?>_is_verified"
-    name="x<?= $Page->RowIndex ?>_is_verified"
-    value="<?= HtmlEncode($Page->is_verified->CurrentValue) ?>"
-    data-type="select-one"
-    data-template="tp_x<?= $Page->RowIndex ?>_is_verified"
-    data-target="dsl_x<?= $Page->RowIndex ?>_is_verified"
-    data-repeatcolumn="5"
-    class="form-control<?= $Page->is_verified->isInvalidClass() ?>"
-    data-table="users"
-    data-field="x_is_verified"
-    data-value-separator="<?= $Page->is_verified->displayValueSeparatorAttribute() ?>"
-    <?= $Page->is_verified->editAttributes() ?>></selection-list>
-<div class="invalid-feedback"><?= $Page->is_verified->getErrorMessage() ?></div>
-</span>
-<input type="hidden" data-table="users" data-field="x_is_verified" data-hidden="1" data-old name="o<?= $Page->RowIndex ?>_is_verified" id="o<?= $Page->RowIndex ?>_is_verified" value="<?= HtmlEncode($Page->is_verified->OldValue) ?>">
-<?php } ?>
-<?php if ($Page->RowType == ROWTYPE_EDIT) { // Edit record ?>
-<span id="el<?= $Page->RowCount ?>_users_is_verified" class="el_users_is_verified">
-<template id="tp_x<?= $Page->RowIndex ?>_is_verified">
-    <div class="form-check">
-        <input type="radio" class="form-check-input" data-table="users" data-field="x_is_verified" name="x<?= $Page->RowIndex ?>_is_verified" id="x<?= $Page->RowIndex ?>_is_verified"<?= $Page->is_verified->editAttributes() ?>>
-        <label class="form-check-label"></label>
-    </div>
-</template>
-<div id="dsl_x<?= $Page->RowIndex ?>_is_verified" class="ew-item-list"></div>
-<selection-list hidden
-    id="x<?= $Page->RowIndex ?>_is_verified"
-    name="x<?= $Page->RowIndex ?>_is_verified"
-    value="<?= HtmlEncode($Page->is_verified->CurrentValue) ?>"
-    data-type="select-one"
-    data-template="tp_x<?= $Page->RowIndex ?>_is_verified"
-    data-target="dsl_x<?= $Page->RowIndex ?>_is_verified"
-    data-repeatcolumn="5"
-    class="form-control<?= $Page->is_verified->isInvalidClass() ?>"
-    data-table="users"
-    data-field="x_is_verified"
-    data-value-separator="<?= $Page->is_verified->displayValueSeparatorAttribute() ?>"
-    <?= $Page->is_verified->editAttributes() ?>></selection-list>
-<div class="invalid-feedback"><?= $Page->is_verified->getErrorMessage() ?></div>
-</span>
-<?php } ?>
-<?php if ($Page->RowType == ROWTYPE_VIEW) { // View record ?>
-<span id="el<?= $Page->RowCount ?>_users_is_verified" class="el_users_is_verified">
-<span<?= $Page->is_verified->viewAttributes() ?>>
-<?= $Page->is_verified->getViewValue() ?></span>
 </span>
 <?php } ?>
 </td>
@@ -1223,29 +974,6 @@ loadjs.ready("<?= $Page->FormName ?>", function() {
 <span id="el<?= $Page->RowCount ?>_users_otp" class="el_users_otp">
 <span<?= $Page->otp->viewAttributes() ?>>
 <?= $Page->otp->getViewValue() ?></span>
-</span>
-<?php } ?>
-</td>
-    <?php } ?>
-    <?php if ($Page->slug->Visible) { // slug ?>
-        <td data-name="slug"<?= $Page->slug->cellAttributes() ?>>
-<?php if ($Page->RowType == ROWTYPE_ADD) { // Add record ?>
-<span id="el<?= $Page->RowCount ?>_users_slug" class="el_users_slug">
-<input type="<?= $Page->slug->getInputTextType() ?>" name="x<?= $Page->RowIndex ?>_slug" id="x<?= $Page->RowIndex ?>_slug" data-table="users" data-field="x_slug" value="<?= $Page->slug->EditValue ?>" placeholder="<?= HtmlEncode($Page->slug->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->slug->formatPattern()) ?>"<?= $Page->slug->editAttributes() ?>>
-<div class="invalid-feedback"><?= $Page->slug->getErrorMessage() ?></div>
-</span>
-<input type="hidden" data-table="users" data-field="x_slug" data-hidden="1" data-old name="o<?= $Page->RowIndex ?>_slug" id="o<?= $Page->RowIndex ?>_slug" value="<?= HtmlEncode($Page->slug->OldValue) ?>">
-<?php } ?>
-<?php if ($Page->RowType == ROWTYPE_EDIT) { // Edit record ?>
-<span id="el<?= $Page->RowCount ?>_users_slug" class="el_users_slug">
-<input type="<?= $Page->slug->getInputTextType() ?>" name="x<?= $Page->RowIndex ?>_slug" id="x<?= $Page->RowIndex ?>_slug" data-table="users" data-field="x_slug" value="<?= $Page->slug->EditValue ?>" placeholder="<?= HtmlEncode($Page->slug->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->slug->formatPattern()) ?>"<?= $Page->slug->editAttributes() ?>>
-<div class="invalid-feedback"><?= $Page->slug->getErrorMessage() ?></div>
-</span>
-<?php } ?>
-<?php if ($Page->RowType == ROWTYPE_VIEW) { // View record ?>
-<span id="el<?= $Page->RowCount ?>_users_slug" class="el_users_slug">
-<span<?= $Page->slug->viewAttributes() ?>>
-<?= $Page->slug->getViewValue() ?></span>
 </span>
 <?php } ?>
 </td>

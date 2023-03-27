@@ -131,7 +131,7 @@ class TransfersGrid extends Transfers
     public function __construct()
     {
         parent::__construct();
-        global $Language, $DashboardReport, $DebugTimer;
+        global $Language, $DashboardReport, $DebugTimer, $UserTable;
         $this->FormActionName = Config("FORM_ROW_ACTION_NAME");
         $this->FormBlankRowName = Config("FORM_BLANK_ROW_NAME");
         $this->FormKeyCountName = Config("FORM_KEY_COUNT_NAME");
@@ -179,6 +179,9 @@ class TransfersGrid extends Transfers
 
         // Open connection
         $GLOBALS["Conn"] ??= $this->getConnection();
+
+        // User table object
+        $UserTable = Container("usertable");
 
         // List options
         $this->ListOptions = new ListOptions(["Tag" => "td", "TableVar" => $this->TableVar]);
@@ -547,7 +550,6 @@ class TransfersGrid extends Transfers
         $this->id->setVisibility();
         $this->user_id->setVisibility();
         $this->amount->setVisibility();
-        $this->currency_id->setVisibility();
         $this->type->setVisibility();
         $this->order_id->setVisibility();
         $this->approved->setVisibility();
@@ -585,7 +587,6 @@ class TransfersGrid extends Transfers
 
         // Set up lookup cache
         $this->setupLookupOptions($this->user_id);
-        $this->setupLookupOptions($this->currency_id);
         $this->setupLookupOptions($this->type);
         $this->setupLookupOptions($this->order_id);
         $this->setupLookupOptions($this->approved);
@@ -635,7 +636,7 @@ class TransfersGrid extends Transfers
             if ($this->isGridAdd() || $this->isGridEdit()) {
                 $item = $this->ListOptions["griddelete"];
                 if ($item) {
-                    $item->Visible = true;
+                    $item->Visible = $Security->canDelete();
                 }
             }
         }
@@ -653,6 +654,9 @@ class TransfersGrid extends Transfers
 
         // Build filter
         $filter = "";
+        if (!$Security->canList()) {
+            $filter = "(0=1)"; // Filter all records
+        }
 
         // Restore master/detail filter from session
         $this->DbMasterFilter = $this->getMasterFilterFromSession(); // Restore master filter from session
@@ -1052,9 +1056,6 @@ class TransfersGrid extends Transfers
         if ($CurrentForm->hasValue("x_amount") && $CurrentForm->hasValue("o_amount") && $this->amount->CurrentValue != $this->amount->DefaultValue) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_currency_id") && $CurrentForm->hasValue("o_currency_id") && $this->currency_id->CurrentValue != $this->currency_id->DefaultValue) {
-            return false;
-        }
         if ($CurrentForm->hasValue("x_type") && $CurrentForm->hasValue("o_type") && $this->type->CurrentValue != $this->type->DefaultValue) {
             return false;
         }
@@ -1155,7 +1156,6 @@ class TransfersGrid extends Transfers
         $this->id->clearErrorMessage();
         $this->user_id->clearErrorMessage();
         $this->amount->clearErrorMessage();
-        $this->currency_id->clearErrorMessage();
         $this->type->clearErrorMessage();
         $this->order_id->clearErrorMessage();
         $this->approved->clearErrorMessage();
@@ -1310,7 +1310,11 @@ class TransfersGrid extends Transfers
                 $options = &$this->ListOptions;
                 $options->UseButtonGroup = true; // Use button group for grid delete button
                 $opt = $options["griddelete"];
-                $opt->Body = "<a class=\"ew-grid-link ew-grid-delete\" title=\"" . HtmlTitle($Language->phrase("DeleteLink")) . "\" data-caption=\"" . HtmlTitle($Language->phrase("DeleteLink")) . "\" data-ew-action=\"delete-grid-row\" data-rowindex=\"" . $this->RowIndex . "\">" . $Language->phrase("DeleteLink") . "</a>";
+                if (!$Security->canDelete() && is_numeric($this->RowIndex) && ($this->RowAction == "" || $this->RowAction == "edit")) { // Do not allow delete existing record
+                    $opt->Body = "&nbsp;";
+                } else {
+                    $opt->Body = "<a class=\"ew-grid-link ew-grid-delete\" title=\"" . HtmlTitle($Language->phrase("DeleteLink")) . "\" data-caption=\"" . HtmlTitle($Language->phrase("DeleteLink")) . "\" data-ew-action=\"delete-grid-row\" data-rowindex=\"" . $this->RowIndex . "\">" . $Language->phrase("DeleteLink") . "</a>";
+                }
             }
         }
         if ($this->CurrentMode == "view") {
@@ -1625,19 +1629,6 @@ class TransfersGrid extends Transfers
             $this->amount->setOldValue($CurrentForm->getValue("o_amount"));
         }
 
-        // Check field name 'currency_id' first before field var 'x_currency_id'
-        $val = $CurrentForm->hasValue("currency_id") ? $CurrentForm->getValue("currency_id") : $CurrentForm->getValue("x_currency_id");
-        if (!$this->currency_id->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->currency_id->Visible = false; // Disable update for API request
-            } else {
-                $this->currency_id->setFormValue($val);
-            }
-        }
-        if ($CurrentForm->hasValue("o_currency_id")) {
-            $this->currency_id->setOldValue($CurrentForm->getValue("o_currency_id"));
-        }
-
         // Check field name 'type' first before field var 'x_type'
         $val = $CurrentForm->hasValue("type") ? $CurrentForm->getValue("type") : $CurrentForm->getValue("x_type");
         if (!$this->type->IsDetailKey) {
@@ -1700,7 +1691,6 @@ class TransfersGrid extends Transfers
         }
         $this->user_id->CurrentValue = $this->user_id->FormValue;
         $this->amount->CurrentValue = $this->amount->FormValue;
-        $this->currency_id->CurrentValue = $this->currency_id->FormValue;
         $this->type->CurrentValue = $this->type->FormValue;
         $this->order_id->CurrentValue = $this->order_id->FormValue;
         $this->approved->CurrentValue = $this->approved->FormValue;
@@ -1795,7 +1785,6 @@ class TransfersGrid extends Transfers
         $this->id->setDbValue($row['id']);
         $this->user_id->setDbValue($row['user_id']);
         $this->amount->setDbValue($row['amount']);
-        $this->currency_id->setDbValue($row['currency_id']);
         $this->type->setDbValue($row['type']);
         $this->order_id->setDbValue($row['order_id']);
         $this->approved->setDbValue($row['approved']);
@@ -1811,7 +1800,6 @@ class TransfersGrid extends Transfers
         $row['id'] = $this->id->DefaultValue;
         $row['user_id'] = $this->user_id->DefaultValue;
         $row['amount'] = $this->amount->DefaultValue;
-        $row['currency_id'] = $this->currency_id->DefaultValue;
         $row['type'] = $this->type->DefaultValue;
         $row['order_id'] = $this->order_id->DefaultValue;
         $row['approved'] = $this->approved->DefaultValue;
@@ -1862,8 +1850,6 @@ class TransfersGrid extends Transfers
 
         // amount
 
-        // currency_id
-
         // type
 
         // order_id
@@ -1908,29 +1894,6 @@ class TransfersGrid extends Transfers
 
             // amount
             $this->amount->ViewValue = $this->amount->CurrentValue;
-
-            // currency_id
-            $curVal = strval($this->currency_id->CurrentValue);
-            if ($curVal != "") {
-                $this->currency_id->ViewValue = $this->currency_id->lookupCacheOption($curVal);
-                if ($this->currency_id->ViewValue === null) { // Lookup from database
-                    $filterWrk = SearchFilter("`id`", "=", $curVal, DATATYPE_NUMBER, "");
-                    $sqlWrk = $this->currency_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
-                    $conn = Conn();
-                    $config = $conn->getConfiguration();
-                    $config->setResultCacheImpl($this->Cache);
-                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
-                    $ari = count($rswrk);
-                    if ($ari > 0) { // Lookup values found
-                        $arwrk = $this->currency_id->Lookup->renderViewRow($rswrk[0]);
-                        $this->currency_id->ViewValue = $this->currency_id->displayValue($arwrk);
-                    } else {
-                        $this->currency_id->ViewValue = $this->currency_id->CurrentValue;
-                    }
-                }
-            } else {
-                $this->currency_id->ViewValue = null;
-            }
 
             // type
             if (strval($this->type->CurrentValue) != "") {
@@ -1983,10 +1946,6 @@ class TransfersGrid extends Transfers
             // amount
             $this->amount->HrefValue = "";
             $this->amount->TooltipValue = "";
-
-            // currency_id
-            $this->currency_id->HrefValue = "";
-            $this->currency_id->TooltipValue = "";
 
             // type
             $this->type->HrefValue = "";
@@ -2067,33 +2026,6 @@ class TransfersGrid extends Transfers
                 $this->amount->EditValue = $this->amount->EditValue;
             }
 
-            // currency_id
-            $this->currency_id->setupEditAttributes();
-            $curVal = trim(strval($this->currency_id->CurrentValue));
-            if ($curVal != "") {
-                $this->currency_id->ViewValue = $this->currency_id->lookupCacheOption($curVal);
-            } else {
-                $this->currency_id->ViewValue = $this->currency_id->Lookup !== null && is_array($this->currency_id->lookupOptions()) ? $curVal : null;
-            }
-            if ($this->currency_id->ViewValue !== null) { // Load from cache
-                $this->currency_id->EditValue = array_values($this->currency_id->lookupOptions());
-            } else { // Lookup from database
-                if ($curVal == "") {
-                    $filterWrk = "0=1";
-                } else {
-                    $filterWrk = SearchFilter("`id`", "=", $this->currency_id->CurrentValue, DATATYPE_NUMBER, "");
-                }
-                $sqlWrk = $this->currency_id->Lookup->getSql(true, $filterWrk, '', $this, false, true);
-                $conn = Conn();
-                $config = $conn->getConfiguration();
-                $config->setResultCacheImpl($this->Cache);
-                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
-                $ari = count($rswrk);
-                $arwrk = $rswrk;
-                $this->currency_id->EditValue = $arwrk;
-            }
-            $this->currency_id->PlaceHolder = RemoveHtml($this->currency_id->caption());
-
             // type
             $this->type->EditValue = $this->type->options(false);
             $this->type->PlaceHolder = RemoveHtml($this->type->caption());
@@ -2147,9 +2079,6 @@ class TransfersGrid extends Transfers
 
             // amount
             $this->amount->HrefValue = "";
-
-            // currency_id
-            $this->currency_id->HrefValue = "";
 
             // type
             $this->type->HrefValue = "";
@@ -2228,33 +2157,6 @@ class TransfersGrid extends Transfers
                 $this->amount->EditValue = $this->amount->EditValue;
             }
 
-            // currency_id
-            $this->currency_id->setupEditAttributes();
-            $curVal = trim(strval($this->currency_id->CurrentValue));
-            if ($curVal != "") {
-                $this->currency_id->ViewValue = $this->currency_id->lookupCacheOption($curVal);
-            } else {
-                $this->currency_id->ViewValue = $this->currency_id->Lookup !== null && is_array($this->currency_id->lookupOptions()) ? $curVal : null;
-            }
-            if ($this->currency_id->ViewValue !== null) { // Load from cache
-                $this->currency_id->EditValue = array_values($this->currency_id->lookupOptions());
-            } else { // Lookup from database
-                if ($curVal == "") {
-                    $filterWrk = "0=1";
-                } else {
-                    $filterWrk = SearchFilter("`id`", "=", $this->currency_id->CurrentValue, DATATYPE_NUMBER, "");
-                }
-                $sqlWrk = $this->currency_id->Lookup->getSql(true, $filterWrk, '', $this, false, true);
-                $conn = Conn();
-                $config = $conn->getConfiguration();
-                $config->setResultCacheImpl($this->Cache);
-                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
-                $ari = count($rswrk);
-                $arwrk = $rswrk;
-                $this->currency_id->EditValue = $arwrk;
-            }
-            $this->currency_id->PlaceHolder = RemoveHtml($this->currency_id->caption());
-
             // type
             $this->type->EditValue = $this->type->options(false);
             $this->type->PlaceHolder = RemoveHtml($this->type->caption());
@@ -2309,9 +2211,6 @@ class TransfersGrid extends Transfers
             // amount
             $this->amount->HrefValue = "";
 
-            // currency_id
-            $this->currency_id->HrefValue = "";
-
             // type
             $this->type->HrefValue = "";
 
@@ -2362,11 +2261,6 @@ class TransfersGrid extends Transfers
         if (!CheckInteger($this->amount->FormValue)) {
             $this->amount->addErrorMessage($this->amount->getErrorMessage(false));
         }
-        if ($this->currency_id->Required) {
-            if (!$this->currency_id->IsDetailKey && EmptyValue($this->currency_id->FormValue)) {
-                $this->currency_id->addErrorMessage(str_replace("%s", $this->currency_id->caption(), $this->currency_id->RequiredErrorMessage));
-            }
-        }
         if ($this->type->Required) {
             if ($this->type->FormValue == "") {
                 $this->type->addErrorMessage(str_replace("%s", $this->type->caption(), $this->type->RequiredErrorMessage));
@@ -2404,6 +2298,10 @@ class TransfersGrid extends Transfers
     protected function deleteRows()
     {
         global $Language, $Security;
+        if (!$Security->canDelete()) {
+            $this->setFailureMessage($Language->phrase("NoDeletePermission")); // No delete permission
+            return false;
+        }
         $sql = $this->getCurrentSql();
         $conn = $this->getConnection();
         $rows = $conn->fetchAllAssociative($sql);
@@ -2496,9 +2394,6 @@ class TransfersGrid extends Transfers
         // amount
         $this->amount->setDbValueDef($rsnew, $this->amount->CurrentValue, 0, $this->amount->ReadOnly);
 
-        // currency_id
-        $this->currency_id->setDbValueDef($rsnew, $this->currency_id->CurrentValue, 0, $this->currency_id->ReadOnly);
-
         // type
         $this->type->setDbValueDef($rsnew, $this->type->CurrentValue, "", $this->type->ReadOnly);
 
@@ -2565,9 +2460,6 @@ class TransfersGrid extends Transfers
 
         // amount
         $this->amount->setDbValueDef($rsnew, $this->amount->CurrentValue, 0, false);
-
-        // currency_id
-        $this->currency_id->setDbValueDef($rsnew, $this->currency_id->CurrentValue, 0, false);
 
         // type
         $this->type->setDbValueDef($rsnew, $this->type->CurrentValue, "", false);
@@ -2644,8 +2536,6 @@ class TransfersGrid extends Transfers
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
                 case "x_user_id":
-                    break;
-                case "x_currency_id":
                     break;
                 case "x_type":
                     break;

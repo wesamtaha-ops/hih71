@@ -135,7 +135,7 @@ class CountriesView extends Countries
     public function __construct()
     {
         parent::__construct();
-        global $Language, $DashboardReport, $DebugTimer;
+        global $Language, $DashboardReport, $DebugTimer, $UserTable;
         $this->TableVar = 'countries';
         $this->TableName = 'countries';
 
@@ -171,6 +171,9 @@ class CountriesView extends Countries
 
         // Open connection
         $GLOBALS["Conn"] ??= $this->getConnection();
+
+        // User table object
+        $UserTable = Container("usertable");
 
         // Export options
         $this->ExportOptions = new ListOptions(["TagClassName" => "ew-export-option"]);

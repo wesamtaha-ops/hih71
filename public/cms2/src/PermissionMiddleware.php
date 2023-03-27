@@ -99,7 +99,7 @@ class PermissionMiddleware
                     return $this->getRedirectResponse($request, $response);
                 }
             } elseif ($pageAction == "userpriv") { // User priv
-                $table = "";
+                $table = "userlevels";
                 $pageAction = Config("LIST_ACTION");
                 $routeName = Container($table)->getListUrl();
                 $Security->loadTablePermissions($table);

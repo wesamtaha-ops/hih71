@@ -135,7 +135,7 @@ class TransfersView extends Transfers
     public function __construct()
     {
         parent::__construct();
-        global $Language, $DashboardReport, $DebugTimer;
+        global $Language, $DashboardReport, $DebugTimer, $UserTable;
         $this->TableVar = 'transfers';
         $this->TableName = 'transfers';
 
@@ -171,6 +171,9 @@ class TransfersView extends Transfers
 
         // Open connection
         $GLOBALS["Conn"] ??= $this->getConnection();
+
+        // User table object
+        $UserTable = Container("usertable");
 
         // Export options
         $this->ExportOptions = new ListOptions(["TagClassName" => "ew-export-option"]);
@@ -491,7 +494,6 @@ class TransfersView extends Transfers
         $this->id->setVisibility();
         $this->user_id->setVisibility();
         $this->amount->setVisibility();
-        $this->currency_id->setVisibility();
         $this->type->setVisibility();
         $this->order_id->setVisibility();
         $this->approved->setVisibility();
@@ -523,7 +525,6 @@ class TransfersView extends Transfers
 
         // Set up lookup cache
         $this->setupLookupOptions($this->user_id);
-        $this->setupLookupOptions($this->currency_id);
         $this->setupLookupOptions($this->type);
         $this->setupLookupOptions($this->order_id);
         $this->setupLookupOptions($this->approved);
@@ -834,7 +835,6 @@ class TransfersView extends Transfers
         $this->id->setDbValue($row['id']);
         $this->user_id->setDbValue($row['user_id']);
         $this->amount->setDbValue($row['amount']);
-        $this->currency_id->setDbValue($row['currency_id']);
         $this->type->setDbValue($row['type']);
         $this->order_id->setDbValue($row['order_id']);
         $this->approved->setDbValue($row['approved']);
@@ -850,7 +850,6 @@ class TransfersView extends Transfers
         $row['id'] = $this->id->DefaultValue;
         $row['user_id'] = $this->user_id->DefaultValue;
         $row['amount'] = $this->amount->DefaultValue;
-        $row['currency_id'] = $this->currency_id->DefaultValue;
         $row['type'] = $this->type->DefaultValue;
         $row['order_id'] = $this->order_id->DefaultValue;
         $row['approved'] = $this->approved->DefaultValue;
@@ -883,8 +882,6 @@ class TransfersView extends Transfers
         // user_id
 
         // amount
-
-        // currency_id
 
         // type
 
@@ -928,29 +925,6 @@ class TransfersView extends Transfers
 
             // amount
             $this->amount->ViewValue = $this->amount->CurrentValue;
-
-            // currency_id
-            $curVal = strval($this->currency_id->CurrentValue);
-            if ($curVal != "") {
-                $this->currency_id->ViewValue = $this->currency_id->lookupCacheOption($curVal);
-                if ($this->currency_id->ViewValue === null) { // Lookup from database
-                    $filterWrk = SearchFilter("`id`", "=", $curVal, DATATYPE_NUMBER, "");
-                    $sqlWrk = $this->currency_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
-                    $conn = Conn();
-                    $config = $conn->getConfiguration();
-                    $config->setResultCacheImpl($this->Cache);
-                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
-                    $ari = count($rswrk);
-                    if ($ari > 0) { // Lookup values found
-                        $arwrk = $this->currency_id->Lookup->renderViewRow($rswrk[0]);
-                        $this->currency_id->ViewValue = $this->currency_id->displayValue($arwrk);
-                    } else {
-                        $this->currency_id->ViewValue = $this->currency_id->CurrentValue;
-                    }
-                }
-            } else {
-                $this->currency_id->ViewValue = null;
-            }
 
             // type
             if (strval($this->type->CurrentValue) != "") {
@@ -1003,10 +977,6 @@ class TransfersView extends Transfers
             // amount
             $this->amount->HrefValue = "";
             $this->amount->TooltipValue = "";
-
-            // currency_id
-            $this->currency_id->HrefValue = "";
-            $this->currency_id->TooltipValue = "";
 
             // type
             $this->type->HrefValue = "";
@@ -1129,8 +1099,6 @@ class TransfersView extends Transfers
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
                 case "x_user_id":
-                    break;
-                case "x_currency_id":
                     break;
                 case "x_type":
                     break;

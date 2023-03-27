@@ -91,17 +91,6 @@ loadjs.ready(["wrapper", "head"], function () {
 </td>
     </tr>
 <?php } ?>
-<?php if ($Page->currency_id->Visible) { // currency_id ?>
-    <tr id="r_currency_id"<?= $Page->currency_id->rowAttributes() ?>>
-        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_transfers_currency_id"><?= $Page->currency_id->caption() ?></span></td>
-        <td data-name="currency_id"<?= $Page->currency_id->cellAttributes() ?>>
-<span id="el_transfers_currency_id">
-<span<?= $Page->currency_id->viewAttributes() ?>>
-<?= $Page->currency_id->getViewValue() ?></span>
-</span>
-</td>
-    </tr>
-<?php } ?>
 <?php if ($Page->type->Visible) { // type ?>
     <tr id="r_type"<?= $Page->type->rowAttributes() ?>>
         <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_transfers_type"><?= $Page->type->caption() ?></span></td>

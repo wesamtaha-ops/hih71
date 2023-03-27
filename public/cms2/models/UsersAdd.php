@@ -117,7 +117,7 @@ class UsersAdd extends Users
     public function __construct()
     {
         parent::__construct();
-        global $Language, $DashboardReport, $DebugTimer;
+        global $Language, $DashboardReport, $DebugTimer, $UserTable;
         $this->TableVar = 'users';
         $this->TableName = 'users';
 
@@ -148,6 +148,9 @@ class UsersAdd extends Users
 
         // Open connection
         $GLOBALS["Conn"] ??= $this->getConnection();
+
+        // User table object
+        $UserTable = Container("usertable");
     }
 
     // Get content from stream
@@ -475,6 +478,7 @@ class UsersAdd extends Users
         $this->remember_token->setVisibility();
         $this->created_at->Visible = false;
         $this->updated_at->Visible = false;
+        $this->rate->setVisibility();
 
         // Set lookup cache
         if (!in_array($this->PageID, Config("LOOKUP_CACHE_PAGE_IDS"))) {
@@ -683,6 +687,8 @@ class UsersAdd extends Users
         $this->is_approved->OldValue = $this->is_approved->DefaultValue;
         $this->is_blocked->DefaultValue = $this->is_blocked->getDefault(); // PHP
         $this->is_blocked->OldValue = $this->is_blocked->DefaultValue;
+        $this->rate->DefaultValue = $this->rate->getDefault(); // PHP
+        $this->rate->OldValue = $this->rate->DefaultValue;
     }
 
     // Load form values
@@ -853,6 +859,16 @@ class UsersAdd extends Users
             }
         }
 
+        // Check field name 'rate' first before field var 'x_rate'
+        $val = $CurrentForm->hasValue("rate") ? $CurrentForm->getValue("rate") : $CurrentForm->getValue("x_rate");
+        if (!$this->rate->IsDetailKey) {
+            if (IsApi() && $val === null) {
+                $this->rate->Visible = false; // Disable update for API request
+            } else {
+                $this->rate->setFormValue($val, true, $validate);
+            }
+        }
+
         // Check field name 'id' first before field var 'x_id'
         $val = $CurrentForm->hasValue("id") ? $CurrentForm->getValue("id") : $CurrentForm->getValue("x_id");
 		$this->image->OldUploadPath = $this->image->getUploadPath(); // PHP
@@ -881,6 +897,7 @@ class UsersAdd extends Users
         $this->otp->CurrentValue = $this->otp->FormValue;
         $this->slug->CurrentValue = $this->slug->FormValue;
         $this->remember_token->CurrentValue = $this->remember_token->FormValue;
+        $this->rate->CurrentValue = $this->rate->FormValue;
     }
 
     /**
@@ -952,6 +969,7 @@ class UsersAdd extends Users
         $this->remember_token->setDbValue($row['remember_token']);
         $this->created_at->setDbValue($row['created_at']);
         $this->updated_at->setDbValue($row['updated_at']);
+        $this->rate->setDbValue($row['rate']);
     }
 
     // Return a row with default values
@@ -979,6 +997,7 @@ class UsersAdd extends Users
         $row['remember_token'] = $this->remember_token->DefaultValue;
         $row['created_at'] = $this->created_at->DefaultValue;
         $row['updated_at'] = $this->updated_at->DefaultValue;
+        $row['rate'] = $this->rate->DefaultValue;
         return $row;
     }
 
@@ -1076,6 +1095,9 @@ class UsersAdd extends Users
         // updated_at
         $this->updated_at->RowCssClass = "row";
 
+        // rate
+        $this->rate->RowCssClass = "row";
+
         // View row
         if ($this->RowType == ROWTYPE_VIEW) {
             // id
@@ -1107,6 +1129,10 @@ class UsersAdd extends Users
             // image
             $this->image->UploadPath = $this->image->getUploadPath(); // PHP
             if (!EmptyValue($this->image->Upload->DbValue)) {
+                $this->image->ImageWidth = 100;
+                $this->image->ImageHeight = 0;
+                $this->image->ImageAlt = $this->image->alt();
+                $this->image->ImageCssClass = "ew-image";
                 $this->image->ViewValue = $this->image->Upload->DbValue;
             } else {
                 $this->image->ViewValue = "";
@@ -1198,6 +1224,10 @@ class UsersAdd extends Users
             // remember_token
             $this->remember_token->ViewValue = $this->remember_token->CurrentValue;
 
+            // rate
+            $this->rate->ViewValue = $this->rate->CurrentValue;
+            $this->rate->ViewValue = FormatNumber($this->rate->ViewValue, $this->rate->formatPattern());
+
             // name
             $this->name->HrefValue = "";
 
@@ -1217,7 +1247,16 @@ class UsersAdd extends Users
             $this->birthday->HrefValue = "";
 
             // image
-            $this->image->HrefValue = "";
+            $this->image->UploadPath = $this->image->getUploadPath(); // PHP
+            if (!EmptyValue($this->image->Upload->DbValue)) {
+                $this->image->HrefValue = GetFileUploadUrl($this->image, $this->image->htmlDecode($this->image->Upload->DbValue)); // Add prefix/suffix
+                $this->image->LinkAttrs["target"] = ""; // Add target
+                if ($this->isExport()) {
+                    $this->image->HrefValue = FullUrl($this->image->HrefValue, "href");
+                }
+            } else {
+                $this->image->HrefValue = "";
+            }
             $this->image->ExportHrefValue = $this->image->UploadPath . $this->image->Upload->DbValue;
 
             // country_id
@@ -1249,6 +1288,9 @@ class UsersAdd extends Users
 
             // remember_token
             $this->remember_token->HrefValue = "";
+
+            // rate
+            $this->rate->HrefValue = "";
         } elseif ($this->RowType == ROWTYPE_ADD) {
             // name
             $this->name->setupEditAttributes();
@@ -1296,6 +1338,10 @@ class UsersAdd extends Users
             $this->image->setupEditAttributes();
             $this->image->UploadPath = $this->image->getUploadPath(); // PHP
             if (!EmptyValue($this->image->Upload->DbValue)) {
+                $this->image->ImageWidth = 100;
+                $this->image->ImageHeight = 0;
+                $this->image->ImageAlt = $this->image->alt();
+                $this->image->ImageCssClass = "ew-image";
                 $this->image->EditValue = $this->image->Upload->DbValue;
             } else {
                 $this->image->EditValue = "";
@@ -1409,6 +1455,14 @@ class UsersAdd extends Users
             $this->remember_token->EditValue = HtmlEncode($this->remember_token->CurrentValue);
             $this->remember_token->PlaceHolder = RemoveHtml($this->remember_token->caption());
 
+            // rate
+            $this->rate->setupEditAttributes();
+            $this->rate->EditValue = HtmlEncode($this->rate->CurrentValue);
+            $this->rate->PlaceHolder = RemoveHtml($this->rate->caption());
+            if (strval($this->rate->EditValue) != "" && is_numeric($this->rate->EditValue)) {
+                $this->rate->EditValue = FormatNumber($this->rate->EditValue, null);
+            }
+
             // Add refer script
 
             // name
@@ -1430,7 +1484,16 @@ class UsersAdd extends Users
             $this->birthday->HrefValue = "";
 
             // image
-            $this->image->HrefValue = "";
+            $this->image->UploadPath = $this->image->getUploadPath(); // PHP
+            if (!EmptyValue($this->image->Upload->DbValue)) {
+                $this->image->HrefValue = GetFileUploadUrl($this->image, $this->image->htmlDecode($this->image->Upload->DbValue)); // Add prefix/suffix
+                $this->image->LinkAttrs["target"] = ""; // Add target
+                if ($this->isExport()) {
+                    $this->image->HrefValue = FullUrl($this->image->HrefValue, "href");
+                }
+            } else {
+                $this->image->HrefValue = "";
+            }
             $this->image->ExportHrefValue = $this->image->UploadPath . $this->image->Upload->DbValue;
 
             // country_id
@@ -1462,6 +1525,9 @@ class UsersAdd extends Users
 
             // remember_token
             $this->remember_token->HrefValue = "";
+
+            // rate
+            $this->rate->HrefValue = "";
         }
         if ($this->RowType == ROWTYPE_ADD || $this->RowType == ROWTYPE_EDIT || $this->RowType == ROWTYPE_SEARCH) { // Add/Edit/Search row
             $this->setupFieldTitles();
@@ -1571,6 +1637,14 @@ class UsersAdd extends Users
                 $this->remember_token->addErrorMessage(str_replace("%s", $this->remember_token->caption(), $this->remember_token->RequiredErrorMessage));
             }
         }
+        if ($this->rate->Required) {
+            if (!$this->rate->IsDetailKey && EmptyValue($this->rate->FormValue)) {
+                $this->rate->addErrorMessage(str_replace("%s", $this->rate->caption(), $this->rate->RequiredErrorMessage));
+            }
+        }
+        if (!CheckInteger($this->rate->FormValue)) {
+            $this->rate->addErrorMessage($this->rate->getErrorMessage(false));
+        }
 
         // Validate detail grid
         $detailTblVar = explode(",", $this->getCurrentDetailTable());
@@ -1656,6 +1730,9 @@ class UsersAdd extends Users
 
         // remember_token
         $this->remember_token->setDbValueDef($rsnew, $this->remember_token->CurrentValue, null, false);
+
+        // rate
+        $this->rate->setDbValueDef($rsnew, $this->rate->CurrentValue, 0, strval($this->rate->CurrentValue) == "");
         if ($this->image->Visible && !$this->image->Upload->KeepFile) {
             $this->image->UploadPath = $this->image->getUploadPath(); // PHP
             $oldFiles = EmptyValue($this->image->Upload->DbValue) ? [] : [$this->image->htmlDecode($this->image->Upload->DbValue)];
@@ -1790,7 +1867,9 @@ class UsersAdd extends Users
             $detailPage = Container("TransfersGrid");
             if (in_array("transfers", $detailTblVar) && $detailPage->DetailAdd) {
                 $detailPage->user_id->setSessionValue($this->id->CurrentValue); // Set master key
+                $Security->loadCurrentUserLevel($this->ProjectID . "transfers"); // Load user level of detail table
                 $addRow = $detailPage->gridInsert();
+                $Security->loadCurrentUserLevel($this->ProjectID . $this->TableName); // Restore user level of master table
                 if (!$addRow) {
                 $detailPage->user_id->setSessionValue(""); // Clear master key if insert failed
                 }

@@ -8,7 +8,7 @@
   margin: 4px 0;
   border-radius: 5px;
   padding: 5px;
-  border: 1px solid #DEE2E6;
+  border: 1px solid #dee2e6;
   background: rgba(0, 0, 0, 0.015);
 }
 
@@ -23,7 +23,7 @@
 .query-builder .rules-group-container {
   padding: 10px;
   padding-bottom: 6px;
-  border: 1px solid #DEE2E6;
+  border: 1px solid #dee2e6;
   background: rgba(0, 0, 0, 0.015);
 }
 .query-builder .rules-group-header {
@@ -67,7 +67,7 @@
 }
 .query-builder .error-container {
   display: none;
-  color: #DC3545;
+  color: #dc3545;
 }
 .query-builder .has-error {
   background-color: transparent;

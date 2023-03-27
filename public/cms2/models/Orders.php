@@ -30,7 +30,7 @@ class Orders extends DbTable
 
     // Ajax / Modal
     public $UseAjaxActions = false;
-    public $ModalSearch = false;
+    public $ModalSearch = true;
     public $ModalView = false;
     public $ModalAdd = false;
     public $ModalEdit = false;
@@ -264,8 +264,8 @@ class Orders extends DbTable
             'fees', // Name
             '`fees`', // Expression
             '`fees`', // Basic search expression
-            3, // Type
-            11, // Size
+            5, // Type
+            22, // Size
             -1, // Date/Time format
             false, // Is upload field
             '`fees`', // Virtual expression
@@ -278,7 +278,7 @@ class Orders extends DbTable
         $this->fees->InputTextType = "text";
         $this->fees->Nullable = false; // NOT NULL field
         $this->fees->Required = true; // Required field
-        $this->fees->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
+        $this->fees->DefaultErrorMessage = $Language->phrase("IncorrectFloat");
         $this->fees->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['fees'] = &$this->fees;
 
@@ -1424,6 +1424,7 @@ class Orders extends DbTable
 
         // fees
         $this->fees->ViewValue = $this->fees->CurrentValue;
+        $this->fees->ViewValue = FormatNumber($this->fees->ViewValue, $this->fees->formatPattern());
 
         // currency_id
         $curVal = strval($this->currency_id->CurrentValue);
@@ -1570,7 +1571,7 @@ class Orders extends DbTable
         $this->fees->EditValue = $this->fees->CurrentValue;
         $this->fees->PlaceHolder = RemoveHtml($this->fees->caption());
         if (strval($this->fees->EditValue) != "" && is_numeric($this->fees->EditValue)) {
-            $this->fees->EditValue = $this->fees->EditValue;
+            $this->fees->EditValue = FormatNumber($this->fees->EditValue, null);
         }
 
         // currency_id
