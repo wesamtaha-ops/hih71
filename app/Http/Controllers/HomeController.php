@@ -525,6 +525,10 @@ class HomeController extends Controller
 
     }
 
+    public function add_student_review($student_id) {
+        return view('add_student_review', ['student_id' => $student_id]);
+    }
+
     public function category_details($category_id) {
         $topics = Topic::where('parent_id', $category_id)->get();
         return view('topics', ['topics' => $topics]);

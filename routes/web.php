@@ -71,6 +71,8 @@ Route::group(['middleware'=>'auth'], function(){
 
     Route::post('/review', [App\Http\Controllers\HomeController::class, 'add_review'])->name('review.add');
 
+    Route::get('/review/{student_id}', [App\Http\Controllers\HomeController::class, 'add_student_review'])->name('review.student.add');
+
 
     // teacher stuff
 
