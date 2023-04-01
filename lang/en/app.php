@@ -140,6 +140,7 @@ return [
     'no_data' => 'No data',
     'verify' => 'Verify',
     'otp' => 'OTP',
-    'mail_sent' => 'We Have sent you a one time password to your email.'
+    'mail_sent' => 'We Have sent you a one time password to your email.',
+    'send' => 'Send'
     
 ];

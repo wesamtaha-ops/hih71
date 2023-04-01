@@ -26,6 +26,8 @@ use \App\Models\LanguageLevel;
 use \App\Models\Currency;
 use \App\Models\Country;
 use Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ContactMail;
 
 use Illuminate\Support\Facades\Session;
 
@@ -549,6 +551,35 @@ class HomeController extends Controller
             return view('terms_en');
         }
     }
+
+    public function contact() {
+        return view('contact');
+    }
+
+    public function contact_func(Request $request) {
+        $data = $request->validate([
+            'name' => 'required',
+            'email' => 'required|email',
+            'message' => 'required',
+        ]);
+
+        $sent = false;
+
+        
+
+        try {
+            $sent = Mail::to($data['email'])->send(new ContactMail($data['name'], $data['email'], $data['message']));
+        } catch (\Throwable $th) { // do nothing
+            
+        }
+
+        if($sent) {
+            redirect(route('contact', ['success' => 'Message Sent!']));
+        } else {
+            redirect(route('contact', ['error' => 'Something went wrong']));
+        }
+    }
+
 }
 
 
