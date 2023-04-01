@@ -6359,6 +6359,42 @@ function SetupLoginStatus()
     $LoginStatus["loginTitle"] = $Language->phrase("Login", true);
     $LoginStatus["loginText"] = $Language->phrase("Login");
     $LoginStatus["canLogin"] = $currentPage != $loginPage && $loginUrl && !IsLoggedIn() && !IsLoggingIn2FA();
+
+    // Change password page
+    $changePasswordPage = "changepassword";
+    $changePasswordUrl = GetUrl($changePasswordPage);
+    if ($currentPage != $changePasswordPage) {
+        if (Config("USE_MODAL_CHANGE_PASSWORD") && !IsMobile()) {
+            $LoginStatus["changePassword"] = [
+                "ew-action" => "modal",
+                "footer" => false,
+                "caption" => $Language->phrase("ChangePassword"),
+                "size" => "modal-md",
+                "url" => $changePasswordUrl
+            ];
+        } else {
+            $LoginStatus["changePassword"] = [
+                "ew-action" => "redirect",
+                "url" => $changePasswordUrl
+            ];
+        }
+    }
+    $LoginStatus["changePasswordUrl"] = $changePasswordUrl;
+    $LoginStatus["changePasswordText"] = $Language->phrase("ChangePassword");
+    $LoginStatus["canChangePassword"] = $changePasswordUrl && IsLoggedIn() && !IsSysAdmin();
+
+    // Personal data page
+    $personalDataPage = "personaldata";
+    $personalDataUrl = GetUrl($personalDataPage);
+    if ($currentPage != $personalDataPage) {
+        $LoginStatus["personalData"] = [
+            "ew-action" => "redirect",
+            "url" => $personalDataUrl
+        ];
+    }
+    $LoginStatus["hasPersonalData"] = $personalDataUrl && IsLoggedIn() && !IsSysAdmin();
+    $LoginStatus["personalDataUrl"] = $personalDataUrl;
+    $LoginStatus["personalDataText"] = $Language->phrase("PersonalDataBtn");
 }
 
 // Is remote path

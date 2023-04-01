@@ -28,7 +28,6 @@ loadjs.ready(["wrapper", "head"], function () {
             ["id", [fields.id.visible && fields.id.required ? ew.Validators.required(fields.id.caption) : null], fields.id.isInvalid],
             ["user_id", [fields.user_id.visible && fields.user_id.required ? ew.Validators.required(fields.user_id.caption) : null], fields.user_id.isInvalid],
             ["amount", [fields.amount.visible && fields.amount.required ? ew.Validators.required(fields.amount.caption) : null, ew.Validators.integer], fields.amount.isInvalid],
-            ["currency_id", [fields.currency_id.visible && fields.currency_id.required ? ew.Validators.required(fields.currency_id.caption) : null], fields.currency_id.isInvalid],
             ["type", [fields.type.visible && fields.type.required ? ew.Validators.required(fields.type.caption) : null], fields.type.isInvalid],
             ["order_id", [fields.order_id.visible && fields.order_id.required ? ew.Validators.required(fields.order_id.caption) : null], fields.order_id.isInvalid],
             ["approved", [fields.approved.visible && fields.approved.required ? ew.Validators.required(fields.approved.caption) : null], fields.approved.isInvalid],
@@ -39,7 +38,7 @@ loadjs.ready(["wrapper", "head"], function () {
         .setEmptyRow(
             function (rowIndex) {
                 let fobj = this.getForm(),
-                    fields = [["user_id",false],["amount",false],["currency_id",false],["type",false],["order_id",false],["approved",true],["verification_code",false]];
+                    fields = [["user_id",false],["amount",false],["type",false],["order_id",false],["approved",true],["verification_code",false]];
                 if (fields.some(field => ew.valueChanged(fobj, rowIndex, ...field)))
                     return false;
                 return true;
@@ -60,7 +59,6 @@ loadjs.ready(["wrapper", "head"], function () {
         // Dynamic selection lists
         .setLists({
             "user_id": <?= $Page->user_id->toClientList($Page) ?>,
-            "currency_id": <?= $Page->currency_id->toClientList($Page) ?>,
             "type": <?= $Page->type->toClientList($Page) ?>,
             "order_id": <?= $Page->order_id->toClientList($Page) ?>,
             "approved": <?= $Page->approved->toClientList($Page) ?>,
@@ -130,7 +128,6 @@ loadjs.ready(["wrapper", "head"], function () {
             ["id", [], fields.id.isInvalid],
             ["user_id", [], fields.user_id.isInvalid],
             ["amount", [], fields.amount.isInvalid],
-            ["currency_id", [], fields.currency_id.isInvalid],
             ["type", [], fields.type.isInvalid],
             ["order_id", [], fields.order_id.isInvalid],
             ["approved", [], fields.approved.isInvalid],
@@ -314,9 +311,6 @@ $Page->ListOptions->render("header", "left");
 <?php if ($Page->amount->Visible) { // amount ?>
         <th data-name="amount" class="<?= $Page->amount->headerCellClass() ?>"><div id="elh_transfers_amount" class="transfers_amount"><?= $Page->renderFieldHeader($Page->amount) ?></div></th>
 <?php } ?>
-<?php if ($Page->currency_id->Visible) { // currency_id ?>
-        <th data-name="currency_id" class="<?= $Page->currency_id->headerCellClass() ?>"><div id="elh_transfers_currency_id" class="transfers_currency_id"><?= $Page->renderFieldHeader($Page->currency_id) ?></div></th>
-<?php } ?>
 <?php if ($Page->type->Visible) { // type ?>
         <th data-name="type" class="<?= $Page->type->headerCellClass() ?>"><div id="elh_transfers_type" class="transfers_type"><?= $Page->renderFieldHeader($Page->type) ?></div></th>
 <?php } ?>
@@ -497,93 +491,6 @@ loadjs.ready("<?= $Page->FormName ?>", function() {
 <span id="el<?= $Page->RowCount ?>_transfers_amount" class="el_transfers_amount">
 <span<?= $Page->amount->viewAttributes() ?>>
 <?= $Page->amount->getViewValue() ?></span>
-</span>
-<?php } ?>
-</td>
-    <?php } ?>
-    <?php if ($Page->currency_id->Visible) { // currency_id ?>
-        <td data-name="currency_id"<?= $Page->currency_id->cellAttributes() ?>>
-<?php if ($Page->RowType == ROWTYPE_ADD) { // Add record ?>
-<span id="el<?= $Page->RowCount ?>_transfers_currency_id" class="el_transfers_currency_id">
-    <select
-        id="x<?= $Page->RowIndex ?>_currency_id"
-        name="x<?= $Page->RowIndex ?>_currency_id"
-        class="form-select ew-select<?= $Page->currency_id->isInvalidClass() ?>"
-        <?php if (!$Page->currency_id->IsNativeSelect) { ?>
-        data-select2-id="<?= $Page->FormName ?>_x<?= $Page->RowIndex ?>_currency_id"
-        <?php } ?>
-        data-table="transfers"
-        data-field="x_currency_id"
-        data-value-separator="<?= $Page->currency_id->displayValueSeparatorAttribute() ?>"
-        data-placeholder="<?= HtmlEncode($Page->currency_id->getPlaceHolder()) ?>"
-        <?= $Page->currency_id->editAttributes() ?>>
-        <?= $Page->currency_id->selectOptionListHtml("x{$Page->RowIndex}_currency_id") ?>
-    </select>
-    <div class="invalid-feedback"><?= $Page->currency_id->getErrorMessage() ?></div>
-<?= $Page->currency_id->Lookup->getParamTag($Page, "p_x" . $Page->RowIndex . "_currency_id") ?>
-<?php if (!$Page->currency_id->IsNativeSelect) { ?>
-<script>
-loadjs.ready("<?= $Page->FormName ?>", function() {
-    var options = { name: "x<?= $Page->RowIndex ?>_currency_id", selectId: "<?= $Page->FormName ?>_x<?= $Page->RowIndex ?>_currency_id" },
-        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
-    options.closeOnSelect = !options.multiple;
-    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
-    if (<?= $Page->FormName ?>.lists.currency_id?.lookupOptions.length) {
-        options.data = { id: "x<?= $Page->RowIndex ?>_currency_id", form: "<?= $Page->FormName ?>" };
-    } else {
-        options.ajax = { id: "x<?= $Page->RowIndex ?>_currency_id", form: "<?= $Page->FormName ?>", limit: ew.LOOKUP_PAGE_SIZE };
-    }
-    options.minimumResultsForSearch = Infinity;
-    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.transfers.fields.currency_id.selectOptions);
-    ew.createSelect(options);
-});
-</script>
-<?php } ?>
-</span>
-<input type="hidden" data-table="transfers" data-field="x_currency_id" data-hidden="1" data-old name="o<?= $Page->RowIndex ?>_currency_id" id="o<?= $Page->RowIndex ?>_currency_id" value="<?= HtmlEncode($Page->currency_id->OldValue) ?>">
-<?php } ?>
-<?php if ($Page->RowType == ROWTYPE_EDIT) { // Edit record ?>
-<span id="el<?= $Page->RowCount ?>_transfers_currency_id" class="el_transfers_currency_id">
-    <select
-        id="x<?= $Page->RowIndex ?>_currency_id"
-        name="x<?= $Page->RowIndex ?>_currency_id"
-        class="form-select ew-select<?= $Page->currency_id->isInvalidClass() ?>"
-        <?php if (!$Page->currency_id->IsNativeSelect) { ?>
-        data-select2-id="<?= $Page->FormName ?>_x<?= $Page->RowIndex ?>_currency_id"
-        <?php } ?>
-        data-table="transfers"
-        data-field="x_currency_id"
-        data-value-separator="<?= $Page->currency_id->displayValueSeparatorAttribute() ?>"
-        data-placeholder="<?= HtmlEncode($Page->currency_id->getPlaceHolder()) ?>"
-        <?= $Page->currency_id->editAttributes() ?>>
-        <?= $Page->currency_id->selectOptionListHtml("x{$Page->RowIndex}_currency_id") ?>
-    </select>
-    <div class="invalid-feedback"><?= $Page->currency_id->getErrorMessage() ?></div>
-<?= $Page->currency_id->Lookup->getParamTag($Page, "p_x" . $Page->RowIndex . "_currency_id") ?>
-<?php if (!$Page->currency_id->IsNativeSelect) { ?>
-<script>
-loadjs.ready("<?= $Page->FormName ?>", function() {
-    var options = { name: "x<?= $Page->RowIndex ?>_currency_id", selectId: "<?= $Page->FormName ?>_x<?= $Page->RowIndex ?>_currency_id" },
-        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
-    options.closeOnSelect = !options.multiple;
-    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
-    if (<?= $Page->FormName ?>.lists.currency_id?.lookupOptions.length) {
-        options.data = { id: "x<?= $Page->RowIndex ?>_currency_id", form: "<?= $Page->FormName ?>" };
-    } else {
-        options.ajax = { id: "x<?= $Page->RowIndex ?>_currency_id", form: "<?= $Page->FormName ?>", limit: ew.LOOKUP_PAGE_SIZE };
-    }
-    options.minimumResultsForSearch = Infinity;
-    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.transfers.fields.currency_id.selectOptions);
-    ew.createSelect(options);
-});
-</script>
-<?php } ?>
-</span>
-<?php } ?>
-<?php if ($Page->RowType == ROWTYPE_VIEW) { // View record ?>
-<span id="el<?= $Page->RowCount ?>_transfers_currency_id" class="el_transfers_currency_id">
-<span<?= $Page->currency_id->viewAttributes() ?>>
-<?= $Page->currency_id->getViewValue() ?></span>
 </span>
 <?php } ?>
 </td>

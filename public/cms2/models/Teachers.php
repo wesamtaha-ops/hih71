@@ -52,7 +52,6 @@ class Teachers extends DbTable
     public $description_en;
     public $allow_express;
     public $fees;
-    public $currency_id;
     public $created_at;
     public $updated_at;
 
@@ -358,31 +357,6 @@ class Teachers extends DbTable
         $this->fees->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['fees'] = &$this->fees;
 
-        // currency_id
-        $this->currency_id = new DbField(
-            $this, // Table
-            'x_currency_id', // Variable name
-            'currency_id', // Name
-            '`currency_id`', // Expression
-            '`currency_id`', // Basic search expression
-            19, // Type
-            10, // Size
-            -1, // Date/Time format
-            false, // Is upload field
-            '`currency_id`', // Virtual expression
-            false, // Is virtual
-            false, // Force selection
-            false, // Is Virtual search
-            'FORMATTED TEXT', // View Tag
-            'TEXT' // Edit Tag
-        );
-        $this->currency_id->InputTextType = "text";
-        $this->currency_id->Nullable = false; // NOT NULL field
-        $this->currency_id->Required = true; // Required field
-        $this->currency_id->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
-        $this->currency_id->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
-        $this->Fields['currency_id'] = &$this->currency_id;
-
         // created_at
         $this->created_at = new DbField(
             $this, // Table
@@ -587,6 +561,10 @@ class Teachers extends DbTable
     {
         // Detail url
         $detailUrl = "";
+        if ($this->getCurrentDetailTable() == "teachers_packages") {
+            $detailUrl = Container("teachers_packages")->getListUrl() . "?" . Config("TABLE_SHOW_MASTER") . "=" . $this->TableVar;
+            $detailUrl .= "&" . GetForeignKeyUrl("fk_id", $this->id->CurrentValue);
+        }
         if ($this->getCurrentDetailTable() == "orders") {
             $detailUrl = Container("orders")->getListUrl() . "?" . Config("TABLE_SHOW_MASTER") . "=" . $this->TableVar;
             $detailUrl .= "&" . GetForeignKeyUrl("fk_id", $this->id->CurrentValue);
@@ -1020,7 +998,6 @@ class Teachers extends DbTable
         $this->description_en->DbValue = $row['description_en'];
         $this->allow_express->DbValue = $row['allow_express'];
         $this->fees->DbValue = $row['fees'];
-        $this->currency_id->DbValue = $row['currency_id'];
         $this->created_at->DbValue = $row['created_at'];
         $this->updated_at->DbValue = $row['updated_at'];
     }
@@ -1399,7 +1376,6 @@ class Teachers extends DbTable
         $this->description_en->setDbValue($row['description_en']);
         $this->allow_express->setDbValue($row['allow_express']);
         $this->fees->setDbValue($row['fees']);
-        $this->currency_id->setDbValue($row['currency_id']);
         $this->created_at->setDbValue($row['created_at']);
         $this->updated_at->setDbValue($row['updated_at']);
     }
@@ -1454,8 +1430,6 @@ class Teachers extends DbTable
 
         // fees
 
-        // currency_id
-
         // created_at
 
         // updated_at
@@ -1492,9 +1466,6 @@ class Teachers extends DbTable
 
         // fees
         $this->fees->ViewValue = $this->fees->CurrentValue;
-
-        // currency_id
-        $this->currency_id->ViewValue = $this->currency_id->CurrentValue;
 
         // created_at
         $this->created_at->ViewValue = $this->created_at->CurrentValue;
@@ -1547,10 +1518,6 @@ class Teachers extends DbTable
         // fees
         $this->fees->HrefValue = "";
         $this->fees->TooltipValue = "";
-
-        // currency_id
-        $this->currency_id->HrefValue = "";
-        $this->currency_id->TooltipValue = "";
 
         // created_at
         $this->created_at->HrefValue = "";
@@ -1643,14 +1610,6 @@ class Teachers extends DbTable
             $this->fees->EditValue = $this->fees->EditValue;
         }
 
-        // currency_id
-        $this->currency_id->setupEditAttributes();
-        $this->currency_id->EditValue = $this->currency_id->CurrentValue;
-        $this->currency_id->PlaceHolder = RemoveHtml($this->currency_id->caption());
-        if (strval($this->currency_id->EditValue) != "" && is_numeric($this->currency_id->EditValue)) {
-            $this->currency_id->EditValue = $this->currency_id->EditValue;
-        }
-
         // created_at
         $this->created_at->setupEditAttributes();
         $this->created_at->EditValue = FormatDateTime($this->created_at->CurrentValue, $this->created_at->formatPattern());
@@ -1700,7 +1659,6 @@ class Teachers extends DbTable
                     $doc->exportCaption($this->description_en);
                     $doc->exportCaption($this->allow_express);
                     $doc->exportCaption($this->fees);
-                    $doc->exportCaption($this->currency_id);
                     $doc->exportCaption($this->created_at);
                     $doc->exportCaption($this->updated_at);
                 } else {
@@ -1708,7 +1666,6 @@ class Teachers extends DbTable
                     $doc->exportCaption($this->user_id);
                     $doc->exportCaption($this->allow_express);
                     $doc->exportCaption($this->fees);
-                    $doc->exportCaption($this->currency_id);
                     $doc->exportCaption($this->created_at);
                     $doc->exportCaption($this->updated_at);
                 }
@@ -1751,7 +1708,6 @@ class Teachers extends DbTable
                         $doc->exportField($this->description_en);
                         $doc->exportField($this->allow_express);
                         $doc->exportField($this->fees);
-                        $doc->exportField($this->currency_id);
                         $doc->exportField($this->created_at);
                         $doc->exportField($this->updated_at);
                     } else {
@@ -1759,7 +1715,6 @@ class Teachers extends DbTable
                         $doc->exportField($this->user_id);
                         $doc->exportField($this->allow_express);
                         $doc->exportField($this->fees);
-                        $doc->exportField($this->currency_id);
                         $doc->exportField($this->created_at);
                         $doc->exportField($this->updated_at);
                     }

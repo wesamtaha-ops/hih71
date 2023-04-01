@@ -10,7 +10,7 @@ use Doctrine\DBAL\Query\QueryBuilder;
 /**
  * Page class
  */
-class Login
+class Login extends AdminPanelUsers
 {
     use MessagesTrait;
 
@@ -19,12 +19,6 @@ class Login
 
     // Project ID
     public $ProjectID = PROJECT_ID;
-
-    // Table name
-    public $TableName;
-
-    // Table variable
-    public $TableVar;
 
     // Page object name
     public $PageObjName = "Login";
@@ -39,7 +33,7 @@ class Login
     public $RenderingView = false;
 
     // CSS class/style
-    public $CurrentPageName = "UsersDelete";
+    public $CurrentPageName = "login";
 
     // Page headings
     public $Heading = "";
@@ -119,7 +113,10 @@ class Login
     // Constructor
     public function __construct()
     {
-        global $Language, $DashboardReport, $DebugTimer;
+        parent::__construct();
+        global $Language, $DashboardReport, $DebugTimer, $UserTable;
+        $this->TableVar = 'admin_panel_users';
+        $this->TableName = 'admin_panel_users';
 
         // Table CSS class
         $this->TableClass = "table table-striped table-bordered table-hover table-sm ew-view-table";
@@ -130,6 +127,11 @@ class Login
         // Language object
         $Language = Container("language");
 
+        // Table object (admin_panel_users)
+        if (!isset($GLOBALS["admin_panel_users"]) || get_class($GLOBALS["admin_panel_users"]) == PROJECT_NAMESPACE . "admin_panel_users") {
+            $GLOBALS["admin_panel_users"] = &$this;
+        }
+
         // Start timer
         $DebugTimer = Container("timer");
 
@@ -137,7 +139,10 @@ class Login
         LoadDebugMessage();
 
         // Open connection
-        $GLOBALS["Conn"] ??= GetConnection();
+        $GLOBALS["Conn"] ??= $this->getConnection();
+
+        // User table object
+        $UserTable = Container("usertable");
     }
 
     // Get content from stream
@@ -257,14 +262,14 @@ class Login
         $this->OffsetColumnClass = ""; // Override user table
 
         // Create Username/Password field object (used by validation only)
-        $this->Username = new DbField("login", "username", "username", "username", "", 202, 255, -1, false, "", false, false, false);
+        $this->Username = new DbField("admin_panel_users", "username", "username", "username", "", 202, 255, -1, false, "", false, false, false);
         $this->Username->EditAttrs->appendClass("form-control ew-form-control");
-        $this->Password = new DbField("login", "password", "password", "password", "", 202, 255, -1, false, "", false, false, false);
+        $this->Password = new DbField("admin_panel_users", "password", "password", "password", "", 202, 255, -1, false, "", false, false, false);
         $this->Password->EditAttrs->appendClass("form-control ew-form-control");
         if (Config("ENCRYPTED_PASSWORD")) {
             $this->Password->Raw = true;
         }
-        $this->LoginType = new DbField("login", "type", "logintype", "logintype", "", 202, 255, -1, false, "", false, false, false);
+        $this->LoginType = new DbField("admin_panel_users", "type", "logintype", "logintype", "", 202, 255, -1, false, "", false, false, false);
 
         // Is modal
         $this->IsModal = ConvertToBool(Param("modal"));
@@ -275,6 +280,7 @@ class Login
 
         // View
         $this->View = Get(Config("VIEW"));
+        $this->CurrentAction = Param("action"); // Set up current action
 
         // Global Page Loading event (in userfn*.php)
         Page_Loading();

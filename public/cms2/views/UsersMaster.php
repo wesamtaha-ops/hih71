@@ -64,23 +64,12 @@ $users = Container("users");
 </td>
         </tr>
 <?php } ?>
-<?php if ($users->birthday->Visible) { // birthday ?>
-        <tr id="r_birthday"<?= $users->birthday->rowAttributes() ?>>
-            <td class="<?= $users->TableLeftColumnClass ?>"><?= $users->birthday->caption() ?></td>
-            <td<?= $users->birthday->cellAttributes() ?>>
-<span id="el_users_birthday">
-<span<?= $users->birthday->viewAttributes() ?>>
-<?= $users->birthday->getViewValue() ?></span>
-</span>
-</td>
-        </tr>
-<?php } ?>
 <?php if ($users->image->Visible) { // image ?>
         <tr id="r_image"<?= $users->image->rowAttributes() ?>>
             <td class="<?= $users->TableLeftColumnClass ?>"><?= $users->image->caption() ?></td>
             <td<?= $users->image->cellAttributes() ?>>
 <span id="el_users_image">
-<span<?= $users->image->viewAttributes() ?>>
+<span>
 <?= GetFileViewTag($users->image, $users->image->getViewValue(), false) ?>
 </span>
 </span>
@@ -109,17 +98,6 @@ $users = Container("users");
 </td>
         </tr>
 <?php } ?>
-<?php if ($users->currency_id->Visible) { // currency_id ?>
-        <tr id="r_currency_id"<?= $users->currency_id->rowAttributes() ?>>
-            <td class="<?= $users->TableLeftColumnClass ?>"><?= $users->currency_id->caption() ?></td>
-            <td<?= $users->currency_id->cellAttributes() ?>>
-<span id="el_users_currency_id">
-<span<?= $users->currency_id->viewAttributes() ?>>
-<?= $users->currency_id->getViewValue() ?></span>
-</span>
-</td>
-        </tr>
-<?php } ?>
 <?php if ($users->type->Visible) { // type ?>
         <tr id="r_type"<?= $users->type->rowAttributes() ?>>
             <td class="<?= $users->TableLeftColumnClass ?>"><?= $users->type->caption() ?></td>
@@ -127,17 +105,6 @@ $users = Container("users");
 <span id="el_users_type">
 <span<?= $users->type->viewAttributes() ?>>
 <?= $users->type->getViewValue() ?></span>
-</span>
-</td>
-        </tr>
-<?php } ?>
-<?php if ($users->is_verified->Visible) { // is_verified ?>
-        <tr id="r_is_verified"<?= $users->is_verified->rowAttributes() ?>>
-            <td class="<?= $users->TableLeftColumnClass ?>"><?= $users->is_verified->caption() ?></td>
-            <td<?= $users->is_verified->cellAttributes() ?>>
-<span id="el_users_is_verified">
-<span<?= $users->is_verified->viewAttributes() ?>>
-<?= $users->is_verified->getViewValue() ?></span>
 </span>
 </td>
         </tr>
@@ -171,17 +138,6 @@ $users = Container("users");
 <span id="el_users_otp">
 <span<?= $users->otp->viewAttributes() ?>>
 <?= $users->otp->getViewValue() ?></span>
-</span>
-</td>
-        </tr>
-<?php } ?>
-<?php if ($users->slug->Visible) { // slug ?>
-        <tr id="r_slug"<?= $users->slug->rowAttributes() ?>>
-            <td class="<?= $users->TableLeftColumnClass ?>"><?= $users->slug->caption() ?></td>
-            <td<?= $users->slug->cellAttributes() ?>>
-<span id="el_users_slug">
-<span<?= $users->slug->viewAttributes() ?>>
-<?= $users->slug->getViewValue() ?></span>
 </span>
 </td>
         </tr>

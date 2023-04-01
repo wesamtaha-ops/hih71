@@ -30,7 +30,7 @@ class Transfers extends DbTable
 
     // Ajax / Modal
     public $UseAjaxActions = false;
-    public $ModalSearch = false;
+    public $ModalSearch = true;
     public $ModalView = false;
     public $ModalAdd = false;
     public $ModalEdit = false;
@@ -44,7 +44,6 @@ class Transfers extends DbTable
     public $id;
     public $user_id;
     public $amount;
-    public $currency_id;
     public $type;
     public $order_id;
     public $approved;
@@ -176,35 +175,6 @@ class Transfers extends DbTable
         $this->amount->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
         $this->amount->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['amount'] = &$this->amount;
-
-        // currency_id
-        $this->currency_id = new DbField(
-            $this, // Table
-            'x_currency_id', // Variable name
-            'currency_id', // Name
-            '`currency_id`', // Expression
-            '`currency_id`', // Basic search expression
-            19, // Type
-            10, // Size
-            -1, // Date/Time format
-            false, // Is upload field
-            '`currency_id`', // Virtual expression
-            false, // Is virtual
-            false, // Force selection
-            false, // Is Virtual search
-            'FORMATTED TEXT', // View Tag
-            'SELECT' // Edit Tag
-        );
-        $this->currency_id->InputTextType = "text";
-        $this->currency_id->Nullable = false; // NOT NULL field
-        $this->currency_id->Required = true; // Required field
-        $this->currency_id->setSelectMultiple(false); // Select one
-        $this->currency_id->UsePleaseSelect = true; // Use PleaseSelect by default
-        $this->currency_id->PleaseSelectText = $Language->phrase("PleaseSelect"); // "PleaseSelect" text
-        $this->currency_id->Lookup = new Lookup('currency_id', 'currencies', false, 'id', ["name_ar","name_en","",""], '', '', [], [], [], [], [], [], '', '', "CONCAT(COALESCE(`name_ar`, ''),'" . ValueSeparator(1, $this->currency_id) . "',COALESCE(`name_en`,''))");
-        $this->currency_id->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
-        $this->currency_id->SearchOperators = ["=", "<>", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
-        $this->Fields['currency_id'] = &$this->currency_id;
 
         // type
         $this->type = new DbField(
@@ -915,7 +885,6 @@ class Transfers extends DbTable
         $this->id->DbValue = $row['id'];
         $this->user_id->DbValue = $row['user_id'];
         $this->amount->DbValue = $row['amount'];
-        $this->currency_id->DbValue = $row['currency_id'];
         $this->type->DbValue = $row['type'];
         $this->order_id->DbValue = $row['order_id'];
         $this->approved->DbValue = $row['approved'];
@@ -1282,7 +1251,6 @@ class Transfers extends DbTable
         $this->id->setDbValue($row['id']);
         $this->user_id->setDbValue($row['user_id']);
         $this->amount->setDbValue($row['amount']);
-        $this->currency_id->setDbValue($row['currency_id']);
         $this->type->setDbValue($row['type']);
         $this->order_id->setDbValue($row['order_id']);
         $this->approved->setDbValue($row['approved']);
@@ -1324,8 +1292,6 @@ class Transfers extends DbTable
         // user_id
 
         // amount
-
-        // currency_id
 
         // type
 
@@ -1369,29 +1335,6 @@ class Transfers extends DbTable
 
         // amount
         $this->amount->ViewValue = $this->amount->CurrentValue;
-
-        // currency_id
-        $curVal = strval($this->currency_id->CurrentValue);
-        if ($curVal != "") {
-            $this->currency_id->ViewValue = $this->currency_id->lookupCacheOption($curVal);
-            if ($this->currency_id->ViewValue === null) { // Lookup from database
-                $filterWrk = SearchFilter("`id`", "=", $curVal, DATATYPE_NUMBER, "");
-                $sqlWrk = $this->currency_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
-                $conn = Conn();
-                $config = $conn->getConfiguration();
-                $config->setResultCacheImpl($this->Cache);
-                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
-                $ari = count($rswrk);
-                if ($ari > 0) { // Lookup values found
-                    $arwrk = $this->currency_id->Lookup->renderViewRow($rswrk[0]);
-                    $this->currency_id->ViewValue = $this->currency_id->displayValue($arwrk);
-                } else {
-                    $this->currency_id->ViewValue = $this->currency_id->CurrentValue;
-                }
-            }
-        } else {
-            $this->currency_id->ViewValue = null;
-        }
 
         // type
         if (strval($this->type->CurrentValue) != "") {
@@ -1452,10 +1395,6 @@ class Transfers extends DbTable
         // amount
         $this->amount->HrefValue = "";
         $this->amount->TooltipValue = "";
-
-        // currency_id
-        $this->currency_id->HrefValue = "";
-        $this->currency_id->TooltipValue = "";
 
         // type
         $this->type->HrefValue = "";
@@ -1537,10 +1476,6 @@ class Transfers extends DbTable
             $this->amount->EditValue = $this->amount->EditValue;
         }
 
-        // currency_id
-        $this->currency_id->setupEditAttributes();
-        $this->currency_id->PlaceHolder = RemoveHtml($this->currency_id->caption());
-
         // type
         $this->type->EditValue = $this->type->options(false);
         $this->type->PlaceHolder = RemoveHtml($this->type->caption());
@@ -1602,7 +1537,6 @@ class Transfers extends DbTable
                     $doc->exportCaption($this->id);
                     $doc->exportCaption($this->user_id);
                     $doc->exportCaption($this->amount);
-                    $doc->exportCaption($this->currency_id);
                     $doc->exportCaption($this->type);
                     $doc->exportCaption($this->order_id);
                     $doc->exportCaption($this->approved);
@@ -1611,7 +1545,6 @@ class Transfers extends DbTable
                     $doc->exportCaption($this->id);
                     $doc->exportCaption($this->user_id);
                     $doc->exportCaption($this->amount);
-                    $doc->exportCaption($this->currency_id);
                     $doc->exportCaption($this->type);
                     $doc->exportCaption($this->order_id);
                     $doc->exportCaption($this->approved);
@@ -1648,7 +1581,6 @@ class Transfers extends DbTable
                         $doc->exportField($this->id);
                         $doc->exportField($this->user_id);
                         $doc->exportField($this->amount);
-                        $doc->exportField($this->currency_id);
                         $doc->exportField($this->type);
                         $doc->exportField($this->order_id);
                         $doc->exportField($this->approved);
@@ -1657,7 +1589,6 @@ class Transfers extends DbTable
                         $doc->exportField($this->id);
                         $doc->exportField($this->user_id);
                         $doc->exportField($this->amount);
-                        $doc->exportField($this->currency_id);
                         $doc->exportField($this->type);
                         $doc->exportField($this->order_id);
                         $doc->exportField($this->approved);

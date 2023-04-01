@@ -30,7 +30,7 @@ class Users extends DbTable
 
     // Ajax / Modal
     public $UseAjaxActions = false;
-    public $ModalSearch = false;
+    public $ModalSearch = true;
     public $ModalView = false;
     public $ModalAdd = false;
     public $ModalEdit = false;
@@ -62,6 +62,7 @@ class Users extends DbTable
     public $remember_token;
     public $created_at;
     public $updated_at;
+    public $rate;
 
     // Page ID
     public $PageID = ""; // To be overridden by subclass
@@ -320,7 +321,7 @@ class Users extends DbTable
             false, // Is virtual
             false, // Force selection
             false, // Is Virtual search
-            'FORMATTED TEXT', // View Tag
+            'IMAGE', // View Tag
             'FILE' // Edit Tag
         );
         $this->image->addMethod("getUploadPath", fn() => "../images");
@@ -633,6 +634,31 @@ class Users extends DbTable
         $this->updated_at->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
         $this->updated_at->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
         $this->Fields['updated_at'] = &$this->updated_at;
+
+        // rate
+        $this->rate = new DbField(
+            $this, // Table
+            'x_rate', // Variable name
+            'rate', // Name
+            '`rate`', // Expression
+            '`rate`', // Basic search expression
+            3, // Type
+            11, // Size
+            -1, // Date/Time format
+            false, // Is upload field
+            '`rate`', // Virtual expression
+            false, // Is virtual
+            false, // Force selection
+            false, // Is Virtual search
+            'FORMATTED TEXT', // View Tag
+            'TEXT' // Edit Tag
+        );
+        $this->rate->addMethod("getDefault", fn() => 0);
+        $this->rate->InputTextType = "text";
+        $this->rate->Nullable = false; // NOT NULL field
+        $this->rate->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
+        $this->rate->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
+        $this->Fields['rate'] = &$this->rate;
 
         // Add Doctrine Cache
         $this->Cache = new ArrayCache();
@@ -1151,6 +1177,7 @@ class Users extends DbTable
         $this->remember_token->DbValue = $row['remember_token'];
         $this->created_at->DbValue = $row['created_at'];
         $this->updated_at->DbValue = $row['updated_at'];
+        $this->rate->DbValue = $row['rate'];
     }
 
     // Delete uploaded files
@@ -1540,6 +1567,7 @@ class Users extends DbTable
         $this->remember_token->setDbValue($row['remember_token']);
         $this->created_at->setDbValue($row['created_at']);
         $this->updated_at->setDbValue($row['updated_at']);
+        $this->rate->setDbValue($row['rate']);
     }
 
     // Render list content
@@ -1616,6 +1644,8 @@ class Users extends DbTable
         // updated_at
         $this->updated_at->CellCssStyle = "white-space: nowrap;";
 
+        // rate
+
         // id
         $this->id->ViewValue = $this->id->CurrentValue;
 
@@ -1649,6 +1679,10 @@ class Users extends DbTable
         // image
         $this->image->UploadPath = $this->image->getUploadPath(); // PHP
         if (!EmptyValue($this->image->Upload->DbValue)) {
+            $this->image->ImageWidth = 100;
+            $this->image->ImageHeight = 0;
+            $this->image->ImageAlt = $this->image->alt();
+            $this->image->ImageCssClass = "ew-image";
             $this->image->ViewValue = $this->image->Upload->DbValue;
         } else {
             $this->image->ViewValue = "";
@@ -1748,6 +1782,10 @@ class Users extends DbTable
         $this->updated_at->ViewValue = $this->updated_at->CurrentValue;
         $this->updated_at->ViewValue = FormatDateTime($this->updated_at->ViewValue, $this->updated_at->formatPattern());
 
+        // rate
+        $this->rate->ViewValue = $this->rate->CurrentValue;
+        $this->rate->ViewValue = FormatNumber($this->rate->ViewValue, $this->rate->formatPattern());
+
         // id
         $this->id->HrefValue = "";
         $this->id->TooltipValue = "";
@@ -1781,9 +1819,25 @@ class Users extends DbTable
         $this->birthday->TooltipValue = "";
 
         // image
-        $this->image->HrefValue = "";
+        $this->image->UploadPath = $this->image->getUploadPath(); // PHP
+        if (!EmptyValue($this->image->Upload->DbValue)) {
+            $this->image->HrefValue = GetFileUploadUrl($this->image, $this->image->htmlDecode($this->image->Upload->DbValue)); // Add prefix/suffix
+            $this->image->LinkAttrs["target"] = ""; // Add target
+            if ($this->isExport()) {
+                $this->image->HrefValue = FullUrl($this->image->HrefValue, "href");
+            }
+        } else {
+            $this->image->HrefValue = "";
+        }
         $this->image->ExportHrefValue = $this->image->UploadPath . $this->image->Upload->DbValue;
         $this->image->TooltipValue = "";
+        if ($this->image->UseColorbox) {
+            if (EmptyValue($this->image->TooltipValue)) {
+                $this->image->LinkAttrs["title"] = $Language->phrase("ViewImageGallery");
+            }
+            $this->image->LinkAttrs["data-rel"] = "users_x_image";
+            $this->image->LinkAttrs->appendClass("ew-lightbox");
+        }
 
         // country_id
         $this->country_id->HrefValue = "";
@@ -1832,6 +1886,10 @@ class Users extends DbTable
         // updated_at
         $this->updated_at->HrefValue = "";
         $this->updated_at->TooltipValue = "";
+
+        // rate
+        $this->rate->HrefValue = "";
+        $this->rate->TooltipValue = "";
 
         // Call Row Rendered event
         $this->rowRendered();
@@ -1903,6 +1961,10 @@ class Users extends DbTable
         $this->image->setupEditAttributes();
         $this->image->UploadPath = $this->image->getUploadPath(); // PHP
         if (!EmptyValue($this->image->Upload->DbValue)) {
+            $this->image->ImageWidth = 100;
+            $this->image->ImageHeight = 0;
+            $this->image->ImageAlt = $this->image->alt();
+            $this->image->ImageCssClass = "ew-image";
             $this->image->EditValue = $this->image->Upload->DbValue;
         } else {
             $this->image->EditValue = "";
@@ -1977,6 +2039,14 @@ class Users extends DbTable
         $this->updated_at->EditValue = FormatDateTime($this->updated_at->CurrentValue, $this->updated_at->formatPattern());
         $this->updated_at->PlaceHolder = RemoveHtml($this->updated_at->caption());
 
+        // rate
+        $this->rate->setupEditAttributes();
+        $this->rate->EditValue = $this->rate->CurrentValue;
+        $this->rate->PlaceHolder = RemoveHtml($this->rate->caption());
+        if (strval($this->rate->EditValue) != "" && is_numeric($this->rate->EditValue)) {
+            $this->rate->EditValue = FormatNumber($this->rate->EditValue, null);
+        }
+
         // Call Row Rendered event
         $this->rowRendered();
     }
@@ -2022,6 +2092,7 @@ class Users extends DbTable
                     $doc->exportCaption($this->otp);
                     $doc->exportCaption($this->slug);
                     $doc->exportCaption($this->remember_token);
+                    $doc->exportCaption($this->rate);
                 } else {
                     $doc->exportCaption($this->id);
                     $doc->exportCaption($this->name);
@@ -2040,6 +2111,7 @@ class Users extends DbTable
                     $doc->exportCaption($this->otp);
                     $doc->exportCaption($this->slug);
                     $doc->exportCaption($this->remember_token);
+                    $doc->exportCaption($this->rate);
                 }
                 $doc->endExportRow();
             }
@@ -2086,6 +2158,7 @@ class Users extends DbTable
                         $doc->exportField($this->otp);
                         $doc->exportField($this->slug);
                         $doc->exportField($this->remember_token);
+                        $doc->exportField($this->rate);
                     } else {
                         $doc->exportField($this->id);
                         $doc->exportField($this->name);
@@ -2104,6 +2177,7 @@ class Users extends DbTable
                         $doc->exportField($this->otp);
                         $doc->exportField($this->slug);
                         $doc->exportField($this->remember_token);
+                        $doc->exportField($this->rate);
                     }
                     $doc->endExportRow($rowCnt);
                 }

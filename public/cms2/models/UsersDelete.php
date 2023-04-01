@@ -117,7 +117,7 @@ class UsersDelete extends Users
     public function __construct()
     {
         parent::__construct();
-        global $Language, $DashboardReport, $DebugTimer;
+        global $Language, $DashboardReport, $DebugTimer, $UserTable;
         $this->TableVar = 'users';
         $this->TableName = 'users';
 
@@ -148,6 +148,9 @@ class UsersDelete extends Users
 
         // Open connection
         $GLOBALS["Conn"] ??= $this->getConnection();
+
+        // User table object
+        $UserTable = Container("usertable");
     }
 
     // Get content from stream
@@ -368,20 +371,21 @@ class UsersDelete extends Users
         $this->_password->Visible = false;
         $this->phone->setVisibility();
         $this->gender->setVisibility();
-        $this->birthday->setVisibility();
+        $this->birthday->Visible = false;
         $this->image->setVisibility();
         $this->country_id->setVisibility();
         $this->city->setVisibility();
-        $this->currency_id->setVisibility();
+        $this->currency_id->Visible = false;
         $this->type->setVisibility();
-        $this->is_verified->setVisibility();
+        $this->is_verified->Visible = false;
         $this->is_approved->setVisibility();
         $this->is_blocked->setVisibility();
         $this->otp->setVisibility();
-        $this->slug->setVisibility();
+        $this->slug->Visible = false;
         $this->remember_token->Visible = false;
         $this->created_at->Visible = false;
         $this->updated_at->Visible = false;
+        $this->rate->Visible = false;
 
         // Set lookup cache
         if (!in_array($this->PageID, Config("LOOKUP_CACHE_PAGE_IDS"))) {
@@ -614,6 +618,7 @@ class UsersDelete extends Users
         $this->remember_token->setDbValue($row['remember_token']);
         $this->created_at->setDbValue($row['created_at']);
         $this->updated_at->setDbValue($row['updated_at']);
+        $this->rate->setDbValue($row['rate']);
     }
 
     // Return a row with default values
@@ -641,6 +646,7 @@ class UsersDelete extends Users
         $row['remember_token'] = $this->remember_token->DefaultValue;
         $row['created_at'] = $this->created_at->DefaultValue;
         $row['updated_at'] = $this->updated_at->DefaultValue;
+        $row['rate'] = $this->rate->DefaultValue;
         return $row;
     }
 
@@ -702,6 +708,8 @@ class UsersDelete extends Users
         // updated_at
         $this->updated_at->CellCssStyle = "white-space: nowrap;";
 
+        // rate
+
         // View row
         if ($this->RowType == ROWTYPE_VIEW) {
             // id
@@ -730,6 +738,10 @@ class UsersDelete extends Users
             // image
             $this->image->UploadPath = $this->image->getUploadPath(); // PHP
             if (!EmptyValue($this->image->Upload->DbValue)) {
+                $this->image->ImageWidth = 100;
+                $this->image->ImageHeight = 0;
+                $this->image->ImageAlt = $this->image->alt();
+                $this->image->ImageCssClass = "ew-image";
                 $this->image->ViewValue = $this->image->Upload->DbValue;
             } else {
                 $this->image->ViewValue = "";
@@ -821,6 +833,10 @@ class UsersDelete extends Users
             // remember_token
             $this->remember_token->ViewValue = $this->remember_token->CurrentValue;
 
+            // rate
+            $this->rate->ViewValue = $this->rate->CurrentValue;
+            $this->rate->ViewValue = FormatNumber($this->rate->ViewValue, $this->rate->formatPattern());
+
             // id
             $this->id->HrefValue = "";
             $this->id->TooltipValue = "";
@@ -841,14 +857,26 @@ class UsersDelete extends Users
             $this->gender->HrefValue = "";
             $this->gender->TooltipValue = "";
 
-            // birthday
-            $this->birthday->HrefValue = "";
-            $this->birthday->TooltipValue = "";
-
             // image
-            $this->image->HrefValue = "";
+            $this->image->UploadPath = $this->image->getUploadPath(); // PHP
+            if (!EmptyValue($this->image->Upload->DbValue)) {
+                $this->image->HrefValue = GetFileUploadUrl($this->image, $this->image->htmlDecode($this->image->Upload->DbValue)); // Add prefix/suffix
+                $this->image->LinkAttrs["target"] = ""; // Add target
+                if ($this->isExport()) {
+                    $this->image->HrefValue = FullUrl($this->image->HrefValue, "href");
+                }
+            } else {
+                $this->image->HrefValue = "";
+            }
             $this->image->ExportHrefValue = $this->image->UploadPath . $this->image->Upload->DbValue;
             $this->image->TooltipValue = "";
+            if ($this->image->UseColorbox) {
+                if (EmptyValue($this->image->TooltipValue)) {
+                    $this->image->LinkAttrs["title"] = $Language->phrase("ViewImageGallery");
+                }
+                $this->image->LinkAttrs["data-rel"] = "users_x_image";
+                $this->image->LinkAttrs->appendClass("ew-lightbox");
+            }
 
             // country_id
             $this->country_id->HrefValue = "";
@@ -858,17 +886,9 @@ class UsersDelete extends Users
             $this->city->HrefValue = "";
             $this->city->TooltipValue = "";
 
-            // currency_id
-            $this->currency_id->HrefValue = "";
-            $this->currency_id->TooltipValue = "";
-
             // type
             $this->type->HrefValue = "";
             $this->type->TooltipValue = "";
-
-            // is_verified
-            $this->is_verified->HrefValue = "";
-            $this->is_verified->TooltipValue = "";
 
             // is_approved
             $this->is_approved->HrefValue = "";
@@ -881,10 +901,6 @@ class UsersDelete extends Users
             // otp
             $this->otp->HrefValue = "";
             $this->otp->TooltipValue = "";
-
-            // slug
-            $this->slug->HrefValue = "";
-            $this->slug->TooltipValue = "";
         }
 
         // Call Row Rendered event
@@ -897,6 +913,10 @@ class UsersDelete extends Users
     protected function deleteRows()
     {
         global $Language, $Security;
+        if (!$Security->canDelete()) {
+            $this->setFailureMessage($Language->phrase("NoDeletePermission")); // No delete permission
+            return false;
+        }
         $sql = $this->getCurrentSql();
         $conn = $this->getConnection();
         $rows = $conn->fetchAllAssociative($sql);

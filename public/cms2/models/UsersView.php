@@ -135,7 +135,7 @@ class UsersView extends Users
     public function __construct()
     {
         parent::__construct();
-        global $Language, $DashboardReport, $DebugTimer;
+        global $Language, $DashboardReport, $DebugTimer, $UserTable;
         $this->TableVar = 'users';
         $this->TableName = 'users';
 
@@ -171,6 +171,9 @@ class UsersView extends Users
 
         // Open connection
         $GLOBALS["Conn"] ??= $this->getConnection();
+
+        // User table object
+        $UserTable = Container("usertable");
 
         // Export options
         $this->ExportOptions = new ListOptions(["TagClassName" => "ew-export-option"]);
@@ -511,6 +514,7 @@ class UsersView extends Users
         $this->remember_token->setVisibility();
         $this->created_at->setVisibility();
         $this->updated_at->setVisibility();
+        $this->rate->setVisibility();
 
         // Set lookup cache
         if (!in_array($this->PageID, Config("LOOKUP_CACHE_PAGE_IDS"))) {
@@ -953,6 +957,7 @@ class UsersView extends Users
         $this->remember_token->setDbValue($row['remember_token']);
         $this->created_at->setDbValue($row['created_at']);
         $this->updated_at->setDbValue($row['updated_at']);
+        $this->rate->setDbValue($row['rate']);
     }
 
     // Return a row with default values
@@ -980,6 +985,7 @@ class UsersView extends Users
         $row['remember_token'] = $this->remember_token->DefaultValue;
         $row['created_at'] = $this->created_at->DefaultValue;
         $row['updated_at'] = $this->updated_at->DefaultValue;
+        $row['rate'] = $this->rate->DefaultValue;
         return $row;
     }
 
@@ -1043,6 +1049,8 @@ class UsersView extends Users
 
         // updated_at
 
+        // rate
+
         // View row
         if ($this->RowType == ROWTYPE_VIEW) {
             // id
@@ -1071,6 +1079,10 @@ class UsersView extends Users
             // image
             $this->image->UploadPath = $this->image->getUploadPath(); // PHP
             if (!EmptyValue($this->image->Upload->DbValue)) {
+                $this->image->ImageWidth = 100;
+                $this->image->ImageHeight = 0;
+                $this->image->ImageAlt = $this->image->alt();
+                $this->image->ImageCssClass = "ew-image";
                 $this->image->ViewValue = $this->image->Upload->DbValue;
             } else {
                 $this->image->ViewValue = "";
@@ -1162,6 +1174,10 @@ class UsersView extends Users
             // remember_token
             $this->remember_token->ViewValue = $this->remember_token->CurrentValue;
 
+            // rate
+            $this->rate->ViewValue = $this->rate->CurrentValue;
+            $this->rate->ViewValue = FormatNumber($this->rate->ViewValue, $this->rate->formatPattern());
+
             // id
             $this->id->HrefValue = "";
             $this->id->TooltipValue = "";
@@ -1187,9 +1203,25 @@ class UsersView extends Users
             $this->birthday->TooltipValue = "";
 
             // image
-            $this->image->HrefValue = "";
+            $this->image->UploadPath = $this->image->getUploadPath(); // PHP
+            if (!EmptyValue($this->image->Upload->DbValue)) {
+                $this->image->HrefValue = GetFileUploadUrl($this->image, $this->image->htmlDecode($this->image->Upload->DbValue)); // Add prefix/suffix
+                $this->image->LinkAttrs["target"] = ""; // Add target
+                if ($this->isExport()) {
+                    $this->image->HrefValue = FullUrl($this->image->HrefValue, "href");
+                }
+            } else {
+                $this->image->HrefValue = "";
+            }
             $this->image->ExportHrefValue = $this->image->UploadPath . $this->image->Upload->DbValue;
             $this->image->TooltipValue = "";
+            if ($this->image->UseColorbox) {
+                if (EmptyValue($this->image->TooltipValue)) {
+                    $this->image->LinkAttrs["title"] = $Language->phrase("ViewImageGallery");
+                }
+                $this->image->LinkAttrs["data-rel"] = "users_x_image";
+                $this->image->LinkAttrs->appendClass("ew-lightbox");
+            }
 
             // country_id
             $this->country_id->HrefValue = "";
@@ -1230,6 +1262,10 @@ class UsersView extends Users
             // remember_token
             $this->remember_token->HrefValue = "";
             $this->remember_token->TooltipValue = "";
+
+            // rate
+            $this->rate->HrefValue = "";
+            $this->rate->TooltipValue = "";
         }
 
         // Call Row Rendered event

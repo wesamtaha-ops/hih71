@@ -12,12 +12,30 @@ use Slim\Exception\HttpUnauthorizedException;
  */
 class OthersController extends ControllerBase
 {
+    // personaldata
+    public function personaldata(Request $request, Response $response, array $args): Response
+    {
+        return $this->runPage($request, $response, $args, "PersonalData");
+    }
+
     // login
     public function login(Request $request, Response $response, array $args): Response
     {
         global $Error;
         $Error = $this->container->get("flash")->getFirstMessage("error");
         return $this->runPage($request, $response, $args, "Login");
+    }
+
+    // changepassword
+    public function changepassword(Request $request, Response $response, array $args): Response
+    {
+        return $this->runPage($request, $response, $args, "ChangePassword");
+    }
+
+    // userpriv
+    public function userpriv(Request $request, Response $response, array $args): Response
+    {
+        return $this->runPage($request, $response, $args, "Userpriv");
     }
 
     // logout

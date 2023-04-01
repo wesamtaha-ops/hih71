@@ -139,14 +139,18 @@ class TeachersPackages extends DbTable
             false, // Force selection
             false, // Is Virtual search
             'FORMATTED TEXT', // View Tag
-            'TEXT' // Edit Tag
+            'SELECT' // Edit Tag
         );
         $this->teacher_id->InputTextType = "text";
         $this->teacher_id->IsForeignKey = true; // Foreign key field
         $this->teacher_id->Nullable = false; // NOT NULL field
         $this->teacher_id->Required = true; // Required field
+        $this->teacher_id->setSelectMultiple(false); // Select one
+        $this->teacher_id->UsePleaseSelect = true; // Use PleaseSelect by default
+        $this->teacher_id->PleaseSelectText = $Language->phrase("PleaseSelect"); // "PleaseSelect" text
+        $this->teacher_id->Lookup = new Lookup('teacher_id', 'users', false, 'id', ["name","","",""], '', '', [], [], [], [], [], [], '', '', "`name`");
         $this->teacher_id->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
-        $this->teacher_id->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
+        $this->teacher_id->SearchOperators = ["=", "<>", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['teacher_id'] = &$this->teacher_id;
 
         // title_en
@@ -165,7 +169,7 @@ class TeachersPackages extends DbTable
             false, // Force selection
             false, // Is Virtual search
             'FORMATTED TEXT', // View Tag
-            'TEXTAREA' // Edit Tag
+            'TEXT' // Edit Tag
         );
         $this->title_en->InputTextType = "text";
         $this->title_en->Nullable = false; // NOT NULL field
@@ -189,7 +193,7 @@ class TeachersPackages extends DbTable
             false, // Force selection
             false, // Is Virtual search
             'FORMATTED TEXT', // View Tag
-            'TEXTAREA' // Edit Tag
+            'TEXT' // Edit Tag
         );
         $this->title_ar->InputTextType = "text";
         $this->title_ar->Nullable = false; // NOT NULL field
@@ -255,18 +259,19 @@ class TeachersPackages extends DbTable
             201, // Type
             65535, // Size
             -1, // Date/Time format
-            false, // Is upload field
+            true, // Is upload field
             '`image`', // Virtual expression
             false, // Is virtual
             false, // Force selection
             false, // Is Virtual search
             'FORMATTED TEXT', // View Tag
-            'TEXTAREA' // Edit Tag
+            'FILE' // Edit Tag
         );
+        $this->image->addMethod("getUploadPath", fn() => "../images");
         $this->image->InputTextType = "text";
         $this->image->Nullable = false; // NOT NULL field
         $this->image->Required = true; // Required field
-        $this->image->SearchOperators = ["=", "<>", "IN", "NOT IN", "STARTS WITH", "NOT STARTS WITH", "LIKE", "NOT LIKE", "ENDS WITH", "NOT ENDS WITH", "IS EMPTY", "IS NOT EMPTY"];
+        $this->image->SearchOperators = ["=", "<>", "STARTS WITH", "NOT STARTS WITH", "LIKE", "NOT LIKE", "ENDS WITH", "NOT ENDS WITH", "IS EMPTY", "IS NOT EMPTY"];
         $this->Fields['image'] = &$this->image;
 
         // fees
@@ -315,6 +320,7 @@ class TeachersPackages extends DbTable
         $this->currency_id->InputTextType = "text";
         $this->currency_id->Nullable = false; // NOT NULL field
         $this->currency_id->Required = true; // Required field
+        $this->currency_id->Lookup = new Lookup('currency_id', 'currencies', false, 'id', ["name_en","","",""], '', '', [], [], [], [], [], [], '', '', "`name_en`");
         $this->currency_id->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
         $this->currency_id->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['currency_id'] = &$this->currency_id;
@@ -363,6 +369,7 @@ class TeachersPackages extends DbTable
             'TEXT' // Edit Tag
         );
         $this->updated_at->InputTextType = "text";
+        $this->updated_at->Sortable = false; // Allow sort
         $this->updated_at->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
         $this->updated_at->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
         $this->Fields['updated_at'] = &$this->updated_at;
@@ -843,7 +850,7 @@ class TeachersPackages extends DbTable
         $this->title_ar->DbValue = $row['title_ar'];
         $this->description_en->DbValue = $row['description_en'];
         $this->description_ar->DbValue = $row['description_ar'];
-        $this->image->DbValue = $row['image'];
+        $this->image->Upload->DbValue = $row['image'];
         $this->fees->DbValue = $row['fees'];
         $this->currency_id->DbValue = $row['currency_id'];
         $this->created_at->DbValue = $row['created_at'];
@@ -854,6 +861,13 @@ class TeachersPackages extends DbTable
     public function deleteUploadedFiles($row)
     {
         $this->loadDbValues($row);
+        $this->image->OldUploadPath = $this->image->getUploadPath(); // PHP
+        $oldFiles = EmptyValue($row['image']) ? [] : [$row['image']];
+        foreach ($oldFiles as $oldFile) {
+            if (file_exists($this->image->oldPhysicalUploadPath() . $oldFile)) {
+                @unlink($this->image->oldPhysicalUploadPath() . $oldFile);
+            }
+        }
     }
 
     // Record filter WHERE clause
@@ -1207,7 +1221,7 @@ class TeachersPackages extends DbTable
         $this->title_ar->setDbValue($row['title_ar']);
         $this->description_en->setDbValue($row['description_en']);
         $this->description_ar->setDbValue($row['description_ar']);
-        $this->image->setDbValue($row['image']);
+        $this->image->Upload->DbValue = $row['image'];
         $this->fees->setDbValue($row['fees']);
         $this->currency_id->setDbValue($row['currency_id']);
         $this->created_at->setDbValue($row['created_at']);
@@ -1263,12 +1277,33 @@ class TeachersPackages extends DbTable
         // created_at
 
         // updated_at
+        $this->updated_at->CellCssStyle = "white-space: nowrap;";
 
         // id
         $this->id->ViewValue = $this->id->CurrentValue;
 
         // teacher_id
-        $this->teacher_id->ViewValue = $this->teacher_id->CurrentValue;
+        $curVal = strval($this->teacher_id->CurrentValue);
+        if ($curVal != "") {
+            $this->teacher_id->ViewValue = $this->teacher_id->lookupCacheOption($curVal);
+            if ($this->teacher_id->ViewValue === null) { // Lookup from database
+                $filterWrk = SearchFilter("`id`", "=", $curVal, DATATYPE_NUMBER, "");
+                $sqlWrk = $this->teacher_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                $conn = Conn();
+                $config = $conn->getConfiguration();
+                $config->setResultCacheImpl($this->Cache);
+                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                $ari = count($rswrk);
+                if ($ari > 0) { // Lookup values found
+                    $arwrk = $this->teacher_id->Lookup->renderViewRow($rswrk[0]);
+                    $this->teacher_id->ViewValue = $this->teacher_id->displayValue($arwrk);
+                } else {
+                    $this->teacher_id->ViewValue = $this->teacher_id->CurrentValue;
+                }
+            }
+        } else {
+            $this->teacher_id->ViewValue = null;
+        }
 
         // title_en
         $this->title_en->ViewValue = $this->title_en->CurrentValue;
@@ -1283,13 +1318,39 @@ class TeachersPackages extends DbTable
         $this->description_ar->ViewValue = $this->description_ar->CurrentValue;
 
         // image
-        $this->image->ViewValue = $this->image->CurrentValue;
+        $this->image->UploadPath = $this->image->getUploadPath(); // PHP
+        if (!EmptyValue($this->image->Upload->DbValue)) {
+            $this->image->ViewValue = $this->image->Upload->DbValue;
+        } else {
+            $this->image->ViewValue = "";
+        }
 
         // fees
         $this->fees->ViewValue = $this->fees->CurrentValue;
 
         // currency_id
         $this->currency_id->ViewValue = $this->currency_id->CurrentValue;
+        $curVal = strval($this->currency_id->CurrentValue);
+        if ($curVal != "") {
+            $this->currency_id->ViewValue = $this->currency_id->lookupCacheOption($curVal);
+            if ($this->currency_id->ViewValue === null) { // Lookup from database
+                $filterWrk = SearchFilter("`id`", "=", $curVal, DATATYPE_NUMBER, "");
+                $sqlWrk = $this->currency_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                $conn = Conn();
+                $config = $conn->getConfiguration();
+                $config->setResultCacheImpl($this->Cache);
+                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                $ari = count($rswrk);
+                if ($ari > 0) { // Lookup values found
+                    $arwrk = $this->currency_id->Lookup->renderViewRow($rswrk[0]);
+                    $this->currency_id->ViewValue = $this->currency_id->displayValue($arwrk);
+                } else {
+                    $this->currency_id->ViewValue = $this->currency_id->CurrentValue;
+                }
+            }
+        } else {
+            $this->currency_id->ViewValue = null;
+        }
 
         // created_at
         $this->created_at->ViewValue = $this->created_at->CurrentValue;
@@ -1325,6 +1386,7 @@ class TeachersPackages extends DbTable
 
         // image
         $this->image->HrefValue = "";
+        $this->image->ExportHrefValue = $this->image->UploadPath . $this->image->Upload->DbValue;
         $this->image->TooltipValue = "";
 
         // fees
@@ -1364,19 +1426,21 @@ class TeachersPackages extends DbTable
 
         // teacher_id
         $this->teacher_id->setupEditAttributes();
-        $this->teacher_id->EditValue = $this->teacher_id->CurrentValue;
         $this->teacher_id->PlaceHolder = RemoveHtml($this->teacher_id->caption());
-        if (strval($this->teacher_id->EditValue) != "" && is_numeric($this->teacher_id->EditValue)) {
-            $this->teacher_id->EditValue = $this->teacher_id->EditValue;
-        }
 
         // title_en
         $this->title_en->setupEditAttributes();
+        if (!$this->title_en->Raw) {
+            $this->title_en->CurrentValue = HtmlDecode($this->title_en->CurrentValue);
+        }
         $this->title_en->EditValue = $this->title_en->CurrentValue;
         $this->title_en->PlaceHolder = RemoveHtml($this->title_en->caption());
 
         // title_ar
         $this->title_ar->setupEditAttributes();
+        if (!$this->title_ar->Raw) {
+            $this->title_ar->CurrentValue = HtmlDecode($this->title_ar->CurrentValue);
+        }
         $this->title_ar->EditValue = $this->title_ar->CurrentValue;
         $this->title_ar->PlaceHolder = RemoveHtml($this->title_ar->caption());
 
@@ -1392,8 +1456,15 @@ class TeachersPackages extends DbTable
 
         // image
         $this->image->setupEditAttributes();
-        $this->image->EditValue = $this->image->CurrentValue;
-        $this->image->PlaceHolder = RemoveHtml($this->image->caption());
+        $this->image->UploadPath = $this->image->getUploadPath(); // PHP
+        if (!EmptyValue($this->image->Upload->DbValue)) {
+            $this->image->EditValue = $this->image->Upload->DbValue;
+        } else {
+            $this->image->EditValue = "";
+        }
+        if (!EmptyValue($this->image->CurrentValue)) {
+            $this->image->Upload->FileName = $this->image->CurrentValue;
+        }
 
         // fees
         $this->fees->setupEditAttributes();
@@ -1407,9 +1478,6 @@ class TeachersPackages extends DbTable
         $this->currency_id->setupEditAttributes();
         $this->currency_id->EditValue = $this->currency_id->CurrentValue;
         $this->currency_id->PlaceHolder = RemoveHtml($this->currency_id->caption());
-        if (strval($this->currency_id->EditValue) != "" && is_numeric($this->currency_id->EditValue)) {
-            $this->currency_id->EditValue = $this->currency_id->EditValue;
-        }
 
         // created_at
         $this->created_at->setupEditAttributes();
@@ -1459,7 +1527,6 @@ class TeachersPackages extends DbTable
                     $doc->exportCaption($this->fees);
                     $doc->exportCaption($this->currency_id);
                     $doc->exportCaption($this->created_at);
-                    $doc->exportCaption($this->updated_at);
                 } else {
                     $doc->exportCaption($this->id);
                     $doc->exportCaption($this->teacher_id);
@@ -1471,7 +1538,6 @@ class TeachersPackages extends DbTable
                     $doc->exportCaption($this->fees);
                     $doc->exportCaption($this->currency_id);
                     $doc->exportCaption($this->created_at);
-                    $doc->exportCaption($this->updated_at);
                 }
                 $doc->endExportRow();
             }
@@ -1511,7 +1577,6 @@ class TeachersPackages extends DbTable
                         $doc->exportField($this->fees);
                         $doc->exportField($this->currency_id);
                         $doc->exportField($this->created_at);
-                        $doc->exportField($this->updated_at);
                     } else {
                         $doc->exportField($this->id);
                         $doc->exportField($this->teacher_id);
@@ -1523,7 +1588,6 @@ class TeachersPackages extends DbTable
                         $doc->exportField($this->fees);
                         $doc->exportField($this->currency_id);
                         $doc->exportField($this->created_at);
-                        $doc->exportField($this->updated_at);
                     }
                     $doc->endExportRow($rowCnt);
                 }
@@ -1544,8 +1608,122 @@ class TeachersPackages extends DbTable
     public function getFileData($fldparm, $key, $resize, $width = 0, $height = 0, $plugins = [])
     {
         global $DownloadFileName;
+        $width = ($width > 0) ? $width : Config("THUMBNAIL_DEFAULT_WIDTH");
+        $height = ($height > 0) ? $height : Config("THUMBNAIL_DEFAULT_HEIGHT");
 
-        // No binary fields
+        // Set up field name / file name field / file type field
+        $fldName = "";
+        $fileNameFld = "";
+        $fileTypeFld = "";
+        if ($fldparm == 'image') {
+            $fldName = "image";
+            $fileNameFld = "image";
+        } else {
+            return false; // Incorrect field
+        }
+
+        // Set up key values
+        $ar = explode(Config("COMPOSITE_KEY_SEPARATOR"), $key);
+        if (count($ar) == 1) {
+            $this->id->CurrentValue = $ar[0];
+        } else {
+            return false; // Incorrect key
+        }
+
+        // Set up filter (WHERE Clause)
+        $filter = $this->getRecordFilter();
+        $this->CurrentFilter = $filter;
+        $sql = $this->getCurrentSql();
+        $conn = $this->getConnection();
+        $dbtype = GetConnectionType($this->Dbid);
+        if ($row = $conn->fetchAssociative($sql)) {
+            $val = $row[$fldName];
+            if (!EmptyValue($val)) {
+                $fld = $this->Fields[$fldName];
+
+                // Binary data
+                if ($fld->DataType == DATATYPE_BLOB) {
+                    if ($dbtype != "MYSQL") {
+                        if (is_resource($val) && get_resource_type($val) == "stream") { // Byte array
+                            $val = stream_get_contents($val);
+                        }
+                    }
+                    if ($resize) {
+                        ResizeBinary($val, $width, $height, $plugins);
+                    }
+
+                    // Write file type
+                    if ($fileTypeFld != "" && !EmptyValue($row[$fileTypeFld])) {
+                        AddHeader("Content-type", $row[$fileTypeFld]);
+                    } else {
+                        AddHeader("Content-type", ContentType($val));
+                    }
+
+                    // Write file name
+                    $downloadPdf = !Config("EMBED_PDF") && Config("DOWNLOAD_PDF_FILE");
+                    if ($fileNameFld != "" && !EmptyValue($row[$fileNameFld])) {
+                        $fileName = $row[$fileNameFld];
+                        $ext = strtolower($pathinfo["extension"] ?? "");
+                        $isPdf = SameText($ext, "pdf");
+                        if ($downloadPdf || !$isPdf) { // Skip header if not download PDF
+                            AddHeader("Content-Disposition", "attachment; filename=\"" . $fileName . "\"");
+                        }
+                    } else {
+                        $ext = ContentExtension($val);
+                        $isPdf = SameText($ext, ".pdf");
+                        if ($isPdf && $downloadPdf) { // Add header if download PDF
+                            AddHeader("Content-Disposition", "attachment" . ($DownloadFileName ? "; filename=\"" . $DownloadFileName . "\"" : ""));
+                        }
+                    }
+
+                    // Write file data
+                    if (
+                        StartsString("PK", $val) &&
+                        ContainsString($val, "[Content_Types].xml") &&
+                        ContainsString($val, "_rels") &&
+                        ContainsString($val, "docProps")
+                    ) { // Fix Office 2007 documents
+                        if (!EndsString("\0\0\0", $val)) { // Not ends with 3 or 4 \0
+                            $val .= "\0\0\0\0";
+                        }
+                    }
+
+                    // Clear any debug message
+                    if (ob_get_length()) {
+                        ob_end_clean();
+                    }
+
+                    // Write binary data
+                    Write($val);
+
+                // Upload to folder
+                } else {
+                    if ($fld->UploadMultiple) {
+                        $files = explode(Config("MULTIPLE_UPLOAD_SEPARATOR"), $val);
+                    } else {
+                        $files = [$val];
+                    }
+                    $data = [];
+                    $ar = [];
+                    if ($fld->hasMethod("getUploadPath")) { // Check field level upload path
+                        $fld->UploadPath = $fld->getUploadPath();
+                    }
+                    foreach ($files as $file) {
+                        if (!EmptyValue($file)) {
+                            if (Config("ENCRYPT_FILE_PATH")) {
+                                $ar[$file] = FullUrl(GetApiUrl(Config("API_FILE_ACTION") .
+                                    "/" . $this->TableVar . "/" . Encrypt($fld->physicalUploadPath() . $file)));
+                            } else {
+                                $ar[$file] = FullUrl($fld->hrefPath() . $file);
+                            }
+                        }
+                    }
+                    $data[$fld->Param] = $ar;
+                    WriteJson($data);
+                }
+            }
+            return true;
+        }
         return false;
     }
 

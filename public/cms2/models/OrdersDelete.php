@@ -117,7 +117,7 @@ class OrdersDelete extends Orders
     public function __construct()
     {
         parent::__construct();
-        global $Language, $DashboardReport, $DebugTimer;
+        global $Language, $DashboardReport, $DebugTimer, $UserTable;
         $this->TableVar = 'orders';
         $this->TableName = 'orders';
 
@@ -148,6 +148,9 @@ class OrdersDelete extends Orders
 
         // Open connection
         $GLOBALS["Conn"] ??= $this->getConnection();
+
+        // User table object
+        $UserTable = Container("usertable");
     }
 
     // Get content from stream
@@ -738,6 +741,7 @@ class OrdersDelete extends Orders
 
             // fees
             $this->fees->ViewValue = $this->fees->CurrentValue;
+            $this->fees->ViewValue = FormatNumber($this->fees->ViewValue, $this->fees->formatPattern());
 
             // currency_id
             $curVal = strval($this->currency_id->CurrentValue);
@@ -830,6 +834,10 @@ class OrdersDelete extends Orders
     protected function deleteRows()
     {
         global $Language, $Security;
+        if (!$Security->canDelete()) {
+            $this->setFailureMessage($Language->phrase("NoDeletePermission")); // No delete permission
+            return false;
+        }
         $sql = $this->getCurrentSql();
         $conn = $this->getConnection();
         $rows = $conn->fetchAllAssociative($sql);

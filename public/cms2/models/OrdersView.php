@@ -135,7 +135,7 @@ class OrdersView extends Orders
     public function __construct()
     {
         parent::__construct();
-        global $Language, $DashboardReport, $DebugTimer;
+        global $Language, $DashboardReport, $DebugTimer, $UserTable;
         $this->TableVar = 'orders';
         $this->TableName = 'orders';
 
@@ -171,6 +171,9 @@ class OrdersView extends Orders
 
         // Open connection
         $GLOBALS["Conn"] ??= $this->getConnection();
+
+        // User table object
+        $UserTable = Container("usertable");
 
         // Export options
         $this->ExportOptions = new ListOptions(["TagClassName" => "ew-export-option"]);
@@ -993,6 +996,7 @@ class OrdersView extends Orders
 
             // fees
             $this->fees->ViewValue = $this->fees->CurrentValue;
+            $this->fees->ViewValue = FormatNumber($this->fees->ViewValue, $this->fees->formatPattern());
 
             // currency_id
             $curVal = strval($this->currency_id->CurrentValue);

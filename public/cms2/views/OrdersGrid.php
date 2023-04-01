@@ -29,7 +29,7 @@ loadjs.ready(["wrapper", "head"], function () {
             ["topic_id", [fields.topic_id.visible && fields.topic_id.required ? ew.Validators.required(fields.topic_id.caption) : null], fields.topic_id.isInvalid],
             ["date", [fields.date.visible && fields.date.required ? ew.Validators.required(fields.date.caption) : null, ew.Validators.datetime(fields.date.clientFormatPattern)], fields.date.isInvalid],
             ["time", [fields.time.visible && fields.time.required ? ew.Validators.required(fields.time.caption) : null], fields.time.isInvalid],
-            ["fees", [fields.fees.visible && fields.fees.required ? ew.Validators.required(fields.fees.caption) : null, ew.Validators.integer], fields.fees.isInvalid],
+            ["fees", [fields.fees.visible && fields.fees.required ? ew.Validators.required(fields.fees.caption) : null, ew.Validators.float], fields.fees.isInvalid],
             ["currency_id", [fields.currency_id.visible && fields.currency_id.required ? ew.Validators.required(fields.currency_id.caption) : null], fields.currency_id.isInvalid],
             ["status", [fields.status.visible && fields.status.required ? ew.Validators.required(fields.status.caption) : null], fields.status.isInvalid],
             ["meeting_id", [fields.meeting_id.visible && fields.meeting_id.required ? ew.Validators.required(fields.meeting_id.caption) : null], fields.meeting_id.isInvalid],

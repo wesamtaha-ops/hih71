@@ -37,4 +37,10 @@ class UsersController extends ControllerBase
     {
         return $this->runPage($request, $response, $args, "UsersDelete");
     }
+
+    // search
+    public function search(Request $request, Response $response, array $args): Response
+    {
+        return $this->runPage($request, $response, $args, "UsersSearch");
+    }
 }

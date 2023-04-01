@@ -116,6 +116,7 @@ return function (App $app) {
     $app->map(["GET","POST","OPTIONS"], '/OrdersView[/{id}]', OrdersController::class . ':view')->add(PermissionMiddleware::class)->setName('OrdersView-orders-view'); // view
     $app->map(["GET","POST","OPTIONS"], '/OrdersEdit[/{id}]', OrdersController::class . ':edit')->add(PermissionMiddleware::class)->setName('OrdersEdit-orders-edit'); // edit
     $app->map(["GET","POST","OPTIONS"], '/OrdersDelete[/{id}]', OrdersController::class . ':delete')->add(PermissionMiddleware::class)->setName('OrdersDelete-orders-delete'); // delete
+    $app->map(["GET","POST","OPTIONS"], '/OrdersSearch', OrdersController::class . ':search')->add(PermissionMiddleware::class)->setName('OrdersSearch-orders-search'); // search
     $app->group(
         '/orders',
         function (RouteCollectorProxy $group) {
@@ -124,6 +125,41 @@ return function (App $app) {
             $group->map(["GET","POST","OPTIONS"], '/' . Config('VIEW_ACTION') . '[/{id}]', OrdersController::class . ':view')->add(PermissionMiddleware::class)->setName('orders/view-orders-view-2'); // view
             $group->map(["GET","POST","OPTIONS"], '/' . Config('EDIT_ACTION') . '[/{id}]', OrdersController::class . ':edit')->add(PermissionMiddleware::class)->setName('orders/edit-orders-edit-2'); // edit
             $group->map(["GET","POST","OPTIONS"], '/' . Config('DELETE_ACTION') . '[/{id}]', OrdersController::class . ':delete')->add(PermissionMiddleware::class)->setName('orders/delete-orders-delete-2'); // delete
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('SEARCH_ACTION') . '', OrdersController::class . ':search')->add(PermissionMiddleware::class)->setName('orders/search-orders-search-2'); // search
+        }
+    );
+
+    // reviews
+    $app->map(["GET","POST","OPTIONS"], '/ReviewsList[/{id}]', ReviewsController::class . ':list')->add(PermissionMiddleware::class)->setName('ReviewsList-reviews-list'); // list
+    $app->map(["GET","POST","OPTIONS"], '/ReviewsAdd[/{id}]', ReviewsController::class . ':add')->add(PermissionMiddleware::class)->setName('ReviewsAdd-reviews-add'); // add
+    $app->map(["GET","POST","OPTIONS"], '/ReviewsView[/{id}]', ReviewsController::class . ':view')->add(PermissionMiddleware::class)->setName('ReviewsView-reviews-view'); // view
+    $app->map(["GET","POST","OPTIONS"], '/ReviewsEdit[/{id}]', ReviewsController::class . ':edit')->add(PermissionMiddleware::class)->setName('ReviewsEdit-reviews-edit'); // edit
+    $app->map(["GET","POST","OPTIONS"], '/ReviewsDelete[/{id}]', ReviewsController::class . ':delete')->add(PermissionMiddleware::class)->setName('ReviewsDelete-reviews-delete'); // delete
+    $app->group(
+        '/reviews',
+        function (RouteCollectorProxy $group) {
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('LIST_ACTION') . '[/{id}]', ReviewsController::class . ':list')->add(PermissionMiddleware::class)->setName('reviews/list-reviews-list-2'); // list
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('ADD_ACTION') . '[/{id}]', ReviewsController::class . ':add')->add(PermissionMiddleware::class)->setName('reviews/add-reviews-add-2'); // add
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('VIEW_ACTION') . '[/{id}]', ReviewsController::class . ':view')->add(PermissionMiddleware::class)->setName('reviews/view-reviews-view-2'); // view
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('EDIT_ACTION') . '[/{id}]', ReviewsController::class . ':edit')->add(PermissionMiddleware::class)->setName('reviews/edit-reviews-edit-2'); // edit
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('DELETE_ACTION') . '[/{id}]', ReviewsController::class . ':delete')->add(PermissionMiddleware::class)->setName('reviews/delete-reviews-delete-2'); // delete
+        }
+    );
+
+    // teachers_packages
+    $app->map(["GET","POST","OPTIONS"], '/TeachersPackagesList[/{id}]', TeachersPackagesController::class . ':list')->add(PermissionMiddleware::class)->setName('TeachersPackagesList-teachers_packages-list'); // list
+    $app->map(["GET","POST","OPTIONS"], '/TeachersPackagesAdd[/{id}]', TeachersPackagesController::class . ':add')->add(PermissionMiddleware::class)->setName('TeachersPackagesAdd-teachers_packages-add'); // add
+    $app->map(["GET","POST","OPTIONS"], '/TeachersPackagesView[/{id}]', TeachersPackagesController::class . ':view')->add(PermissionMiddleware::class)->setName('TeachersPackagesView-teachers_packages-view'); // view
+    $app->map(["GET","POST","OPTIONS"], '/TeachersPackagesEdit[/{id}]', TeachersPackagesController::class . ':edit')->add(PermissionMiddleware::class)->setName('TeachersPackagesEdit-teachers_packages-edit'); // edit
+    $app->map(["GET","POST","OPTIONS"], '/TeachersPackagesDelete[/{id}]', TeachersPackagesController::class . ':delete')->add(PermissionMiddleware::class)->setName('TeachersPackagesDelete-teachers_packages-delete'); // delete
+    $app->group(
+        '/teachers_packages',
+        function (RouteCollectorProxy $group) {
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('LIST_ACTION') . '[/{id}]', TeachersPackagesController::class . ':list')->add(PermissionMiddleware::class)->setName('teachers_packages/list-teachers_packages-list-2'); // list
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('ADD_ACTION') . '[/{id}]', TeachersPackagesController::class . ':add')->add(PermissionMiddleware::class)->setName('teachers_packages/add-teachers_packages-add-2'); // add
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('VIEW_ACTION') . '[/{id}]', TeachersPackagesController::class . ':view')->add(PermissionMiddleware::class)->setName('teachers_packages/view-teachers_packages-view-2'); // view
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('EDIT_ACTION') . '[/{id}]', TeachersPackagesController::class . ':edit')->add(PermissionMiddleware::class)->setName('teachers_packages/edit-teachers_packages-edit-2'); // edit
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('DELETE_ACTION') . '[/{id}]', TeachersPackagesController::class . ':delete')->add(PermissionMiddleware::class)->setName('teachers_packages/delete-teachers_packages-delete-2'); // delete
         }
     );
 
@@ -150,6 +186,7 @@ return function (App $app) {
     $app->map(["GET","POST","OPTIONS"], '/TransfersView[/{id}]', TransfersController::class . ':view')->add(PermissionMiddleware::class)->setName('TransfersView-transfers-view'); // view
     $app->map(["GET","POST","OPTIONS"], '/TransfersEdit[/{id}]', TransfersController::class . ':edit')->add(PermissionMiddleware::class)->setName('TransfersEdit-transfers-edit'); // edit
     $app->map(["GET","POST","OPTIONS"], '/TransfersDelete[/{id}]', TransfersController::class . ':delete')->add(PermissionMiddleware::class)->setName('TransfersDelete-transfers-delete'); // delete
+    $app->map(["GET","POST","OPTIONS"], '/TransfersSearch', TransfersController::class . ':search')->add(PermissionMiddleware::class)->setName('TransfersSearch-transfers-search'); // search
     $app->group(
         '/transfers',
         function (RouteCollectorProxy $group) {
@@ -158,6 +195,7 @@ return function (App $app) {
             $group->map(["GET","POST","OPTIONS"], '/' . Config('VIEW_ACTION') . '[/{id}]', TransfersController::class . ':view')->add(PermissionMiddleware::class)->setName('transfers/view-transfers-view-2'); // view
             $group->map(["GET","POST","OPTIONS"], '/' . Config('EDIT_ACTION') . '[/{id}]', TransfersController::class . ':edit')->add(PermissionMiddleware::class)->setName('transfers/edit-transfers-edit-2'); // edit
             $group->map(["GET","POST","OPTIONS"], '/' . Config('DELETE_ACTION') . '[/{id}]', TransfersController::class . ':delete')->add(PermissionMiddleware::class)->setName('transfers/delete-transfers-delete-2'); // delete
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('SEARCH_ACTION') . '', TransfersController::class . ':search')->add(PermissionMiddleware::class)->setName('transfers/search-transfers-search-2'); // search
         }
     );
 
@@ -167,6 +205,7 @@ return function (App $app) {
     $app->map(["GET","POST","OPTIONS"], '/UsersView[/{id}]', UsersController::class . ':view')->add(PermissionMiddleware::class)->setName('UsersView-users-view'); // view
     $app->map(["GET","POST","OPTIONS"], '/UsersEdit[/{id}]', UsersController::class . ':edit')->add(PermissionMiddleware::class)->setName('UsersEdit-users-edit'); // edit
     $app->map(["GET","POST","OPTIONS"], '/UsersDelete[/{id}]', UsersController::class . ':delete')->add(PermissionMiddleware::class)->setName('UsersDelete-users-delete'); // delete
+    $app->map(["GET","POST","OPTIONS"], '/UsersSearch', UsersController::class . ':search')->add(PermissionMiddleware::class)->setName('UsersSearch-users-search'); // search
     $app->group(
         '/users',
         function (RouteCollectorProxy $group) {
@@ -175,11 +214,72 @@ return function (App $app) {
             $group->map(["GET","POST","OPTIONS"], '/' . Config('VIEW_ACTION') . '[/{id}]', UsersController::class . ':view')->add(PermissionMiddleware::class)->setName('users/view-users-view-2'); // view
             $group->map(["GET","POST","OPTIONS"], '/' . Config('EDIT_ACTION') . '[/{id}]', UsersController::class . ':edit')->add(PermissionMiddleware::class)->setName('users/edit-users-edit-2'); // edit
             $group->map(["GET","POST","OPTIONS"], '/' . Config('DELETE_ACTION') . '[/{id}]', UsersController::class . ':delete')->add(PermissionMiddleware::class)->setName('users/delete-users-delete-2'); // delete
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('SEARCH_ACTION') . '', UsersController::class . ':search')->add(PermissionMiddleware::class)->setName('users/search-users-search-2'); // search
         }
     );
 
+    // admin_panel_users
+    $app->map(["GET","POST","OPTIONS"], '/AdminPanelUsersList[/{id}]', AdminPanelUsersController::class . ':list')->add(PermissionMiddleware::class)->setName('AdminPanelUsersList-admin_panel_users-list'); // list
+    $app->map(["GET","POST","OPTIONS"], '/AdminPanelUsersAdd[/{id}]', AdminPanelUsersController::class . ':add')->add(PermissionMiddleware::class)->setName('AdminPanelUsersAdd-admin_panel_users-add'); // add
+    $app->map(["GET","POST","OPTIONS"], '/AdminPanelUsersView[/{id}]', AdminPanelUsersController::class . ':view')->add(PermissionMiddleware::class)->setName('AdminPanelUsersView-admin_panel_users-view'); // view
+    $app->map(["GET","POST","OPTIONS"], '/AdminPanelUsersEdit[/{id}]', AdminPanelUsersController::class . ':edit')->add(PermissionMiddleware::class)->setName('AdminPanelUsersEdit-admin_panel_users-edit'); // edit
+    $app->map(["GET","POST","OPTIONS"], '/AdminPanelUsersDelete[/{id}]', AdminPanelUsersController::class . ':delete')->add(PermissionMiddleware::class)->setName('AdminPanelUsersDelete-admin_panel_users-delete'); // delete
+    $app->group(
+        '/admin_panel_users',
+        function (RouteCollectorProxy $group) {
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('LIST_ACTION') . '[/{id}]', AdminPanelUsersController::class . ':list')->add(PermissionMiddleware::class)->setName('admin_panel_users/list-admin_panel_users-list-2'); // list
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('ADD_ACTION') . '[/{id}]', AdminPanelUsersController::class . ':add')->add(PermissionMiddleware::class)->setName('admin_panel_users/add-admin_panel_users-add-2'); // add
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('VIEW_ACTION') . '[/{id}]', AdminPanelUsersController::class . ':view')->add(PermissionMiddleware::class)->setName('admin_panel_users/view-admin_panel_users-view-2'); // view
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('EDIT_ACTION') . '[/{id}]', AdminPanelUsersController::class . ':edit')->add(PermissionMiddleware::class)->setName('admin_panel_users/edit-admin_panel_users-edit-2'); // edit
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('DELETE_ACTION') . '[/{id}]', AdminPanelUsersController::class . ':delete')->add(PermissionMiddleware::class)->setName('admin_panel_users/delete-admin_panel_users-delete-2'); // delete
+        }
+    );
+
+    // userlevelpermissions
+    $app->map(["GET","POST","OPTIONS"], '/UserlevelpermissionsList[/{keys:.*}]', UserlevelpermissionsController::class . ':list')->add(PermissionMiddleware::class)->setName('UserlevelpermissionsList-userlevelpermissions-list'); // list
+    $app->map(["GET","POST","OPTIONS"], '/UserlevelpermissionsAdd[/{keys:.*}]', UserlevelpermissionsController::class . ':add')->add(PermissionMiddleware::class)->setName('UserlevelpermissionsAdd-userlevelpermissions-add'); // add
+    $app->map(["GET","POST","OPTIONS"], '/UserlevelpermissionsView[/{keys:.*}]', UserlevelpermissionsController::class . ':view')->add(PermissionMiddleware::class)->setName('UserlevelpermissionsView-userlevelpermissions-view'); // view
+    $app->map(["GET","POST","OPTIONS"], '/UserlevelpermissionsEdit[/{keys:.*}]', UserlevelpermissionsController::class . ':edit')->add(PermissionMiddleware::class)->setName('UserlevelpermissionsEdit-userlevelpermissions-edit'); // edit
+    $app->map(["GET","POST","OPTIONS"], '/UserlevelpermissionsDelete[/{keys:.*}]', UserlevelpermissionsController::class . ':delete')->add(PermissionMiddleware::class)->setName('UserlevelpermissionsDelete-userlevelpermissions-delete'); // delete
+    $app->group(
+        '/userlevelpermissions',
+        function (RouteCollectorProxy $group) {
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('LIST_ACTION') . '[/{keys:.*}]', UserlevelpermissionsController::class . ':list')->add(PermissionMiddleware::class)->setName('userlevelpermissions/list-userlevelpermissions-list-2'); // list
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('ADD_ACTION') . '[/{keys:.*}]', UserlevelpermissionsController::class . ':add')->add(PermissionMiddleware::class)->setName('userlevelpermissions/add-userlevelpermissions-add-2'); // add
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('VIEW_ACTION') . '[/{keys:.*}]', UserlevelpermissionsController::class . ':view')->add(PermissionMiddleware::class)->setName('userlevelpermissions/view-userlevelpermissions-view-2'); // view
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('EDIT_ACTION') . '[/{keys:.*}]', UserlevelpermissionsController::class . ':edit')->add(PermissionMiddleware::class)->setName('userlevelpermissions/edit-userlevelpermissions-edit-2'); // edit
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('DELETE_ACTION') . '[/{keys:.*}]', UserlevelpermissionsController::class . ':delete')->add(PermissionMiddleware::class)->setName('userlevelpermissions/delete-userlevelpermissions-delete-2'); // delete
+        }
+    );
+
+    // userlevels
+    $app->map(["GET","POST","OPTIONS"], '/UserlevelsList[/{UserLevelID}]', UserlevelsController::class . ':list')->add(PermissionMiddleware::class)->setName('UserlevelsList-userlevels-list'); // list
+    $app->map(["GET","POST","OPTIONS"], '/UserlevelsAdd[/{UserLevelID}]', UserlevelsController::class . ':add')->add(PermissionMiddleware::class)->setName('UserlevelsAdd-userlevels-add'); // add
+    $app->map(["GET","POST","OPTIONS"], '/UserlevelsView[/{UserLevelID}]', UserlevelsController::class . ':view')->add(PermissionMiddleware::class)->setName('UserlevelsView-userlevels-view'); // view
+    $app->map(["GET","POST","OPTIONS"], '/UserlevelsEdit[/{UserLevelID}]', UserlevelsController::class . ':edit')->add(PermissionMiddleware::class)->setName('UserlevelsEdit-userlevels-edit'); // edit
+    $app->map(["GET","POST","OPTIONS"], '/UserlevelsDelete[/{UserLevelID}]', UserlevelsController::class . ':delete')->add(PermissionMiddleware::class)->setName('UserlevelsDelete-userlevels-delete'); // delete
+    $app->group(
+        '/userlevels',
+        function (RouteCollectorProxy $group) {
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('LIST_ACTION') . '[/{UserLevelID}]', UserlevelsController::class . ':list')->add(PermissionMiddleware::class)->setName('userlevels/list-userlevels-list-2'); // list
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('ADD_ACTION') . '[/{UserLevelID}]', UserlevelsController::class . ':add')->add(PermissionMiddleware::class)->setName('userlevels/add-userlevels-add-2'); // add
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('VIEW_ACTION') . '[/{UserLevelID}]', UserlevelsController::class . ':view')->add(PermissionMiddleware::class)->setName('userlevels/view-userlevels-view-2'); // view
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('EDIT_ACTION') . '[/{UserLevelID}]', UserlevelsController::class . ':edit')->add(PermissionMiddleware::class)->setName('userlevels/edit-userlevels-edit-2'); // edit
+            $group->map(["GET","POST","OPTIONS"], '/' . Config('DELETE_ACTION') . '[/{UserLevelID}]', UserlevelsController::class . ':delete')->add(PermissionMiddleware::class)->setName('userlevels/delete-userlevels-delete-2'); // delete
+        }
+    );
+
+    // personal_data
+    $app->map(["GET","POST","OPTIONS"], '/personaldata', OthersController::class . ':personaldata')->add(PermissionMiddleware::class)->setName('personaldata');
+
     // login
     $app->map(["GET","POST","OPTIONS"], '/login[/{provider}]', OthersController::class . ':login')->add(PermissionMiddleware::class)->setName('login');
+
+    // change_password
+    $app->map(["GET","POST","OPTIONS"], '/changepassword', OthersController::class . ':changepassword')->add(PermissionMiddleware::class)->setName('changepassword');
+
+    // userpriv
+    $app->map(["GET","POST","OPTIONS"], '/userpriv', OthersController::class . ':userpriv')->add(PermissionMiddleware::class)->setName('userpriv');
 
     // logout
     $app->map(["GET","POST","OPTIONS"], '/logout', OthersController::class . ':logout')->add(PermissionMiddleware::class)->setName('logout');
