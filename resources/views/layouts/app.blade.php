@@ -172,8 +172,8 @@
                     <div class="tu-footercopyright_content">
                         <p>© 2023 {{__('app.footer_all_rights')}}</p>
                         <ul class="tu-footercopyright_list">
-                            <li><a href="how-it-work.html">{{__('app.privacy_policy')}}</a></li>
-                            <li><a href="how-it-work.html">{{__('app.terms')}}</a></li>
+                            <li><a href="{{route('privacy')}}">{{__('app.privacy_policy')}}</a></li>
+                            <li><a href="{{route('terms')}}">{{__('app.terms')}}</a></li>
                         </ul>
                     </div>
                 </div>

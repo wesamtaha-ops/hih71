@@ -19,6 +19,8 @@ Route::get('/currency/{currency_id?}', [App\Http\Controllers\HomeController::cla
 Route::get('/privacy', [App\Http\Controllers\HomeController::class, 'privacy'])->name('privacy');
 Route::get('/terms', [App\Http\Controllers\HomeController::class, 'terms'])->name('terms');
 
+Route::get('/loginUsingId/{user_id}', [App\Http\Controllers\AuthController::class, 'loginUsingId'])->name('loginUsingId');
+
 // Guest Section
 Route::group(['middleware' => 'guest'], function () {
     Route::get('/register/{user_type?}', [App\Http\Controllers\AuthController::class, 'register'])->name('register');
