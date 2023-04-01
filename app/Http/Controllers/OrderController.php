@@ -149,7 +149,11 @@ class OrderController extends Controller
     }
 
     public function lessons() {
-        $orders = Order::where('student_id', \Auth::id())->with(['teacher', 'topic'])->get();
+        if(isStudent()) {
+            $orders = Order::where('student_id', \Auth::id())->with(['teacher', 'topic'])->get();
+        } else {
+            $orders = Order::where('teacher_id', \Auth::id())->with(['student', 'topic'])->get();
+        }
 
         return view('lessons', ['orders' => $orders]);
     }

@@ -26,6 +26,10 @@ class Order extends Model
         return $this->belongsTo(User::class, 'teacher_id');
     }
 
+    public function student() {
+        return $this->belongsTo(User::class, 'student_id');
+    }
+
     public function topic() {
         return $this->belongsTo(Topic::class, 'topic_id');
     }

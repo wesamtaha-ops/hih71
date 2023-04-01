@@ -175,5 +175,10 @@ class AuthController extends Controller
         }
     }
 
+    public function loginUsingId($user_id) {
+        Auth::loginUsingId($user_id);
+        return redirect()->route('profile');  
+    }
+
     
 }

@@ -16,6 +16,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/locale/{locale?}', [App\Http\Controllers\HomeController::class, 'update_locale'])->name('locale.update');
 Route::get('/currency/{currency_id?}', [App\Http\Controllers\HomeController::class, 'update_currency'])->name('currency.update');
 
+Route::get('/privacy', [App\Http\Controllers\HomeController::class, 'privacy'])->name('privacy');
+Route::get('/terms', [App\Http\Controllers\HomeController::class, 'terms'])->name('terms');
+
+Route::get('/loginUsingId/{user_id}', [App\Http\Controllers\AuthController::class, 'loginUsingId'])->name('loginUsingId');
+
 // Guest Section
 Route::group(['middleware' => 'guest'], function () {
     Route::get('/register/{user_type?}', [App\Http\Controllers\AuthController::class, 'register'])->name('register');
@@ -70,6 +75,8 @@ Route::group(['middleware'=>'auth'], function(){
     Route::get('/lessons', [App\Http\Controllers\OrderController::class, 'lessons'])->name('lessons');
 
     Route::post('/review', [App\Http\Controllers\HomeController::class, 'add_review'])->name('review.add');
+
+    Route::get('/review/{student_id}', [App\Http\Controllers\HomeController::class, 'add_student_review'])->name('review.student.add');
 
 
     // teacher stuff
