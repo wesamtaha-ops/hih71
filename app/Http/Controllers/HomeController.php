@@ -563,21 +563,14 @@ class HomeController extends Controller
             'message' => 'required',
         ]);
 
-        $sent = false;
-
-        
-
         try {
-            $sent = Mail::to($data['email'])->send(new ContactMail($data['name'], $data['email'], $data['message']));
+            Mail::to('mhdalalwan@gmail.com')->send(new ContactMail($data['name'], $data['email'], $data['message']));
         } catch (\Throwable $th) { // do nothing
             
         }
 
-        if($sent) {
-            redirect(route('contact', ['success' => 'Message Sent!']));
-        } else {
-            redirect(route('contact', ['error' => 'Something went wrong']));
-        }
+        return redirect(route('contact', ['success' => 'Message Sent!']));
+        
     }
 
 }
