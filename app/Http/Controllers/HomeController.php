@@ -533,5 +533,22 @@ class HomeController extends Controller
         $topics = Topic::where('parent_id', $category_id)->get();
         return view('topics', ['topics' => $topics]);
     }
+
+    public function privacy() {
+        if(app()->currentLocale() == 'ar') {
+            return view('privacy_ar');
+        } else {
+            return view('privacy_en');
+        }
+    }
+
+    public function terms() {
+        if(app()->currentLocale() == 'ar') {
+            return view('terms_ar');
+        } else {
+            return view('terms_en');
+        }
+    }
 }
+
 

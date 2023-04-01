@@ -16,6 +16,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/locale/{locale?}', [App\Http\Controllers\HomeController::class, 'update_locale'])->name('locale.update');
 Route::get('/currency/{currency_id?}', [App\Http\Controllers\HomeController::class, 'update_currency'])->name('currency.update');
 
+Route::get('/privacy', [App\Http\Controllers\HomeController::class, 'privacy'])->name('privacy');
+Route::get('/terms', [App\Http\Controllers\HomeController::class, 'terms'])->name('terms');
+
 // Guest Section
 Route::group(['middleware' => 'guest'], function () {
     Route::get('/register/{user_type?}', [App\Http\Controllers\AuthController::class, 'register'])->name('register');
