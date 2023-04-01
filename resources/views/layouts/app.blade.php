@@ -60,7 +60,7 @@
                 <div class="collapse navbar-collapse tu-themenav" id="navbarSupportedContent">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link" href="https://api.whatsapp.com/send?phone=971543333403&text=Hello">
+                            <a class="nav-link" href="{{route('contact')}}">
                                 {{__('app.contact')}}
                             </a>
                         </li>

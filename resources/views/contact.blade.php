@@ -39,9 +39,9 @@
                         </div>
                         @endif
 
-                        @if (@$success)
+                        @if (@request()->success)
                         <div class="form-group">
-                            <div class="alert alert-success" style="width: 100%;">{{$message}}</div>
+                            <div class="alert alert-success" style="width: 100%;">{{request()->success}}</div>
                         </div>
                         @endif
                         
