@@ -1071,5 +1071,24 @@ loadjs.ready("head", function() {
 loadjs.ready("load", function () {
     // Write your table-specific startup script here, no need to add script tags.
 });
+
+const links = document.querySelectorAll('a.ew-row-link');
+
+links.forEach(link => {
+  link.setAttribute('target', '_blank');
+});
+
+const tds = document.querySelectorAll('td[data-name="is_approved"]');
+
+tds.forEach(td => {
+  if (td.textContent.trim().toLowerCase() === 'yes') {
+    td.style.backgroundColor = '#cbf7cb';
+  } else if (td.textContent.trim().toLowerCase() === 'no') {
+    td.style.backgroundColor = '#f1c4c4';
+  }
+});
+
+
+
 </script>
 <?php } ?>
