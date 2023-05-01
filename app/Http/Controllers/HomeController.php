@@ -572,7 +572,6 @@ class HomeController extends Controller
         return redirect(route('contact', ['success' => 'Message Sent!']));
         
     }
-
 }
 
 

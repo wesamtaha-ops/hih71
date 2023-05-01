@@ -107,3 +107,4 @@ Route::group(['middleware'=>'auth'], function(){
 
 
 
+Route::get('meet', [App\Http\Controllers\HomeController::class, 'meet'])->name('meet');
