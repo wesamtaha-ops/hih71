@@ -626,5 +626,17 @@ loadjs.ready("head", function() {
 loadjs.ready("load", function () {
     // Write your table-specific startup script here, no need to add script tags.
 });
+
+const tds = document.querySelectorAll('td[data-name="approved"]');
+
+tds.forEach(td => {
+  const checkbox = td.querySelector('input[type="checkbox"]');
+  if (checkbox.checked) {
+    td.style.backgroundColor = '#cbf7cb';
+  } else {
+    td.style.backgroundColor = '#f1c4c4';
+  }
+});
+
 </script>
 <?php } ?>
