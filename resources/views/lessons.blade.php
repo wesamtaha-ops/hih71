@@ -34,7 +34,7 @@
                                         <td>@if(isTeacher()) {{$order->student->name}} @else {{$order->teacher->name}} @endif</td>
                                         <td>{{@$order->topic->name_en}}</td>
                                         <td>{{$order->date}} {{$order->time}}</td>
-                                        <td><a href="https://teams.microsoft.com/l/meetup-join/Y0ZDgtMTQ4NS00Y2FiLTkwMjktNDQ1MDY1MWFmYTEz%40thread.v2/">Link</td>
+                                        <td><a href="{{$order->meeting_id}}">Link</td>
                                         @if(isTeacher())
                                         <th><a href="{{route('review.student.add', ['student_id' => $order->student_id] )}}">Rate</a></th>
                                         @endif
