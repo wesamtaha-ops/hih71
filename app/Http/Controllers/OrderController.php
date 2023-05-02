@@ -32,6 +32,9 @@ use Illuminate\Support\Arr;
 
 use \App\Http\Services\ParsingService;
 
+use Http;
+use Carbon\Carbon;
+
 class OrderController extends Controller
 {
     use ZoomMeetingTrait;
@@ -81,7 +84,6 @@ class OrderController extends Controller
 
     public function book_single_func(Request $request, $teacher_id) {
 
-
         $teacher = User::where('id', $teacher_id)->with(['teacher'])->first();
 
         $fees = convert_to_default_currency($teacher->currency_id, $teacher->teacher->fees);
@@ -90,6 +92,38 @@ class OrderController extends Controller
             return redirect(route('wallet', ['success' => 0, 'message' => 'You don\'t credit']));
         }
 
+        // creating meeting link
+        $startTime = substr($request->time, 0, -6);
+        
+        $url = 'https://login.microsoftonline.com/' . env('AZURE_TENANT_ID') . '/oauth2/v2.0/token';
+        $access_token_response =  Http::asForm()->post($url, [
+            'grant_type' => 'password',
+            'username' => env('AZURE_USER'),
+            'password' => env('AZURE_PASSWORD'),
+            'client_id' => env('AZURE_CLIENT_ID'),
+            'client_secret' => env('AZURE_CLIENT_SECRET'),
+            'scope' => 'openid profile offline_access .default',
+        ]);
+
+        $access_token = $access_token_response->json()['access_token'];
+
+
+        $url = 'https://graph.microsoft.com/v1.0/me/onlineMeetings';
+
+        $startDateTime = Carbon::parse($startTime, 'Asia/Dubai');
+        $endDateTime = Carbon::parse(Carbon::parse($startTime)->addHour(), 'Asia/Dubai');
+        $subject = 'User Token Meeting';
+
+        $response = Http::withToken($access_token)->post($url, [
+            'startDateTime' => $startDateTime,
+            'endDateTime' => $endDateTime,
+            'subject' => $subject,
+        ]);
+
+        $meeting_link = $response->json()['joinUrl'];
+
+
+        // insert data to db
         $data = [
             'student_id' => \Auth::id(),
             'teacher_id' => $teacher_id,
@@ -97,7 +131,8 @@ class OrderController extends Controller
             'date' => explode(' ', $request->time)[0],
             'time' => explode(' ', $request->time)[1],
             'fees' => $teacher->teacher->fees,
-            'currency_id' => $teacher->currency_id
+            'currency_id' => $teacher->currency_id,
+            'meeting_id' => $meeting_link
         ];  
 
         // add order
@@ -117,6 +152,7 @@ class OrderController extends Controller
 
 
     public function book_package_func(Request $request) {
+
         $fees = 0;
         $currency_id = 0;
 
@@ -128,7 +164,8 @@ class OrderController extends Controller
             'student_id' => \Auth::id(),
             'teacher_id' => $package->teacher_id,
             'currency_id' => $package->currency_id,
-            'fees' => $package->fees
+            'fees' => $package->fees,
+            'meeting_id' => ''
         ];  
 
         $fees = convert_to_default_currency($package->currency_id, $package->fees);
