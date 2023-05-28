@@ -36,6 +36,10 @@ Route::group(['middleware' => 'guest'], function () {
     Route::post('/login', [App\Http\Controllers\AuthController::class, 'login_func'])->name('login_func');
     
     Route::get('/forget', [App\Http\Controllers\AuthController::class, 'forget'])->name('forget');
+    Route::post('/forget', [App\Http\Controllers\AuthController::class, 'forget_func'])->name('forget_func');
+
+    Route::get('/forget/{token}', [App\Http\Controllers\AuthController::class, 'recover'])->name('recover');
+    Route::post('/forget/{token}', [App\Http\Controllers\AuthController::class, 'recover_func'])->name('recover_func');
     
 });
 // End Auth Section

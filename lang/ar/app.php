@@ -142,5 +142,8 @@ return [
     'verify' => 'تآكيد',
     'otp' => 'رمز التآكيد',
     'mail_sent' => 'تم ارسال الرمز الا بريدك',
-    'send' => 'ازسال'
+    'send' => 'ازسال',
+
+    'success_reset_password' => 'يرجا التحقق من بريدك الالكتروني',
+    'success_update_password' => 'Password Updated'
 ];
