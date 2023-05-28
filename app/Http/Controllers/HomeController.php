@@ -33,6 +33,9 @@ use Illuminate\Support\Facades\Session;
 
 use Carbon\Carbon;
 
+use \App\Mail\FinishProfile;
+
+
 use \App\Http\Services\ParsingService;
 
 class HomeController extends Controller
@@ -418,6 +421,9 @@ class HomeController extends Controller
             }
         }
 
+        if($request->description_en) { // send email
+            Mail::to(\Auth::user()->email)->send(new FinishProfile(\Auth::id()));
+        }
 
     }
 
