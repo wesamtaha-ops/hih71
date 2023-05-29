@@ -144,6 +144,7 @@ return [
     'send' => 'Send',
 
     'success_reset_password' => 'An email has been sent to your email with the instuctions!',
-    'success_update_password' => 'Password Updated'
+    'success_update_password' => 'Password Updated',
+    'teacher_name' => 'Teacher Name'
     
 ];

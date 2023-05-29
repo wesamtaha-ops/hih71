@@ -104,6 +104,12 @@ class HomeController extends Controller
 
         $teachers = User::where('type', 'teacher')->where('is_verified', '1')->where('is_approved', 1);
 
+        if($request->teacher_name) {
+            $teacher_name = $request->teacher_name;
+
+            $teachers->where('name', 'LIKE', '%'.$teacher_name.'%');
+        }
+        
         if($request->topic_id) {
             $topics_id = $request->topic_id;
 
@@ -138,24 +144,19 @@ class HomeController extends Controller
 
         if($request->rate3 || $request->rate4 || $request->rate5) {
             if($request->rate3) {
-                $rates[] = '3';
-                $rates[] = '0';
+                $rates = ['3', '0'];
             }
             if($request->rate4) {
-                $rates[] = '4';
-                $rates[] = '0';
+                $rates = ['4', '0'];
             }
             if($request->rate5) {
-                $rates[] = '5';
-                $rates[] = '0';
+                $rates = ['5', '0'];
             }
         } else {
             $rates = ["0", "3","4","5"];
         }
 
-        $teachers->whereIn('rate', $rates);
-
-        
+        $teachers->whereIn('rate', $rates);   
 
         if($request->language_id) {
             $language_id = $request->language_id;

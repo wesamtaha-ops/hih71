@@ -61,6 +61,14 @@
                                             <div class="tu-aside-content">
                                             
                                                 <div class="tu-filterselect">
+                                                        @include('components.standard.inputtext', [
+                                                            'id' => 'teacher_name', 
+                                                            'name' => 'teacher_name', 
+                                                            'placeholder' => __('app.teacher_name'), 
+                                                            'options' => $main_topics, 
+                                                            'value' => request()->teacher_name 
+                                                        ])
+
                                                         @include('components.standard.select', [
                                                             'id' => 'topic_id', 
                                                             'name' => 'topic_id', 
