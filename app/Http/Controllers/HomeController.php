@@ -139,15 +139,18 @@ class HomeController extends Controller
         if($request->rate3 || $request->rate4 || $request->rate5) {
             if($request->rate3) {
                 $rates[] = '3';
+                $rates[] = '0';
             }
             if($request->rate4) {
                 $rates[] = '4';
+                $rates[] = '0';
             }
             if($request->rate5) {
                 $rates[] = '5';
+                $rates[] = '0';
             }
         } else {
-            $rates = ["3","4","5"];
+            $rates = ["0", "3","4","5"];
         }
 
         $teachers->whereIn('rate', $rates);
