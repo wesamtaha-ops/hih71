@@ -118,6 +118,15 @@ class OrderController extends Controller
             'startDateTime' => $startDateTime,
             'endDateTime' => $endDateTime,
             'subject' => $subject,
+            'isBroadcast' => true,
+            'broadcastSettings' => [
+                'allowedAudience' => 'everyone',
+                'isRecordingEnabled' => true,
+                'isAttendeeReportEnabled' => true
+            ],
+            'joinMeetingIdSettings' => [
+                'isPasscodeRequired' => false
+            ]
         ]);
 
         $meeting_link = $response->json()['joinUrl'];
