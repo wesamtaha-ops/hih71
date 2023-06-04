@@ -28,6 +28,10 @@ use \App\Models\Currency;
 use \App\Models\Country;
 use Auth;
 
+use Illuminate\Support\Facades\Mail;
+
+use App\Mail\InvitationMail;
+
 use Illuminate\Support\Arr;
 
 use \App\Http\Services\ParsingService;
@@ -119,11 +123,6 @@ class OrderController extends Controller
             'endDateTime' => $endDateTime,
             'subject' => $subject,
             'isBroadcast' => true,
-            'broadcastSettings' => [
-                'allowedAudience' => 'everyone',
-                'isRecordingEnabled' => true,
-                'isAttendeeReportEnabled' => true
-            ],
             'joinMeetingIdSettings' => [
                 'isPasscodeRequired' => false
             ]
@@ -155,6 +154,9 @@ class OrderController extends Controller
             'order_id' => $order_id,
             'approved' => '1',
         ]);
+
+
+        Mail::to(\Auth::user()->email)->send(new InvitationMail(\Auth::user()->name, explode(' ', $request->time)[0], explode(' ', $request->time)[1], $teacher->name, $meeting_link));
 
         return redirect(route('wallet', ['success' => '1', 'message' => 'Order has been submitted successfully!']));
     }

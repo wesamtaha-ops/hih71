@@ -217,10 +217,11 @@ class AuthController extends Controller
     }
 
     public function declineProfile($user_id) {
+        $declineReason = request()->reason;
         User::where('id', $user_id)->update([
             'is_approved' => 0
         ]);
-        Mail::to(\Auth::user()->email)->send(new DeclineProfileMail(\Auth::user()));
+        Mail::to(\Auth::user()->email)->send(new DeclineProfileMail(\Auth::user(), $declineReason));
     }
 
     

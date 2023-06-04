@@ -174,7 +174,7 @@ class HomeController extends Controller
 
         
         $teacher_count = $teachers->count();
-        $pages_count = ceil($teacher_count / 2);
+        $pages_count = ceil($teacher_count / 20);
 
         $teachers = $teachers->with(['teacher', 'country'])->skip($skip)->take($take)->get();
 

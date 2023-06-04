@@ -19,6 +19,7 @@
         <p>Thank you for applying to the HIH71 platform. We appreciate the time and effort you put into your application.</p>
         <p>Unfortunately, at this time, we are unable to approve your account due to missing documentation. As part of our process, we require all necessary documentation to be submitted for review.</p>
         <p>We encourage you to review the application requirements and reapply once you have gathered all the necessary documents. We are here to help if you have any questions or need assistance with your application. Please don't hesitate to reach out to us at {{env('HIH_MAIL')}}.</p>
+        <p>{{$declineReason}}</p>
         <p>Thank you again for your interest in HIH71. We hope to have the opportunity to review your complete application in the future.</p>
                 <p>Please find below the link for your profile here:</p>
         <a href="{{route('profile')}}" class="ms-teams-button">My Profile</a>

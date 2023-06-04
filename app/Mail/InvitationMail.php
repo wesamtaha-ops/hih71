@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class DeclineProfileMail extends Mailable
+class InvitationMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -16,7 +16,7 @@ class DeclineProfileMail extends Mailable
      *
      * @return void
      */
-    public function __construct(private $user, private $declineReason)
+    public function __construct(private $name, private $date, private $time, private $teacher_name, private $meeting_url)
     {
         //
     }
@@ -28,6 +28,12 @@ class DeclineProfileMail extends Mailable
      */
     public function build()
     {
-        return $this->view('mail.decline_profile', ['user' => $this->user, 'declineReason' => $this->declineReason]);
+        return $this->view('mail.invitation', [
+            'name' => $this->name,
+            'date' => $this->date,
+            'time' => $this->time,
+            'teacher_name' => $this->teacher_name,
+            'meeting_url' => $this->meeting_url
+        ]);
     }
 }
