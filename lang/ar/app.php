@@ -146,5 +146,7 @@ return [
 
     'success_reset_password' => 'يرجا التحقق من بريدك الالكتروني',
     'success_update_password' => 'Password Updated',
-    'teacher_name' => 'اسم المدرس'
+    'teacher_name' => 'اسم المدرس',
+    'approve' => 'موافقه',
+    'decline' => 'رفض'
 ];

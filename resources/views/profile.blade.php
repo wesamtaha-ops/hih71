@@ -88,7 +88,12 @@
 
                     </div>
                     <div class="tu-btnarea-two">
-                        <a href="#" id="btn-save" class="tu-primbtn-lg tu-primbtn-orange">@lang('app.save_update')</a>
+                        <a href="#" id="btn-save" class="tu-primbtn-lg tu-primbtn-orange" style="margin-right: 10px">@lang('app.save_update')</a>
+                        @if(request()->admin == '1')
+                        <a href="#" id="btn-approve" class="tu-primbtn-lg" style="margin-right: 10px; background: green">@lang('app.approve')</a>
+                    
+                        <a href="#" id="btn-decline" class="tu-primbtn-lg" style="background: red">@lang('app.decline')</a>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -126,7 +131,7 @@
                 contentType: false,
                 processData: false,
                 success:function(data){
-                    $('#form-profile-image img').attr('src', 'http://localhost:8000/images/' + data);
+                    $('#form-profile-image img').attr('src', "{{env('APP_URL')}}/images/" + data);
                 },
                 error: function(data){
                     console.log("error");
@@ -266,6 +271,40 @@
                 }
             });
         })
+        @if(request()->admin == '1')
+        $('#btn-approve').click(function () {
+            $.ajax({
+                method: "POST",
+                url: `{{env('APP_URL') . "admin/" . \Auth::id()}}/approve`,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function() {
+                    toastr.success('Approved!');
+                },
+                error: function () {
+                    toastr.error('An erro happened!')
+                }
+            });
+        })
+
+
+        $('#btn-decline').click(function () {
+            $.ajax({
+                method: "POST",
+                url: `{{env('APP_URL') . "admin/" . \Auth::id()}}/decline`,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function() {
+                    toastr.success('Declined!');
+                },
+                error: function () {
+                    toastr.error('An erro happened!')
+                }
+            });
+        })
+        @endif
     })
 </script>
 @endpush

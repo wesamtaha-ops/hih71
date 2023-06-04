@@ -204,7 +204,19 @@ class AuthController extends Controller
 
     public function loginUsingId($user_id) {
         Auth::loginUsingId($user_id);
-        return redirect()->route('profile');  
+        return redirect()->route('profile', ['admin' => 1]);  
+    }
+
+    public function approveProfile($user_id) {
+        User::where('id', $user_id)->update([
+            'is_approved' => 1
+        ]);
+    }
+
+    public function declineProfile($user_id) {
+        User::where('id', $user_id)->update([
+            'is_approved' => 0
+        ]);
     }
 
     
