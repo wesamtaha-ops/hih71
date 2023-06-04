@@ -18,10 +18,10 @@
         <p>Dear {{$user->name}},</p>
         <p>We are excited to inform you that your account on the HIH71 platform has been approved. We believe your expertise and dedication will be a valuable asset to our online learning community.</p>
         <p>You can now start adding your schedules and available slots in the system. To do so, please log in to your account, navigate to your profile, and follow the instructions to add your availability.</p>
-        <p>We're looking forward to seeing the positive impact you'll have on our students. If you need any assistance or have any questions, please don't hesitate to reach out to us at [Contact Email/Phone Number].</p>
+        <p>We're looking forward to seeing the positive impact you'll have on our students. If you need any assistance or have any questions, please don't hesitate to reach out to us at {{env('HIH_MAIL')}}.</p>
         <p>Thank you for choosing to be a part of the HIH71 teaching team. Let's create a meaningful learning experience together!</p>
         <p>Please find below the link for your profile here:</p>
-        <a href="[Microsoft Teams Meeting URL]" class="ms-teams-button">My Profile</a>
+        <a href="{{route('profile')}}" class="ms-teams-button">My Profile</a>
         <p>Best regards</p>
     </div>
 </body>
