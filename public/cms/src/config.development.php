@@ -6,7 +6,7 @@
 
 return [
     "Databases" => [
-        "DB" => ["id" => "DB", "type" => "MYSQL", "qs" => "`", "qe" => "`", "host" => "localhost", "port" => "3306", "user" => "root", "password" => "", "dbname" => "hih71"]
+        "DB" => ["id" => "DB", "type" => "MYSQL", "qs" => "`", "qe" => "`", "host" => "localhost", "port" => "3306", "user" => "onak_hih71", "password" => "onak_hih71", "dbname" => "onak_hih71"]
     ],
     "SMTP" => [
         "PHPMAILER_MAILER" => "smtp", // PHPMailer mailer

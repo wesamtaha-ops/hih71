@@ -18,28 +18,27 @@
         <div class="tu-login-right_title">
             @if(@$success)
             <div class="alert alert-success" role="alert">
-                @lang('app.success_reset_password')
+                @lang('app.success_update_password')
             </div>
             @endif
-            <h2>Dont worry!</h2>
-            <h3>We’ll send you the reset link</h3>
+            <h2>Update Password</h2>
         </div>
-        <form class="tu-themeform tu-login-form" action="{{route('forget_func')}}" method="post">
+        <form class="tu-themeform tu-login-form" method="post">
             @csrf
             <fieldset>
                 <div class="tu-themeform__wrap">
                     <div class="form-group-wrap">
                         <div class="form-group">
                             <div class="tu-placeholderholder">
-                                <input type="email" name="email" class="form-control" required="" placeholder="Enter email address">
+                                <input type="text" name="password" class="form-control" required="" placeholder="Enter New Password">
                                 <div class="tu-placeholder">
-                                    <span>Enter email address</span>
+                                    <span>Enter New Password</span>
                                     <em>*</em>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <button class="tu-primbtn-lg"><span>Send reset link</span><i class="icon icon-arrow-right"></i></button>
+                            <button class="tu-primbtn-lg"><span>Change Password</span><i class="icon icon-arrow-right"></i></button>
                         </div>
                        
                     </div>

@@ -33,6 +33,7 @@ use Carbon\Carbon;
 
 use Illuminate\Support\Facades\Mail;
 use App\Mail\OTPMail;
+use App\Mail\ForgetPasswordMail;
 
 class AuthController extends Controller
 {
@@ -48,6 +49,32 @@ class AuthController extends Controller
 
     public function forget() {
         return view('auth.forget');
+    }
+
+    public function forget_func(Request $request) {
+        $email = $request->email;
+        
+        if($email) {
+            $random = Str::random(8);
+            User::where('email', $email)->update(['remember_token' => $random]);
+
+            Mail::to($email)->send(new ForgetPasswordMail($random));
+        }
+        
+        return view('auth.forget', ['success' => 1]);
+    }
+
+    public function recover($token) {
+        $user = User::where('remember_token', $token)->exists();
+        if(User::where('remember_token', $token)->exists())
+            return view('auth.recover');
+        else
+            return redirect(route('home'));
+    }
+
+    public function recover_func($token) {
+        $user = User::where('remember_token', $token)->update(['password' => bcrypt(request()->password)]);
+        return view('auth.recover', ['success' => 1]);
     }
 
     public function register($user_type = 'student') {
