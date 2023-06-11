@@ -20,6 +20,8 @@ Route::get('/privacy', [App\Http\Controllers\HomeController::class, 'privacy'])-
 Route::get('/terms', [App\Http\Controllers\HomeController::class, 'terms'])->name('terms');
 
 Route::get('/loginUsingId/{user_id}', [App\Http\Controllers\AuthController::class, 'loginUsingId'])->name('loginUsingId');
+Route::post('/admin/{user_id}/approve', [App\Http\Controllers\AuthController::class, 'approveProfile'])->name('approveProfile');
+Route::post('/admin/{user_id}/decline', [App\Http\Controllers\AuthController::class, 'declineProfile'])->name('declineProfile');
 
 Route::get('/contact', [App\Http\Controllers\HomeController::class, 'contact'])->name('contact');
 Route::post('/contact_func', [App\Http\Controllers\HomeController::class, 'contact_func'])->name('contact_func');

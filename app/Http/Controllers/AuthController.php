@@ -33,6 +33,8 @@ use Carbon\Carbon;
 
 use Illuminate\Support\Facades\Mail;
 use App\Mail\OTPMail;
+use App\Mail\ApproveProfileMail;
+use App\Mail\DeclineProfileMail;
 use App\Mail\ForgetPasswordMail;
 
 class AuthController extends Controller
@@ -204,7 +206,22 @@ class AuthController extends Controller
 
     public function loginUsingId($user_id) {
         Auth::loginUsingId($user_id);
-        return redirect()->route('profile');  
+        return redirect()->route('profile', ['admin' => 1]);  
+    }
+
+    public function approveProfile($user_id) {
+        User::where('id', $user_id)->update([
+            'is_approved' => 1
+        ]);
+        Mail::to(\Auth::user()->email)->send(new ApproveProfileMail(\Auth::user()));
+    }
+
+    public function declineProfile($user_id) {
+        $declineReason = request()->reason;
+        User::where('id', $user_id)->update([
+            'is_approved' => 0
+        ]);
+        Mail::to(\Auth::user()->email)->send(new DeclineProfileMail(\Auth::user(), $declineReason));
     }
 
     

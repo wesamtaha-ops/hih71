@@ -57,7 +57,7 @@
                 </div>
                 <div class="tu-lost-password form-group">
                 <a class="btn" style="color: #fff; background-color: #03a9f4;" href="{{route('login')}}"> {{__('app.already_have_account')}} </a>
-                    <a href="/forget" class="tu-password-clr_light">{{__('app.lost_password')}}</a>
+                    <a href="{{route('forget')}}" class="tu-password-clr_light">{{__('app.lost_password')}}</a>
                 </div>
             </div>
         </div>

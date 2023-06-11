@@ -1,1 +1,1 @@
-Hey, here is your link localhost:8000/forget/{{$token}}
+Hey, here is your link {{ env('APP_URL'), 'hih71.com/' }}forget/{{$token}}
