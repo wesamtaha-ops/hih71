@@ -250,10 +250,10 @@
                             @if(@$teacher->teacher->packages)
                             <div class="tu-contactbox">
                                 @foreach($teacher->teacher->packages as $package)
-                                <div style="margin-bottom: 10px;">
+                                <div style="margin-bottom:30px; margin-top:10px;">
                                     <a href="{{ route('package.show', ['package_id' => $package->id]) }}">
                                         <img src="{{asset('images/' . $package->image)}}" style="width: 100%; height: 150px; object-fit: cover;" />
-                                        <label style="text-align: center">{{app()->currentLocale() == 'ar' ? $package->title_ar : $package->title_en}}</label>
+                                        <label style="text-align: center; margin-top:10px;">{{app()->currentLocale() == 'ar' ? $package->title_ar : $package->title_en}}</label>
                                     </a>
                                 </div>
                                 @endforeach
