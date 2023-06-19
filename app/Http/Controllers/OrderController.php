@@ -112,6 +112,7 @@ class OrderController extends Controller
         $access_token = $access_token_response->json()['access_token'];
 
 
+
         $url = 'https://graph.microsoft.com/v1.0/me/onlineMeetings';
 
         $startDateTime = Carbon::parse($startTime, 'Asia/Dubai');
@@ -122,13 +123,16 @@ class OrderController extends Controller
             'startDateTime' => $startDateTime,
             'endDateTime' => $endDateTime,
             'subject' => $subject,
-            'isBroadcast' => true,
+            'lobbyBypassSettings' => ["scope" => "everyone"],
+            'isBroadcast' => false,
             'joinMeetingIdSettings' => [
                 'isPasscodeRequired' => false
             ]
         ]);
 
         $meeting_link = $response->json()['joinUrl'];
+
+        dd($meeting_link);
 
 
         // insert data to db
