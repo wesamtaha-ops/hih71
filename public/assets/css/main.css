@@ -2275,6 +2275,7 @@ input.tu-showplaceholder::placeholder {
   padding: 0 18px;
   border-bottom: 0;
   box-shadow: none;
+  direction: ltr !important;
 }
 .tu-headerv2 .line {
   stroke: #ffffff;
@@ -2533,6 +2534,7 @@ input.tu-showplaceholder::placeholder {
   font-style: normal;
   padding-right: 14px;
   color: #eeeeee;
+  direction: ltr;
 }
 .tu-footerlist li a em:hover {
   color: #1DA1F2;
@@ -4165,7 +4167,7 @@ input.tu-showplaceholder::placeholder {
 }
 .tu-commentauthor h6 span {
   font-weight: 600;
-  padding-right: 10px;
+  padding-right: 10px;  padding-left: 10px;
   display: inline-block;
   color: #1C1C1C;
 }
@@ -4483,6 +4485,7 @@ input.tu-showplaceholder::placeholder {
   align-items: center;
   margin: 0;
   font-weight: 600;
+  padding-right: 30px;
 }
 .tu-asidetitle h5::after {
   content: "\e9a3";
@@ -5920,7 +5923,7 @@ input.tu-showplaceholder::placeholder {
   align-items: center;
 }
 .tu-profileview figure {
-  margin: 0 20px 0 0;
+  margin: 20px 20px 20px 20px;
   max-width: 200px;
   flex: none;
 }
@@ -6151,7 +6154,7 @@ input.tu-showplaceholder::placeholder {
 .tu-nav-tabs .nav-item .nav-link span {
   color: #999999;
   font-weight: 400;
-  margin: 0 0 0 12px;
+  margin: 12px;
   display: inline-block;
 }
 
