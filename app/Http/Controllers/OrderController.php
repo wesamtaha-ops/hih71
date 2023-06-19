@@ -132,9 +132,6 @@ class OrderController extends Controller
 
         $meeting_link = $response->json()['joinUrl'];
 
-        dd($meeting_link);
-
-
         // insert data to db
         $data = [
             'student_id' => \Auth::id(),
